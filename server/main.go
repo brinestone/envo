@@ -2,29 +2,47 @@ package main
 
 import (
 	"context"
-	"log/slog"
+	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
+
+	"github.com/brinestone/envo/server/api"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-	slog.Info("starting server...")
+	godotenv.Load()
 	ctx, cancel := context.WithCancelCause(context.Background())
 	endCh := make(chan os.Signal, 1)
-	signal.Notify(endCh, syscall.SIGINT, syscall.SIGTERM, os.Kill)
+	signal.Notify(endCh, syscall.SIGINT, syscall.SIGTERM)
 
-	go func() {
-		defer cancel(nil)
-		time.Sleep(time.Second * 10)
-	}()
+	_api, err := api.NewWebApi(api.WebApiConfig{
+		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
+		GlobalPrefix: os.Getenv("GLOBAL_PREFIX_PATH"),
+		DatabaseUrl:  os.Getenv("DB_URL"),
+		Context:      ctx,
+	})
+
+	if err != nil {
+		cancel(err)
+	}
 
 	select {
 	case <-endCh:
 		cancel(nil)
-		slog.Debug("shutting down. Good bye")
-	case <-ctx.Done():
-		slog.Debug("shutting down. Good bye")
+		return
+	case err = <-_api.Run():
+		if err != nil {
+			log.Fatal(err)
+		}
+		return
+	case _, ok := <-ctx.Done():
+		if !ok {
+			log.Fatal(ctx.Err())
+		}
+		return
 	}
 }
