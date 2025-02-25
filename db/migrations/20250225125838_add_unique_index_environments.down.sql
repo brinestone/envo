@@ -1,0 +1,1 @@
+DROP INDEX "environments_name_project_uq_idx";

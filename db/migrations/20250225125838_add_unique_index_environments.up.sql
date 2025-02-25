@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX CONCURRENTLY "environments_name_project_uq_idx" ON "environments" ("name", "project");
