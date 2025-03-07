@@ -2,7 +2,8 @@
   "name": "envo",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "standard-version": "^9.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
