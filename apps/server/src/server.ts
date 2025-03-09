@@ -1,11 +1,22 @@
+import { logger } from "@bogeychan/elysia-logger";
+import { cors } from '@elysiajs/cors';
 import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-import { cors } from '@elysiajs/cors'
-import auth from "./api/auth";
+import { authEndpoints } from "./api/auth";
 
-const app = new Elysia()
-  .use(cors())
-  .use(auth)
+const app = new Elysia({ prefix: '/api' })
+  .use(
+    logger({
+      level: "info",
+    })
+  )
+  .use(cors({
+    origin: "http://localhost:3001",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }))
+  .use(authEndpoints)
   .use(swagger({
     documentation: {
       info: {
