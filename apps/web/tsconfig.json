@@ -5,8 +5,24 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@components/*": ["src/app/components/*"],
-      "@services/*": ["src/app/services/*"]
+      "@components/*": [
+        "src/app/components/*"
+      ],
+      "@services/*": [
+        "src/app/services/*"
+      ],
+      "@providers/*": [
+        "src/app/providers/*"
+      ],
+      "@env/*": [
+        "src/environments/*"
+      ],
+      "@state/*": [
+        "src/app/state/*"
+      ],
+      "@models/*": [
+        "src/models/*"
+      ]
     },
     "outDir": "./dist/out-tsc",
     "strict": true,
