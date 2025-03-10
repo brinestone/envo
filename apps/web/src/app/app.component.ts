@@ -1,12 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { AuthService } from './services/auth.service';
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
+  imports: [RouterOutlet, MainMenuComponent, AsyncPipe, NgClass]
 })
 export class AppComponent {
-  title = 'web-client';
+  authService = inject(AuthService);
 }

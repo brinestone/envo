@@ -8,6 +8,34 @@
       "when": 1741344479167,
       "tag": "0000_friendly_alice",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1741484784183,
+      "tag": "0001_jazzy_the_renegades",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741484904853,
+      "tag": "0002_bumpy_expediter",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1741485508372,
+      "tag": "0003_wide_wolfpack",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1741514995580,
+      "tag": "0004_good_black_tarantula",
+      "breakpoints": true
     }
   ]
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "user_sessions" ALTER COLUMN "_delete" SET DEFAULT false;
