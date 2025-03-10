@@ -1,11 +1,15 @@
-import { Component } from '@angular/core';
-import { TuiRoot } from "@taiga-ui/core";
+import { Component, inject } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { MainMenuComponent } from './components/main-menu/main-menu.component';
+import { AuthService } from './services/auth.service';
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [TuiRoot]
+  imports: [RouterOutlet, MainMenuComponent, AsyncPipe, NgClass]
 })
 export class AppComponent {
+  authService = inject(AuthService);
 }

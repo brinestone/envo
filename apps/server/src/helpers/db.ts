@@ -7,5 +7,5 @@ export const pool = new Pool({
     ssl: true
 });
 
-export const db = drizzle(pool, { schema: { ...schema } })
+export const db = drizzle(pool, { schema: { ...schema }, logger: true })
 export type DrizzleDb = typeof db;

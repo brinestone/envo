@@ -1,3 +1,8 @@
-<tui-root>
-
-</tui-root>
+<div [ngClass]="{'border dark:border-surface-800 border-y-0 border-l-0': authService.signedIn$ | async}">
+    @if(authService.signedIn$ | async) {
+    <app-main-menu />
+    }
+</div>
+<main class="block h-full">
+    <router-outlet />
+</main>

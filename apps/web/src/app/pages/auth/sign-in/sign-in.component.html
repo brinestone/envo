@@ -1,0 +1,61 @@
+<form [formGroup]="form" (ngSubmit)="onFormSubmit()">
+    <p-card>
+        <div class="mb-3">
+            <div class="flex justify-center">
+                <img src="/favicon.ico">
+            </div>
+            <h1 class="text-center text-lg font-medium">Connect to your Account</h1>
+        </div>
+        @if(errMessage()) {
+        <div class="mb-3">
+            <p-message size="small" severity="error">
+                {{ errMessage() }}
+            </p-message>
+        </div>
+        }
+        <div class="mb-3">
+            <p class="text-sm text-muted-color text-center">with your email</p>
+        </div>
+        <div class="mb-3 space-y-1">
+            <input class="w-full block" formControlName="email" autocomplete="username" pInputText
+                placeholder="Email address">
+            @if(form.controls.email.dirty) {
+            <p-message severity="error" size="small" variant="simple">
+                @if(form.controls.email.hasError('required')) {
+                This field is required
+                }@else if (form.controls.email.hasError('email')) {
+                Invalid email address
+                }
+            </p-message>
+            }
+        </div>
+        <div class="mb-3">
+            <p-password [toggleMask]="true" formControlName="password" [feedback]="false"
+                autocomplete="current-password" placeholder="Password"></p-password>
+            @if(form.controls.password.dirty) {
+            <p-message severity="error" size="small" variant="simple">
+                @if(form.controls.password.hasError('required')) {
+                This field is required
+                }
+            </p-message>
+            }
+        </div>
+        <div class="mb-3">
+            <label class="text-sm cursor-pointer"><p-checkbox formControlName="rememberMe" [binary]="true" /> Remember
+                me</label>
+        </div>
+        <ng-template #footer>
+            <div class="flex justify-center">
+                <p-button [loading]="signingIn()" [disabled]="signingIn() || form.invalid" type="submit"
+                    class="w-full block" size="small" styleClass="w-full block" label="Sign in" />
+            </div>
+            <p class="text-sm my-3 text-muted-color text-center">or using</p>
+            <div class="flex justify-center">
+                <google-button (onClick)="onGoogleSignInButtonClicked()" />
+            </div>
+            <p class="text-sm my-3 text-muted-color text-center">
+                Don't have an account, <a class="text-primary" routerLink="/auth/sign-up">Sign up</a>
+            </p>
+        </ng-template>
+    </p-card>
+</form>
