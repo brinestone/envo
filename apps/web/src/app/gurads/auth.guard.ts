@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { map } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { isSignedIn } from '@state/selectors';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
+  const store = inject(Store);
   const router = inject(Router);
-  return authService.signedIn$.pipe(
-    map(signedIn => signedIn ? true : router.parseUrl(`/auth/sign-in?continue=${state.url}`))
-  );
+  const result = store.selectSnapshot(isSignedIn);
+  const res = result ? true : router.parseUrl(`/auth/sign-in?continue=${state.url}`);
+  return res;
 };

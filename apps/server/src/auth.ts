@@ -12,7 +12,6 @@ export const auth = betterAuth({
 			redirectURI: new URL('/api/auth/callback/google', `${Bun.env.BASE_URL}`).toString(),
 			scope: ['email', 'profile'],
 			enabled: true,
-			disableSignUp: true,
 			clientId: process.env.GOOGLE_OAUTH_CLIENT_ID as string,
 			clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET as string,
 			accessType: 'offline',

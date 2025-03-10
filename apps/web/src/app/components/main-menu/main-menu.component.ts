@@ -1,8 +1,7 @@
-import { Component, inject, input } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
-import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-main-menu',
@@ -11,12 +10,8 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './main-menu.component.scss'
 })
 export class MainMenuComponent {
-  readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
+  readonly signOut = output();
   async onSignOutButtonClicked() {
-    const { data } = await this.authService.signOut();
-    if (data?.success) {
-      this.router.navigate(['/']);
-    }
+    this.signOut.emit();
   }
 }

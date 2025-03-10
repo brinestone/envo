@@ -1,1 +1,71 @@
-<p>sign-up works!</p>
+<form [formGroup]="form" (ngSubmit)="onFormSubmit()">
+    <p-card>
+        <div class="mb-3">
+            <div class="flex justify-center">
+                <img src="/favicon.ico">
+            </div>
+            <h1 class="text-center text-lg font-medium">Create your Account</h1>
+        </div>
+        @if(errMessage()) {
+        <div class="mb-3">
+            <p-message size="small" severity="error">
+                <p class="text-center">
+                    {{ errMessage() }}
+                </p>
+            </p-message>
+        </div>
+        }
+        <div class="mb-3">
+            <p class="text-sm text-muted-color text-center">using your email</p>
+        </div>
+        <div class="mb-3 space-y-1">
+            <input size="small" class="w-full block" formControlName="names" autocomplete="name" pInputText
+                placeholder="Names">
+            @if(form.controls.names.dirty) {
+            <p-message severity="error" size="small" variant="simple">
+                @if(form.controls.names.hasError('required')) {
+                This field is required
+                }
+            </p-message>
+            }
+        </div>
+        <div class="mb-3 space-y-1">
+            <input class="w-full block" formControlName="email" autocomplete="username" pInputText
+                placeholder="Email address">
+            @if(form.controls.email.dirty) {
+            <p-message severity="error" size="small" variant="simple">
+                @if(form.controls.email.hasError('required')) {
+                This field is required
+                }@else if (form.controls.email.hasError('email')) {
+                Invalid email address
+                }
+            </p-message>
+            }
+        </div>
+        <div class="mb-3">
+            <p-password [toggleMask]="true" formControlName="password" appendTo="body" autocomplete="new-password"
+                placeholder="Password"></p-password>
+            @if(form.controls.password.dirty) {
+            <p-message severity="error" size="small" variant="simple">
+                @if(form.controls.password.hasError('required')) {
+                This field is required
+                }
+            </p-message>
+            }
+        </div>
+        <ng-template #footer>
+            <div class="flex justify-center">
+                <p-button [loading]="signingUp()" [disabled]="signingUp() || form.invalid" type="submit"
+                    class="w-full block" size="small" styleClass="w-full block" label="Sign up" />
+            </div>
+            <p-divider />
+            <p class="text-sm my-3 text-muted-color text-center">or using</p>
+            <div class="flex justify-center">
+                <google-button (onClick)="onGoogleButtonClicked()" />
+            </div>
+            <p class="text-sm my-3 text-muted-color text-center">
+                Don't have an account, <a class="text-primary" routerLink="/auth/sign-in">Sign in</a>
+            </p>
+        </ng-template>
+    </p-card>
+</form>

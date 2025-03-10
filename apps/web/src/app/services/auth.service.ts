@@ -1,57 +1,57 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.development';
-import { createAuthClient } from 'better-auth/client';
-import { Session, User } from 'better-auth/types';
-import { BehaviorSubject, from, map } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BETTER_AUTH } from '@providers/better-auth';
+import { concatMap, from, of, switchMap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private sessionProvider = new BehaviorSubject<Session | null>(null);
-  private userProvider = new BehaviorSubject<User | null>(null);
+  private authClient = inject(BETTER_AUTH);
 
-  get signedIn$() {
-    return this.sessionProvider.pipe(map(s => !!s))
-  }
-  private sessionPrefetchPromise?: Promise<{ user: User, session: Session } | null>;
-  private authClient = createAuthClient({
-    baseURL: environment.apiOrigin
-
-  })
-  constructor() {
-    from(this.authClient.getSession()).subscribe({
-      next: ({ data, error }) => {
-        this.userProvider.next(error ? null : data?.user ?? null);
-        this.sessionProvider.next(error ? null : data?.session ?? null);
-      },
-      error: () => {
-        this.userProvider.next(null);
-        this.sessionProvider.next(null);
-      }
-    });
+  getSession() {
+    return from(this.authClient.getSession());
   }
 
-  async signOut() {
-    const result = await this.authClient.signOut();
-    if (result.data?.success) {
-      this.userProvider.next(null);
-      this.sessionProvider.next(null);
-    }
-    return result;
+  signUp(email: string, password: string, name: string) {
+    return from(this.authClient.signUp.email({
+      email, password, name
+    })).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    )
   }
 
-  async emailSignIn(email: string, password: string, rememberMe?: boolean) {
-    return this.authClient.signIn.email({
-      email, password, rememberMe,
-    })
+  signOut() {
+    return from(this.authClient.signOut()).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    );
   }
 
-  async googleSignIn(signInRedirect: string) {
-    return this.authClient.signIn.social({
+  emailSignIn(email: string, password: string, rememberMe: boolean) {
+    return from(this.authClient.signIn.email({
+      email, password, rememberMe
+    })).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    )
+  }
+
+  googleSignIn(signInRedirect: string) {
+    return from(this.authClient.signIn.social({
       provider: 'google',
-      callbackURL: signInRedirect,
-      // newUserCallbackURL: signUpRedirect
-    })
+      callbackURL: signInRedirect
+    })).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    );
   }
 }
