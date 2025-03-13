@@ -1,3 +1,6 @@
 :host {
     @apply grid grid-cols-[auto_1fr] h-full;
+    &.authed {
+        @apply grid-cols-[250px_1fr]
+    }
 }

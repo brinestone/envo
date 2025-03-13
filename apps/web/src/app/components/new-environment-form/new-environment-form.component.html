@@ -1,0 +1,19 @@
+<form [formGroup]="form" (ngSubmit)="onFormSubmit($event)" class="space-y-2">
+    <div class="space-y-1">
+        <label for="env-name" class="block">Name <small class="text-red-500">*</small></label>
+        <input formControlName="name" pInputText>
+        @if(form.controls.name.dirty) {
+        <div>
+            <p-message variant="simple" severity="error" size="small">
+                @if(form.controls.name.hasError('required')) {
+                This field is required
+                }
+            </p-message>
+        </div>
+        }
+    </div>
+    <div>
+        <p-button [loading]="submitting()" [disabled]="form.invalid || submitting()" type="submit" label="Save"
+            size="small" styleClass="block w-full" />
+    </div>
+</form>

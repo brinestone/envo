@@ -1,0 +1,27 @@
+<form class="space-y-3 py-2" [formGroup]="form" (ngSubmit)="onFormSubmit($event)">
+    @if(errMessage()) {
+    <div>
+        <p-message size="small" severity="error">
+            {{ errMessage() }}
+        </p-message>
+    </div>
+    }
+    <div class="space-y-1">
+        <label for="project-name" class="block text-sm font-medium">Project name <small
+                class="text-red-500">*</small></label>
+        <input size="small" pInputText type="text" placeholder="The name of the project" formControlName="name">
+        @if(form.controls.name.dirty) {
+        <div>
+            <p-message variant="simple" severity="error" size="small">
+                @if(form.controls.name.hasError('required')) {
+                This field is required
+                }
+            </p-message>
+        </div>
+        }
+    </div>
+    <div>
+        <p-button type="submit" [disabled]="form.invalid || submitting()" [loading]="submitting()" label="Create"
+            class="w-full block" styleClass="w-full block" />
+    </div>
+</form>

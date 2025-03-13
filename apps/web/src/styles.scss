@@ -10,6 +10,10 @@
   @tailwind utilities;
 }
 
+html {
+  font-size: 14px;
+}
+
 html,body,app-root {
   @apply w-full h-full block;
 }

@@ -1,3 +1,9 @@
 :host{
     @apply gap-3 grid grid-rows-[auto_1fr_auto] h-full;
 }
+
+::ng-deep {
+    p-menu .p-menu-item-link-active {
+        @apply bg-primary-200 rounded dark:bg-primary-800;
+    }
+}
