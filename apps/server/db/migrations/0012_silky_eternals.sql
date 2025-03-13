@@ -1,0 +1,1 @@
+ALTER TABLE "projects_memberships" RENAME COLUMN "blocked" TO "revoked";

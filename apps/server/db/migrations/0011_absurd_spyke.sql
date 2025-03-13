@@ -1,0 +1,1 @@
+ALTER TABLE "projects_memberships" ADD COLUMN "blocked" boolean DEFAULT false;

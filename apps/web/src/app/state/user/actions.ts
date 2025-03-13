@@ -21,3 +21,7 @@ export class GoogleSignIn {
     static type = `${prefix} google sign in`;
     constructor(readonly redirect: string) { }
 }
+
+export class RefreshSession {
+    static type = `${prefix} refresh session`;
+}

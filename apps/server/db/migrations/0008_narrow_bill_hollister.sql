@@ -1,0 +1,2 @@
+ALTER TABLE "projects_memberships" ADD COLUMN "user" text DEFAULT 'deleted user';--> statement-breakpoint
+ALTER TABLE "projects_memberships" ADD CONSTRAINT "projects_memberships_user_user_id_fk" FOREIGN KEY ("user") REFERENCES "public"."user"("id") ON DELETE set default ON UPDATE no action;

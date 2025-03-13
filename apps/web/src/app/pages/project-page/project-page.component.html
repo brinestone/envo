@@ -1,0 +1,44 @@
+<section class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold">{{ title.getTitle() }}</h1>
+    <div class="flex items-center gap-3">
+        <input size="small" type="search" pInputText placeholder="Filter...">
+        <p-button (onClick)="onNewEnvronmentButtonClicked()" label="Create Environment" icon="pi pi-plus"
+            size="small" />
+    </div>
+</section>
+<p-divider />
+<section>
+    <p-panel>
+        <p-table [value]="environments() ?? []">
+            <ng-template #header>
+                <tr>
+                    <th>Name</th>
+                    <th>Configurations</th>
+                    <th>Features</th>
+                    <th>Enabled</th>
+                    <th>Last updated</th>
+                    <th class="w-2"></th>
+                </tr>
+            </ng-template>
+            <ng-template #body let-env let-i="index">
+                <tr>
+                    <td><a class="hover:text-primary" [routerLink]="['./environments', env.id]">{{ env.name }}</a></td>
+                    <td>{{ env.totalConfigurations | number }}</td>
+                    <td>{{ env.totalFeatures | number }}</td>
+                    <td><p-toggle-switch [ngModel]="env.enabled" (ngModelChange)="onEnvironmentStatusToggled(env.id)" />
+                    </td>
+                    <td>{{ env.lastUpdated | date:'dd/MM/YYYY' }}</td>
+                    <td></td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+</section>
+
+<!-- @let project = id(); -->
+<!-- @if(!project) { -->
+<p-dialog [draggable]="false" [modal]="true" [(visible)]="showNewEnvironmentFormDialog" header="New Environment">
+    <app-new-environment-form (created)="onEnvironmentCreated($event.id)" (error)="onNewEnvironmentFormErrored($event)"
+        [project]="id()!" />
+</p-dialog>
+<!-- } -->

@@ -1,10 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Action, NgxsOnInit, State, StateContext, StateToken } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
 import { AuthService } from '@services/auth.service';
 import { Session, User } from 'better-auth/types';
 import { tap } from 'rxjs';
-import { EmailSignIn, EmailSignUp, GoogleSignIn, SignedOut, SignOut } from './actions';
-import { patch } from '@ngxs/store/operators';
+import { EmailSignIn, EmailSignUp, GoogleSignIn, RefreshSession, SignedOut, SignOut } from './actions';
 
 export type StateModel = {
     session?: Session;
@@ -25,18 +25,28 @@ export const USER_STATE = new StateToken<StateModel>('user');
 export class UserState implements NgxsOnInit {
     private authService = inject(AuthService);
     ngxsOnInit(ctx: Context) {
-        this.authService.getSession().subscribe({
-            next: ({ data, error }) => {
-                if (error) {
-                    console.error(error);
-                    return;
-                }
+        const cachedState = localStorage.getItem('user')
+        if (cachedState) {
+            const state = JSON.parse(cachedState) as StateModel;
+            ctx.setState(state);
+        }
+        ctx.dispatch(RefreshSession);
+    }
 
-                const { session, user } = data;
-                ctx.patchState({ session, principal: user });
-            },
-            error: console.error
-        })
+    @Action(RefreshSession)
+    onRefreshSession(ctx: Context) {
+        return this.authService.getSession().pipe(
+            tap(({ data }) => {
+                if (!data) {
+                    ctx.dispatch(new SignOut());
+                } else {
+                    ctx.setState(patch({
+                        principal: data.user,
+                        session: data.session
+                    }));
+                }
+            })
+        );
     }
 
     @Action(EmailSignUp)

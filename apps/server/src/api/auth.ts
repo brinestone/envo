@@ -23,7 +23,7 @@ export const userInfo = (user: User | null, session: Session | null) => {
     }
 }
 
-export const authEndpoints = new Elysia({ tags: ['Auth'], }).mount(auth.handler)
+export const authPlugin = new Elysia({ tags: ['Auth'], }).mount(auth.handler)
     .macro({
         auth: {
             async resolve({ error, request: { headers } }) {
@@ -31,7 +31,7 @@ export const authEndpoints = new Elysia({ tags: ['Auth'], }).mount(auth.handler)
                     headers,
                 });
 
-                if (!session) return error(401);
+                if (!session) return error('Unauthorized');
 
                 return {
                     user: session.user,

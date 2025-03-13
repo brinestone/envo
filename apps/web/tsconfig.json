@@ -22,6 +22,9 @@
       ],
       "@models/*": [
         "src/models/*"
+      ],
+      "@pages/*": [
+        "src/apps/pages/*"
       ]
     },
     "outDir": "./dist/out-tsc",

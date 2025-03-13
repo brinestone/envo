@@ -4,6 +4,9 @@ import { db } from './helpers/db';
 export const auth = betterAuth({
 	trustedOrigins: [Bun.env.FRONT_END_ORIGIN as string],
 	database: drizzleAdapter(db, { provider: 'pg' }),
+	rateLimit: {
+		enabled: true
+	},
 	emailAndPassword: {
 		enabled: true
 	},
