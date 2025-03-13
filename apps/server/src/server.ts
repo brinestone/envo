@@ -77,7 +77,7 @@ const app = new Elysia({ prefix: '/api' })
         .get('/', handleFindProjectEnvironments, {
           response: t.Array(environmentLookupSchema),
           params: t.Object({
-            id: t.String({ format: 'uuid' })
+            project: t.String({ format: 'uuid' })
           }),
           auth: true,
           tags: ['Environments'],
@@ -88,7 +88,7 @@ const app = new Elysia({ prefix: '/api' })
         .post('/', handleCreateProjectEnvironment, {
           auth: true,
           params: t.Object({
-            id: t.String({ format: 'uuid' })
+            project: t.String({ format: 'uuid' })
           }),
           tags: ['Environments'],
           detail: {

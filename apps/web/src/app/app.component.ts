@@ -1,6 +1,6 @@
 import { NgClass } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, HostBinding, inject } from '@angular/core';
+import { Component, effect, ElementRef, HostBinding, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 import { MainMenuComponent } from '@components/main-menu';
@@ -15,11 +15,10 @@ import { SignOut } from '@state/user';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [RouterOutlet, MainMenuComponent, NgClass]
+  imports: [RouterOutlet, MainMenuComponent, NgClass],
 })
 export class AppComponent {
   readonly selectedProject = select(activeProject);
-  @HostBinding('class.authed')
   readonly signedIn = select(isSignedIn);
   private signOut = dispatch(SignOut);
   private http = inject(HttpClient);
@@ -27,6 +26,16 @@ export class AppComponent {
   projects = rxResource({
     loader: () => this.http.get<ProjectLookup[]>(`${environment.apiBase}/projects`)
   });
+
+  constructor(el: ElementRef<HTMLElement>) {
+    effect(() => {
+      const signedIn = this.signedIn();
+      if (signedIn)
+        el.nativeElement.classList.add('authed');
+      else
+        el.nativeElement.classList.remove('authed');
+    })
+  }
 
   onSignOutButtonClicked() {
     this.signOut().subscribe({
