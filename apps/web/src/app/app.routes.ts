@@ -41,5 +41,5 @@ export const routes: Routes = [
         loadChildren: () => import('./projects.routes').then(m => m.projectRoutes)
     },
     { pathMatch: 'full', path: '', redirectTo: 'projects' },
-    { path: '**', component: NotFoundComponent }
+    // { path: '**', component: NotFoundComponent }
 ];

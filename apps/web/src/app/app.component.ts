@@ -8,17 +8,21 @@ import { environment } from '@env/environment.development';
 import { ProjectLookup } from '@models/project';
 import { Navigate } from '@ngxs/router-plugin';
 import { dispatch, select } from '@ngxs/store';
-import { activeProject, isSignedIn } from '@state/selectors';
+import { activeProject, environments, isSignedIn } from '@state/selectors';
 import { SignOut } from '@state/user';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  imports: [RouterOutlet, MainMenuComponent, NgClass],
+  providers: [MessageService],
+  imports: [RouterOutlet, MainMenuComponent, NgClass, ToastModule],
 })
 export class AppComponent {
   readonly selectedProject = select(activeProject);
+  readonly environments = select(environments);
   readonly signedIn = select(isSignedIn);
   private signOut = dispatch(SignOut);
   private http = inject(HttpClient);

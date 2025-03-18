@@ -1,1 +1,30 @@
-<p>environment-page works!</p>
+<p-panel>
+    <ng-template #header>
+        <div class="flex items-center justify-between w-full flex-wrap gap-3">
+            <div class="flex items-center gap-3">
+                <h1 class="text-xl font-bold">{{ title.getTitle() }}</h1>
+                <p-toggle-button (ngModelChange)="onEnabledStateChanged()" [(ngModel)]="enabledState"
+                    onLabel="Enabled" offLabel="Disabled" size="small" />
+            </div>
+            <div class="flex items-center gap-3">
+                <p-select (ngModelChange)="onActiveVersionChanged($event)" [(ngModel)]="activeVersion"
+                    [checkmark]="true" [options]="versions()" placeholder="Active Version" size="small" />
+                <p-button (onClick)="showNewVersionFormDialog.set(true)" size="small" severity="secondary"
+                    icon="pi pi-plus" label="New Version" />
+            </div>
+        </div>
+    </ng-template>
+    <p-tabs value="/features">
+        <p-tablist>
+            <p-tab value="/features" routerLink="features"><i class="pi pi-list-check"></i> Features</p-tab>
+            <p-tab value="/config" routerLink="config"><i class="pi pi-sliders-h"></i> Configurations</p-tab>
+        </p-tablist>
+    </p-tabs>
+    <router-outlet />
+</p-panel>
+
+<p-dialog [(visible)]="showNewVersionFormDialog" [modal]="true" [draggable]="false" [resizable]="false"
+    header="New Version">
+    <app-new-environment-version-form [environment]="env()!" [project]="project()!"
+        (submitted)="onNewVersionFormSubmitted()" />
+</p-dialog>

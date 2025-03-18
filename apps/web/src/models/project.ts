@@ -33,3 +33,30 @@ export type DetailedProject = ProjectLookup & {
     totalFeatures: number;
     totalIntegrations: number;
 }
+
+export type EnvironmentVersion = {
+    createdAt: Date;
+    label: string;
+    isActive: boolean;
+}
+
+export type DetailedConfiguration = {
+    name: string;
+    value?: string | null;
+    version: string;
+    secure: boolean;
+};
+
+export type DetailedFeature = {
+    id: string;
+    name: string;
+    enabled: boolean;
+    description?: string | null;
+    version: string;
+}
+
+export type DetailedEnvironment = Omit<EnvironmentLookup, 'totalConfigurations'> & {
+    enabled: boolean;
+    configurations: DetailedConfiguration[];
+    features: DetailedFeature[];
+}

@@ -12,7 +12,14 @@
 </div>
 <div class="p-3 block list-none space-y-3">
     @if(selectedProject()){
-
+    <div>
+        <p-button size="small" [text]="true" severity="secondary" styleClass="text-muted-color block"
+            class="text-muted-color block" icon="pi pi-arrow-left" [routerLink]="['/projects', projectId()]"
+            label="Back to project" />
+    </div>
+    <div>
+        <p-menu [model]="projectMenu()" />
+    </div>
     }@else {
     <p-menu [model]="accountMenuItems" />
     }

@@ -1,0 +1,17 @@
+<form [formGroup]="form" (ngSubmit)="onFormSubmit($event)" class="space-y-3 py-2">
+    @if(errMessage()) {
+    <div>
+        <p-message size="small" severity="error">{{ errMessage() }}</p-message>
+    </div>
+    }
+    <div>
+        <input class="w-full" formControlName="label" pInputText placeholder="Version Name (optional)">
+    </div>
+    <label class="inline-flex items-center gap-3 cursor-pointer"><p-check-box formControlName="makeActive"
+            [binary]="true" /> <span>Make
+            Active</span></label>
+    <div>
+        <p-button [disabled]="form.invalid || submitting()" [loading]="submitting()" type="submit" class="w-full block"
+            styleClass="w-full block" size="small" label="Finish" />
+    </div>
+</form>

@@ -1,9 +1,14 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from './helpers/db';
+import { openAPI } from 'better-auth/plugins';
+
 export const auth = betterAuth({
 	trustedOrigins: [Bun.env.FRONT_END_ORIGIN as string],
 	database: drizzleAdapter(db, { provider: 'pg' }),
+	plugins: [
+		openAPI()
+	],
 	rateLimit: {
 		enabled: true
 	},

@@ -1,17 +1,22 @@
 import { EnvironmentProviders, inject, Injectable, makeEnvironmentProviders } from "@angular/core";
-import { DetailedProject } from "@models/project";
+import { DetailedEnvironment, DetailedProject, EnvironmentVersion } from "@models/project";
 import { Action, provideStates, State, StateContext, StateToken } from "@ngxs/store";
-import { patch, updateItem } from "@ngxs/store/operators";
+import { append, patch, updateItem } from "@ngxs/store/operators";
 import { ProjectsService } from "@services/projects.service";
 import { SignedOut } from "@state/user";
-import { NewProject, SelectionChanged, SelectProject, ToggleEnvironment } from "./actions";
-import { EMPTY, tap } from "rxjs";
+import { EMPTY, forkJoin, tap } from "rxjs";
+import { CreateEnvironmentVersion, EnvironmentSelectionChanged, NewProject, ProjectSelectionChanged, SelectEnvironment, SelectProject, SetActiveEnvironmentVersion, ToggleEnvironment } from "./actions";
 
 export type StateModel = {
     selectedProject?: {
         id: string;
         data: DetailedProject;
     };
+    selectedEnvironment?: {
+        id: string;
+        data: DetailedEnvironment;
+        versions: EnvironmentVersion[];
+    }
 };
 export const PROJECTS = new StateToken<StateModel>('projects');
 
@@ -26,6 +31,55 @@ const defaultStateValue: StateModel = {};
 class ProjectsState {
 
     private projectsService = inject(ProjectsService);
+
+    @Action(SetActiveEnvironmentVersion)
+    onSetActiveEnvironmentVersion(ctx: Context, { name, env, project }: SetActiveEnvironmentVersion) {
+        return this.projectsService.setActiveEnvironmentVersion(project, env, name).pipe(
+            tap(ev => ctx.setState(patch({
+                selectedEnvironment: patch({
+                    versions: ev
+                })
+            })))
+        );
+    }
+
+    @Action(CreateEnvironmentVersion)
+    onCreateEnvironmentVersion(ctx: Context, { environment, makeActive, project, label }: CreateEnvironmentVersion) {
+        return this.projectsService.createEnvironmentVersion(project, environment, makeActive, label).pipe(
+            tap(ev => ctx.setState(patch({
+                selectedEnvironment: patch({
+                    versions: append([ev])
+                })
+            })))
+        )
+    }
+
+    @Action(SelectEnvironment)
+    onSelectEnvironment(ctx: Context, { id }: SelectEnvironment) {
+        const project = ctx.getState().selectedProject?.id;
+        if (!project) return EMPTY;
+
+        if (id) {
+            return forkJoin([
+                this.projectsService.findEnvironmentById(project, id),
+                this.projectsService.getEnvironmentVersions(project, id)
+            ]).pipe(
+                tap(([data, versions]) => ctx.setState(patch({
+                    selectedEnvironment: {
+                        id, data, versions
+                    }
+                }))),
+                tap(() => ctx.dispatch(EnvironmentSelectionChanged))
+            );
+        } else {
+            ctx.setState(patch({
+                selectedEnvironment: undefined
+            }));
+            ctx.dispatch(EnvironmentSelectionChanged);
+        }
+
+        return EMPTY;
+    }
 
     @Action(ToggleEnvironment)
     onToggleEnvironment(ctx: Context, { id, project }: ToggleEnvironment) {
@@ -50,14 +104,14 @@ class ProjectsState {
                             id, data: project
                         }
                     }));
-                    ctx.dispatch(SelectionChanged);
+                    ctx.dispatch(ProjectSelectionChanged);
                 })
             );
         } else {
             ctx.setState(patch({
                 selectedProject: undefined
             }));
-            ctx.dispatch(SelectionChanged);
+            ctx.dispatch(ProjectSelectionChanged);
             return EMPTY;
         }
     }
