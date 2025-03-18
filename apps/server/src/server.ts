@@ -4,8 +4,8 @@ import { swagger } from "@elysiajs/swagger";
 import { db } from "@helpers/db";
 import { Elysia, t } from "elysia";
 import { authPlugin } from "./api/auth";
-import { environmentLookupSchema, handleCreateProjectEnvironment, handleFindProjectEnvironments, handleToggleEnvironmentStatus } from "./api/environments";
-import { handleGetProjects, projectLookupSchema, handleCreateNewProject, newProjectSchema, handleFindProjectById, detailedProjectSchema } from "./api/projects";
+import { activateEnvironmentVersionSchema, detailedEnvironmentSchema, environmentLookupSchema, environmentVersionSchema, handleActivateEnvironmentVersion, handleCreateEnvironmentVersion, handleCreateProjectEnvironment, handleFindEnvironmentById, handleFindEnvironmentVersions, handleFindProjectEnvironments, handleToggleEnvironmentStatus, newEnvironmentSchema } from "./api/environments";
+import { detailedProjectSchema, handleCreateNewProject, handleFindProjectById, handleGetProjects, isProjectAccessible, newProjectSchema, projectLookupSchema } from "./api/projects";
 
 const app = new Elysia({ prefix: '/api' })
   .decorate('db', db)
@@ -54,7 +54,8 @@ const app = new Elysia({ prefix: '/api' })
         tags: ['Projects'],
         detail: {
           responses: {
-            '200': { description: 'The project was found' }
+            '200': { description: 'The project was found' },
+            '400': { description: 'The project was not found  ' }
           },
           summary: 'Find a project by ID',
           description: 'Retrieve a project using it\'s ID and that the user has an active membership with.'
@@ -69,6 +70,7 @@ const app = new Elysia({ prefix: '/api' })
             project: t.String({ format: 'uuid' }),
             env: t.String({ format: 'uuid' })
           }),
+          beforeHandle: isProjectAccessible,
           tags: ['Environments'],
           detail: {
             summary: 'Toggle environment status'
@@ -77,7 +79,7 @@ const app = new Elysia({ prefix: '/api' })
         .get('/', handleFindProjectEnvironments, {
           response: t.Array(environmentLookupSchema),
           params: t.Object({
-            id: t.String({ format: 'uuid' })
+            project: t.String({ format: 'uuid' })
           }),
           auth: true,
           tags: ['Environments'],
@@ -88,11 +90,64 @@ const app = new Elysia({ prefix: '/api' })
         .post('/', handleCreateProjectEnvironment, {
           auth: true,
           params: t.Object({
-            id: t.String({ format: 'uuid' })
+            project: t.String({ format: 'uuid' })
           }),
           tags: ['Environments'],
           detail: {
             summary: 'Create environment'
+          }
+        })
+        .get('/:env', handleFindEnvironmentById, {
+          response: detailedEnvironmentSchema,
+          params: t.Object({
+            project: t.String({ format: 'uuid' }),
+            env: t.String({ format: 'uuid' }),
+          }),
+          auth: true,
+          beforeHandle: isProjectAccessible,
+          tags: ['Environments'],
+          detail: {
+            summary: "Find an environment by ID"
+          }
+        })
+    })
+    .group(':project/environments/:env/versions', g => {
+      return g
+        .get('/', handleFindEnvironmentVersions, {
+          response: t.Array(environmentVersionSchema),
+          auth: true,
+          beforeHandle: isProjectAccessible,
+          tags: ['Environments'],
+          detail: {
+            summary: 'Environment Versions'
+          }
+        })
+        .post('/', handleCreateEnvironmentVersion, {
+          params: t.Object({
+            project: t.String({ format: 'uuid' }),
+            env: t.String({ format: 'uuid' }),
+          }),
+          body: newEnvironmentSchema,
+          response: environmentVersionSchema,
+          auth: true,
+          beforeHandle: isProjectAccessible,
+          tags: ['Environments'],
+          detail: {
+            summary: 'Create Environment Version'
+          }
+        })
+        .put('/activate', handleActivateEnvironmentVersion, {
+          params: t.Object({
+            project: t.String({ format: 'uuid' }),
+            env: t.String({ format: 'uuid' }),
+          }),
+          body: activateEnvironmentVersionSchema,
+          response: t.Array(environmentVersionSchema),
+          auth: true,
+          beforeHandle: isProjectAccessible,
+          tags: ['Environments'],
+          detail: {
+            summary: 'Activate Environment Version'
           }
         })
     })

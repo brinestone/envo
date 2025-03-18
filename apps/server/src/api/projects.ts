@@ -1,12 +1,21 @@
 import { AuthContext } from "@helpers/misc";
 import { configurations, environments, features, projectMemberships, projects } from "@schemas/projects";
-import { and, count, eq, sql } from "drizzle-orm";
+import { and, count, eq, ne, sql } from "drizzle-orm";
 import { Static, t } from "elysia";
 import { environmentLookupSchema } from "./environments";
 
 export const newProjectSchema = t.Object({
     name: t.String({ pattern: '^[a-zA-Z0-9]+$' })
 });
+
+export async function isProjectAccessible({ user, params, db, set }: AuthContext) {
+    const { project, env } = params;
+    const projectAccessible = (await db.select({ count: count(projectMemberships.id) }).from(projectMemberships).where(and(eq(projectMemberships.user, user.id), ne(projectMemberships.revoked, true), eq(projectMemberships.project, project))))[0]?.count > 0;
+    if (!projectAccessible) {
+        set.status = 'Forbidden';
+        return { message: 'Access denied' };
+    }
+}
 
 export const detailedProjectSchema = t.Object({
     environments: t.Array(t.Omit(environmentLookupSchema, ['project'])),
@@ -48,7 +57,7 @@ export async function handleFindProjectById({ user, params, db, set }: AuthConte
             )
         `.as('environments')
     }).from(projectMemberships)
-        .leftJoin(projects, r => eq(projects.id, r.id))
+        .innerJoin(projects, r => eq(projects.id, r.id))
         .leftJoin(environments, r => eq(environments.project, r.id))
         .leftJoin(features, r => eq(features.project, r.id))
         .leftJoin(configurations, r => eq(configurations.project, r.id))
@@ -84,13 +93,13 @@ export async function handleCreateNewProject({ db, body, user, set }: AuthContex
 export async function handleGetProjects({ user, db }: AuthContext) {
     const result = await db.select({
         membership: projectMemberships.id,
-        id: projects.id,
+        id: projectMemberships.project,
         role: projectMemberships.role,
         name: projects.name,
         createdAt: projects.createdAt,
         updatedAt: projects.updatedAt
     }).from(projectMemberships)
-        .leftJoin(projects, (r) => eq(projects.id, r.id))
+        .innerJoin(projects, (r) => eq(projects.id, r.id))
         .where(eq(projectMemberships.user, user.id));
 
     return result;

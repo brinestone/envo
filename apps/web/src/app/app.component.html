@@ -1,9 +1,10 @@
 <div [ngClass]="{'border dark:border-surface-800 border-y-0 border-l-0': signedIn()}">
     @if(signedIn()) {
-    <app-main-menu [projects]="projects.value()" (signOut)="onSignOutButtonClicked()"
+    <app-main-menu [environments]="environments()" [projects]="projects.value()" (signOut)="onSignOutButtonClicked()"
         [projectId]="selectedProject()" />
     }
 </div>
 <main class="block h-full">
     <router-outlet />
+    <p-toast position="bottom-right" />
 </main>

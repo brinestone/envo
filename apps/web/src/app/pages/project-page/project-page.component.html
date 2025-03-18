@@ -39,6 +39,6 @@
 <!-- @if(!project) { -->
 <p-dialog [draggable]="false" [modal]="true" [(visible)]="showNewEnvironmentFormDialog" header="New Environment">
     <app-new-environment-form (created)="onEnvironmentCreated($event.id)" (error)="onNewEnvironmentFormErrored($event)"
-        [project]="id()!" />
+        [project]="project()!" />
 </p-dialog>
 <!-- } -->

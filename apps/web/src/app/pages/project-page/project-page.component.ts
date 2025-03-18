@@ -1,13 +1,12 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component, effect, inject, input, model, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, inject, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { NewEnvironmentFormComponent } from '@components/new-environment-form';
 import { Navigate } from '@ngxs/router-plugin';
 import { dispatch, select } from '@ngxs/store';
-import { SelectProject, ToggleEnvironment } from '@state/projects';
+import { ToggleEnvironment } from '@state/projects';
 import { activeProjectInfo, environments } from '@state/selectors';
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -23,19 +22,18 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
   templateUrl: './project-page.component.html',
   styleUrl: './project-page.component.scss'
 })
-export class ProjectPageComponent implements OnInit, OnDestroy {
+export class ProjectPageComponent {
   readonly title = inject(Title);
-  readonly id = input<string>();
+  readonly project = input<string>();
   readonly environments = select(environments);
   readonly selectedProject = select(activeProjectInfo);
   readonly showNewEnvironmentFormDialog = model(true);
-  private readonly selectProject = dispatch(SelectProject);
   private navigate = dispatch(Navigate);
   private toggleEnvironment = dispatch(ToggleEnvironment);
   readonly route = inject(ActivatedRoute);
 
   onEnvironmentStatusToggled(id: string) {
-    this.toggleEnvironment(id, this.id() as string);
+    this.toggleEnvironment(id, this.project() as string);
   }
 
   onEnvironmentCreated(id: string) {
@@ -49,15 +47,6 @@ export class ProjectPageComponent implements OnInit, OnDestroy {
 
   onNewEnvronmentButtonClicked() {
     this.showNewEnvironmentFormDialog.set(true);
-  }
-
-  ngOnInit() {
-    const id = this.id() as string;
-    this.selectProject(id);
-  }
-
-  ngOnDestroy() {
-    this.selectProject();
   }
 
   constructor() {

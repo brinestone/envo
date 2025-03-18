@@ -1,5 +1,15 @@
-import { boolean, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
+import { boolean, foreignKey, pgEnum, pgTable, primaryKey, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 import { user } from "./auth-schema";
+
+export const environmentVersions = pgTable('env_versions', {
+    name: varchar().notNull(),
+    createdAt: timestamp().defaultNow(),
+    environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' }),
+    project: uuid().notNull().references(() => projects.id),
+    isActive: boolean().default(false),
+}, t => [
+    primaryKey({ columns: [t.name, t.environment] })
+]);
 
 export const projects = pgTable('projects', {
     id: uuid().defaultRandom().notNull().primaryKey(),
@@ -35,7 +45,6 @@ export const configurations = pgTable('configurations', {
     updatedAt: timestamp().defaultNow().$onUpdate(() => new Date()),
     environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' }),
     name: varchar().notNull(),
-    value: text().notNull(),
     secured: boolean().default(true),
     project: uuid().references(() => projects.id, { onDelete: 'set null' }),
 }, t => [
@@ -49,24 +58,28 @@ export const features = pgTable('features', {
     updatedAt: timestamp().defaultNow().$onUpdate(() => new Date()),
     environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' }),
     name: varchar().notNull(),
-    enabled: boolean().default(true)
+    description: text()
 });
 
-// export const projectDetails = pgView('vw_project_details').as(qb => {
-//     return qb.select({
-//         id: projectMemberships.id,
-//         totalConfigurations: count(configurations).as('total_configurations'),
-//         totalFeatures: count(features).as('total_features'),
-//         environments: sql`
-//             COALESCE(JSON_AGG(JSON_BUILD_OBJECT(
-//                 'id', e.id,
-//                 'name', e.name,
-//                 'total_configurations', (SELECT COUNT (*) FROM configurations c WHERE c.environment = e.id)
-//             )) FILTER (WHERE e.id IS NOT NULL), '[]') as environments
-//         `.as('environments')
-//     }).from(projectMemberships)
-//         .leftJoin(projects, r => eq(projects.id, r.id))
-//         .leftJoin(environments, r => eq(environments.project, r.id))
-//         .leftJoin(features, r => eq(features.project, r.id))
-//         .leftJoin(configurations, r => eq(configurations.project, r.id))
-// })
+export const configurationValues = pgTable('configuration_values', {
+    configName: varchar().notNull(),
+    environment: uuid().notNull().references(() => environments.id),
+    value: text(),
+    versionName: varchar().notNull()
+}, t => [
+    primaryKey({ columns: [t.configName, t.environment, t.versionName] }),
+    foreignKey({
+        columns: [t.configName, t.environment],
+        foreignColumns: [configurations.name, configurations.environment]
+    }).onDelete('cascade'),
+    foreignKey({
+        columns: [t.versionName, t.environment],
+        foreignColumns: [environmentVersions.name, environmentVersions.environment]
+    }).onDelete('cascade')
+]);
+
+export const featureValues = pgTable('feature_values', {
+    feature: uuid().notNull().references(() => features.id, { onDelete: 'cascade' }),
+    environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' }),
+    enabled: boolean().notNull().default(true)
+});

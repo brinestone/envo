@@ -1,0 +1,1 @@
+ALTER TABLE "feature_values" ADD COLUMN "enabled" boolean DEFAULT true NOT NULL;
