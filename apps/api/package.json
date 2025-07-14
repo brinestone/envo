@@ -5,9 +5,21 @@
     "build": "nitro build",
     "dev": "nitro dev",
     "prepare": "nitro prepare",
-    "preview": "node .output/server/index.mjs"
+    "preview": "node .output/server/index.mjs",
+    "migrate.local": "pnpm drizzle-kit generate && pnpm drizzle-kit migrate",
+    "migrate.prod": "pnpm drizzle-kit migrate"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/pg": "^8.15.4",
+    "drizzle-kit": "^0.31.4",
     "nitropack": "latest"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.35.1",
+    "better-auth": "^1.2.12",
+    "cors": "^2.8.5",
+    "drizzle-orm": "^0.44.2",
+    "pg": "^8.16.3"
   }
 }
