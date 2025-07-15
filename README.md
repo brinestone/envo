@@ -12,8 +12,8 @@
 </p>
 <p align="left">Built with the tools and technologies:</p>
 <p align="left">
-	<img src="https://img.shields.io/badge/npm-CB3837.svg?style=for-the-badge&logo=npm&logoColor=white" alt="npm">
-	<img src="https://img.shields.io/badge/HTML5-E34F26.svg?style=for-the-badge&logo=HTML5&logoColor=white" alt="HTML5">
+	<img src="https://img.shields.io/badge/pnpm-f69220.svg?style=for-the-badge&logo=pnpm&logoColor=white" alt="pnpm">
+	<img src="https://img.shields.io/badge/Angular-E34F26.svg?style=for-the-badge&logo=Angular&logoColor=white" alt="Angular">
 	<img src="https://img.shields.io/badge/TypeScript-3178C6.svg?style=for-the-badge&logo=TypeScript&logoColor=white" alt="TypeScript">
 </p>
 </div>
@@ -604,7 +604,7 @@
 Before getting started with envo, ensure your runtime environment meets the following requirements:
 
 - **Programming Language:** TypeScript
-- **Package Manager:** Npm
+- **Package Manager:** pnpm
 
 
 ### ⚙️ Installation
@@ -626,10 +626,10 @@ Install envo using one of the following methods:
 3. Install the project dependencies:
 
 
-**Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+**Using `pnpm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/pnpm-f69220.svg?style={badge_style}&logo=pnpm&logoColor=white" />](https://www.npmjs.com/)
 
 ```sh
-❯ npm install
+❯ pnpm install
 ```
 
 
@@ -637,19 +637,19 @@ Install envo using one of the following methods:
 
 ### 🤖 Usage
 Run envo using the following command:
-**Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+**Using `pnpm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/pnpm-f69220.svg?style={badge_style}&logo=pnpm&logoColor=white" />](https://www.npmjs.com/)
 
 ```sh
-❯ npm start
+❯ pnpm start
 ```
 
 
 ### 🧪 Testing
 Run the test suite using the following command:
-**Using `npm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/npm-CB3837.svg?style={badge_style}&logo=npm&logoColor=white" />](https://www.npmjs.com/)
+**Using `pnpm`** &nbsp; [<img align="center" src="https://img.shields.io/badge/pnpm-f69220.svg?style={badge_style}&logo=pnpm&logoColor=white" />](https://www.npmjs.com/)
 
 ```sh
-❯ npm test
+❯ pnpm test
 ```
 
 
