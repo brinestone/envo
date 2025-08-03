@@ -44,7 +44,7 @@ export const auth = betterAuth({
           try {
             const objectName = generateUniqueCode(20);
             const png = generateIdenticon(Buffer.from(JSON.stringify(user)));
-            const image = await uploadFile(png, objectName, 'image/png');
+            const image = await uploadFile(png, objectName + '.png', 'image/png');
             user.image = image;
             return { data: user };
           } catch (e) {
@@ -59,7 +59,7 @@ export const auth = betterAuth({
               const slug = generateUniqueCode(10);
               const id = user.id;
               const png = generateIdenticon(Buffer.from(name + slug));
-              const logo = await uploadFile(png, id, 'image/png');
+              const logo = await uploadFile(png, id + '.png', 'image/png');
               const [{ org }] = await tx.insert(organizations)
                 .values({
                   name,
