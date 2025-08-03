@@ -3,6 +3,7 @@ export default defineNitroConfig({
   srcDir: "server",
   compatibilityDate: "2025-07-12",
   experimental: {
+    asyncContext: true
   },
   runtimeConfig: {
     databaseUrl: "",
@@ -12,9 +13,9 @@ export default defineNitroConfig({
     minioSecretKey: '',
     minioUploadBucket: '',
     minioUploadPath: '',
-    minioEndpoint: ''
+    minioHost: ''
   },
   appConfig: {
-    
+
   }
 });

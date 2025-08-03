@@ -9,7 +9,9 @@ export function generateUniqueCode(length = 10) {
   const res = [];
   let i = 0;
   while (i < length) {
-    res.push(pool[Math.round(Math.random() * pool.length) % pool.length]);
+    const index = Math.floor(Math.random() * pool.length);
+    res.push(pool.substring(index, index + 1));
+    i++;
   }
   return res.join('');
 }

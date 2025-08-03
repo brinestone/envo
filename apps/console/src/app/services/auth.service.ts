@@ -1,23 +1,42 @@
 import { Injectable } from '@angular/core';
 import { createAuthClient } from 'better-auth/client';
-import { from } from 'rxjs';
-import { environment } from '../../environments/environment.development';
-
+import { organizationClient } from "better-auth/client/plugins"
+import { from, of, switchMap, throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly client = createAuthClient();
+  private readonly client = createAuthClient({
+    plugins: [
+      organizationClient()
+    ]
+  });
+
+  getSession() {
+    return from(this.client.getSession()).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    );
+  }
 
   credentialSignUp(obj: { email: string, name: string, password: string }) {
-    return from(this.client.signUp.email(obj))
+    return from(this.client.signUp.email(obj)).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    )
   }
 
   signOut() {
-    return from(this.client.signOut().then(({ data, error }) => {
-      if (error) throw error;
-      return data;
-    }));
+    return from(this.client.signOut()).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    );
   }
 
   credentialSignIn(email: string, password: string, rememberMe = false) {
@@ -25,9 +44,11 @@ export class AuthService {
       email,
       password,
       rememberMe
-    }).then(({ data, error }) => {
-      if (error) throw error;
-      return data;
-    }));
+    })).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    );
   }
 }
