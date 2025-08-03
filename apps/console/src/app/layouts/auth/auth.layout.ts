@@ -1,17 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { Footer } from "../../components/footer/footer";
 
 @Component({
-  selector: 'l-auth',
-  imports: [RouterOutlet],
+  selector: 'dy-auth',
+  imports: [RouterOutlet, Footer],
   template: `
-    <p>
-      auth works!
-    </p>
-    <router-outlet/>
+    <div class="container lg:max-w-140 space-y-3">
+      <router-outlet />
+      <div class="pt-3">
+        <ev-footer />
+      </div>
+    </div>
   `,
   styleUrl: './auth.layout.scss'
 })
 export class AuthLayout {
-
 }

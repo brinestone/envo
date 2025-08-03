@@ -20,6 +20,9 @@
     "better-auth": "^1.2.12",
     "cors": "^2.8.5",
     "drizzle-orm": "^0.44.2",
-    "pg": "^8.16.3"
+    "jdenticon": "^3.3.0",
+    "minio": "^8.0.5",
+    "pg": "^8.16.3",
+    "unique-names-generator": "^4.7.1"
   }
 }

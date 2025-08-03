@@ -7,5 +7,14 @@ export default defineNitroConfig({
   runtimeConfig: {
     databaseUrl: "",
     upstashToken: "",
+    frontendOrigin: '',
+    minioAccessKey: '',
+    minioSecretKey: '',
+    minioUploadBucket: '',
+    minioUploadPath: '',
+    minioEndpoint: ''
   },
+  appConfig: {
+    
+  }
 });

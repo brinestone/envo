@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { boolean, jsonb, pgTable, pgView, primaryKey, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, bigserial, boolean, integer, interval, jsonb, pgEnum, pgSequence, pgTable, pgView, real, smallint, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const projects = pgTable('projects', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
@@ -19,11 +19,16 @@ export const events = pgTable('events', {
 	meta: jsonb()
 });
 
+export const agentTypes = pgEnum('agent_types', ['web', 'mobile', 'cli', 'server']);
+export const syncTransports = pgEnum('sync_transports', ['sse', 'websocket', 'webhook', 'poll', 'pub-sub']);
 export const agents = pgTable('agents', {
 	id: text().primaryKey().notNull(),
 	name: text().notNull(),
 	currentIp: text().notNull(),
 	ping: smallint().default(0),
+	type: agentTypes().notNull(),
+	syncTransport: syncTransports().notNull(),
+	syncParams: jsonb().notNull(),
 	environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' })
 });
 
@@ -132,13 +137,51 @@ export const member = pgTable('member', {
 	createdAt: timestamp().defaultNow().notNull()
 });
 
+export const subscriptionTiers = pgEnum('billing_plans', ['basic', 'standard', 'enterprise']);
+
 export const organizations = pgTable('organization', {
 	id: text().notNull().primaryKey(),
 	name: text().notNull(),
 	slug: text().notNull(),
 	logo: text(),
 	metadata: text(),
-	createdAt: timestamp().defaultNow().notNull()
+	createdAt: timestamp().defaultNow().notNull(),
+	updatedAt: timestamp({ mode: 'date' }).defaultNow().notNull().$onUpdateFn(() => new Date()),
+});
+
+export const subscriptions = pgTable('subscriptions', {
+	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
+	currentTier: subscriptionTiers().notNull().default('basic'),
+	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+	lastInvoiceDate: timestamp(),
+	invoicingInterval: interval().notNull()
+});
+
+export const invoiceStatus = pgEnum('invoice_status', ['pending-issue', 'issued', 'cancelled', 'completed'])
+
+export const invoices = pgTable('invoices', {
+	number: bigserial({ mode: 'number' }).primaryKey().notNull(),
+	createdAt: timestamp({ mode: 'date' }).defaultNow().notNull(),
+	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
+	issuedAt: timestamp({ mode: 'date' }),
+	tax: real().notNull().default(0),
+	percentageTax: real().default(0).notNull(),
+	status: invoiceStatus().notNull().default('pending-issue'),
+	issuedTo: text().references(() => user.id, { onDelete: 'set null' }),
+});
+
+export const invoiceItems = pgTable('invoice_items', {
+	invoice: bigint({ mode: 'number' }).notNull().references(() => invoices.number, { onDelete: 'cascade' }),
+	quantity: integer().notNull().default(1),
+	price: uuid().notNull().references(() => prices.id)
+});
+
+export const prices = pgTable('prices', {
+	id: uuid().defaultRandom().primaryKey(),
+	value: real().notNull(),
+	currency: varchar({ length: 3 }).notNull(),
+	exchangeRate: real()
 });
 
 export const pgAgents = pgView('vw_agents').as(qb => {
