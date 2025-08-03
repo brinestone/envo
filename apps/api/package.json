@@ -23,6 +23,7 @@
     "jdenticon": "^3.3.0",
     "minio": "^8.0.5",
     "pg": "^8.16.3",
-    "unique-names-generator": "^4.7.1"
+    "unique-names-generator": "^4.7.1",
+    "shared": "workspace:*"
   }
 }

@@ -1,0 +1,8 @@
+@reference "tailwindcss";
+
+:host {
+  @apply w-[3.5rem] grid grid-rows-[2rem_1fr_2rem] gap-y-2 transition-all;
+  &[expanded="true"] {
+    @apply w-[15rem]
+  }
+}

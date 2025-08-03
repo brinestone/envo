@@ -1,5 +1,5 @@
-<div class="lg:col-start-2 lg:col-span-1">
-  <nav hlmBreadcrumb>
+<div class="lg:col-start-2 lg:col-span-2 h-[2rem]">
+  <nav hlmBreadcrumb class="flex items-center h-full mx-auto container">
     <ol hlmBreadcrumbList>
       @defer (when !organizations.isLoading()) {
       <li hlmBreadcrumbItem>
@@ -17,42 +17,27 @@
           </hlm-menu>
         </ng-template>
       </li>
-      }@loading (minimum 10s) {
+      }@loading {
       <ng-container [ngTemplateOutlet]="crumbSkeleton" />
       }
-      <li hlmBreadcrumbSeparator></li>
-      @defer(when !projects.isLoading()) {
-      <li hlmBreadcrumbItem>
-        <button [brnMenuTriggerFor]="prjs" class="flex items-center gap-1">
-          Active Project
-          <ng-icon hlmMenuIcon size="sm" name="lucideChevronDown" />
-        </button>
-        <ng-template #prjs>
-          <hlm-menu>
-            @for(project of projects.value(); track $index) {
-            <button hlmMenuItem [id]="project.id">
-              <span>{{ project.name }}</span>
-            </button>
-            }
-          </hlm-menu>
-        </ng-template>
-      </li>
-      }@loading (minimum 10s) {
-      <ng-container [ngTemplateOutlet]="crumbSkeleton" />
-      }
-      <li hlmBreadcrumbItem></li>
     </ol>
   </nav>
 </div>
 <div
-  class="lg:col-start-1 lg:col-span-1 lg:row-span-3 lg:row-start-1 hidden lg:block"
+  class="overflow-y-auto lg:col-start-1 lg:col-span-1 lg:row-span-3 lg:row-start-1 hidden lg:block"
 >
-  left
+  <ev-main-menu class="h-full"/>
 </div>
-<main class="block overflow-y-auto lg:col-start-2 lg:row-start-2 lg:row-span-1">
+<main
+  class="border border-[var(--muted)] block overflow-y-auto lg:col-start-2 lg:row-start-2 lg:row-span-1"
+>
   <router-outlet />
 </main>
-<div class="block lg:col-start-2 lg:row-start-3 lg:row-span-1">footer</div>
+<div
+  class="flex items-center lg:col-start-2 lg:row-start-3 lg:row-span-1 lg:col-span-2"
+>
+  <ev-footer />
+</div>
 
 <ng-template #crumbSkeleton>
   <li hlmBreadcrumbItem>
