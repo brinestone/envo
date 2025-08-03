@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "declaration": true,                // Generate .d.ts files for consumers
+    "declarationMap": true,              // Helpful for debugging
+    "emitDeclarationOnly": false,        // Emit JS and declarations
+    "baseUrl": "./src",
+    "rootDir": "./src",                  // Ensure correct source root
+    "outDir": "./dist",
+    "module": "NodeNext",                // Capitalization for consistency
+    "lib": [
+      "ESNext"
+    ],
+    "moduleResolution": "NodeNext",
+    "target": "ESNext",
+    "esModuleInterop": true,             // Allow default imports from CJS
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                      // Enable all strict type-checking options
+    "skipLibCheck": true                 // Speed up build, skip type checking of dependencies
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

@@ -18,3 +18,7 @@ export const AuthStateSchema = z.object({
 });
 
 export const ThemeModeSchema = z.enum(['system', 'dark', 'light']);
+
+export const ProjectStateSchema = z.object({
+  activeProject: z.uuid().optional(),
+});

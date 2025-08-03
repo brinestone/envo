@@ -1,6 +1,7 @@
 <div class="lg:col-start-2 lg:col-span-1">
   <nav hlmBreadcrumb>
     <ol hlmBreadcrumbList>
+      @defer (when !organizations.isLoading()) {
       <li hlmBreadcrumbItem>
         <button [brnMenuTriggerFor]="orgs" class="flex items-center gap-1">
           {{ activeOrg()?.name }}
@@ -16,7 +17,11 @@
           </hlm-menu>
         </ng-template>
       </li>
+      }@loading (minimum 10s) {
+      <ng-container [ngTemplateOutlet]="crumbSkeleton" />
+      }
       <li hlmBreadcrumbSeparator></li>
+      @defer(when !projects.isLoading()) {
       <li hlmBreadcrumbItem>
         <button [brnMenuTriggerFor]="prjs" class="flex items-center gap-1">
           Active Project
@@ -24,7 +29,7 @@
         </button>
         <ng-template #prjs>
           <hlm-menu>
-            @for(project of projects(); track $index) {
+            @for(project of projects.value(); track $index) {
             <button hlmMenuItem [id]="project.id">
               <span>{{ project.name }}</span>
             </button>
@@ -32,10 +37,10 @@
           </hlm-menu>
         </ng-template>
       </li>
-      <li hlmBreadcrumbSeparator></li>
-      <li hlmBreadcrumbItem>
-
-      </li>
+      }@loading (minimum 10s) {
+      <ng-container [ngTemplateOutlet]="crumbSkeleton" />
+      }
+      <li hlmBreadcrumbItem></li>
     </ol>
   </nav>
 </div>
@@ -48,3 +53,9 @@
   <router-outlet />
 </main>
 <div class="block lg:col-start-2 lg:row-start-3 lg:row-span-1">footer</div>
+
+<ng-template #crumbSkeleton>
+  <li hlmBreadcrumbItem>
+    <hlm-skeleton class="h-3 w-[100px]" />
+  </li>
+</ng-template>

@@ -1,7 +1,7 @@
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
 import { NavigationActionTiming, withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { LOCAL_STORAGE_ENGINE, withNgxsStoragePlugin } from '@ngxs/storage-plugin';
@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withViewTransitions()),
-    provideHttpClient(withInterceptors([credentialInterceptor])),
+    provideHttpClient(withInterceptors([credentialInterceptor]), withFetch()),
     provideStore([AuthState], withNgxsStoragePlugin({
       keys: [{
         key: AUTH_STATE,
