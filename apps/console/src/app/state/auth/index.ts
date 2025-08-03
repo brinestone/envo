@@ -5,7 +5,7 @@ import { patch } from '@ngxs/store/operators';
 import { concatMap, of, switchMap, tap, throwError } from "rxjs";
 import { AuthStateModel } from '../../../models';
 import { AuthService } from '../../services/auth.service';
-import { CompleteGithubSignIn, CredentialSignIn, CredentialSignUp, SignedIn, SignedOut, SignOut } from './actions';
+import { CompleteGithubSignIn, CredentialSignIn, CredentialSignUp, GetOrganizations, SignedIn, SignedOut, SignOut } from './actions';
 import { PrincipalSchema } from '../../../schemas';
 import z from 'zod';
 

@@ -9,7 +9,7 @@ import { generateUniqueCode } from "./generators";
 import { generateIdenticon } from "./identicon";
 
 const db = drizzle(process.env.NITRO_DATABASE_URL, {
-  schema: { user, account, session, verification, organizations, member, invitation }
+  schema: { user, account, session, verification, organization: organizations, member, invitation }
 });
 
 const plugins = [

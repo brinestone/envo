@@ -1,1 +1,50 @@
-<p>project works!</p>
+<div class="lg:col-start-2 lg:col-span-1">
+  <nav hlmBreadcrumb>
+    <ol hlmBreadcrumbList>
+      <li hlmBreadcrumbItem>
+        <button [brnMenuTriggerFor]="orgs" class="flex items-center gap-1">
+          {{ activeOrg()?.name }}
+          <ng-icon hlmMenuIcon size="sm" name="lucideChevronDown" />
+        </button>
+        <ng-template #orgs>
+          <hlm-menu>
+            @for (org of organizations.value(); track $index) {
+            <button hlmMenuItem [id]="org.id">
+              <span>{{ org.name }}</span>
+            </button>
+            }
+          </hlm-menu>
+        </ng-template>
+      </li>
+      <li hlmBreadcrumbSeparator></li>
+      <li hlmBreadcrumbItem>
+        <button [brnMenuTriggerFor]="prjs" class="flex items-center gap-1">
+          Active Project
+          <ng-icon hlmMenuIcon size="sm" name="lucideChevronDown" />
+        </button>
+        <ng-template #prjs>
+          <hlm-menu>
+            @for(project of projects(); track $index) {
+            <button hlmMenuItem [id]="project.id">
+              <span>{{ project.name }}</span>
+            </button>
+            }
+          </hlm-menu>
+        </ng-template>
+      </li>
+      <li hlmBreadcrumbSeparator></li>
+      <li hlmBreadcrumbItem>
+
+      </li>
+    </ol>
+  </nav>
+</div>
+<div
+  class="lg:col-start-1 lg:col-span-1 lg:row-span-3 lg:row-start-1 hidden lg:block"
+>
+  left
+</div>
+<main class="block overflow-y-auto lg:col-start-2 lg:row-start-2 lg:row-span-1">
+  <router-outlet />
+</main>
+<div class="block lg:col-start-2 lg:row-start-3 lg:row-span-1">footer</div>

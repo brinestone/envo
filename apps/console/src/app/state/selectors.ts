@@ -6,3 +6,4 @@ const authSlices = createPropertySelectors(AUTH_STATE);
 export const principal = authSlices.user;
 
 export const isUserSignedIn = authSlices.signedIn;
+export const activeOrganization = authSlices.activeOrganizationId;

@@ -12,6 +12,15 @@ export class AuthService {
     ]
   });
 
+  getOrganizations() {
+    return from(this.client.organization.list()).pipe(
+      switchMap(({ error, data }) => {
+        if (error) return throwError(() => error);
+        return of(data);
+      })
+    )
+  }
+
   getSession() {
     return from(this.client.getSession()).pipe(
       switchMap(({ error, data }) => {
