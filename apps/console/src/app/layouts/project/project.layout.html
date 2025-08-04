@@ -28,6 +28,7 @@
 >
   <ev-main-menu
     (signOut)="signOut()"
+    (openSettings)="navigate(['/settings'])"
     [userAvatar]="user()?.image ?? undefined"
     [userEmail]="user()?.email"
     [userNames]="user()?.name"

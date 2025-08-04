@@ -1,1 +1,20 @@
-<p>all-projects works!</p>
+<section class="container mx-auto flex items-center justify-between px-4">
+  <h1 class="font-extrabold text-3xl">Projects</h1>
+  <hlm-sheet side="right">
+    <button
+      brnSheetTrigger
+      size="sm"
+      hlmBtn
+      (click)="onCreateProjectButtonClicked()"
+    >
+      <ng-icon name="lucidePlus" />
+      <span>Create</span>
+    </button>
+    <hlm-sheet-content *brnSheetContent="let ctx">
+      <hlm-sheet-header>
+        <h3 hlmSheetTitle>New Project</h3>
+        <p hlmSheetDescription>Create a new project in your organization</p>
+      </hlm-sheet-header>
+    </hlm-sheet-content>
+  </hlm-sheet>
+</section>
