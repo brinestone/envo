@@ -26,7 +26,13 @@
 <div
   class="overflow-y-auto lg:col-start-1 lg:col-span-1 lg:row-span-3 lg:row-start-1 hidden lg:block"
 >
-  <ev-main-menu class="h-full"/>
+  <ev-main-menu
+    (signOut)="signOut()"
+    [userAvatar]="user()?.image ?? undefined"
+    [userEmail]="user()?.email"
+    [userNames]="user()?.name"
+    class="h-full"
+  />
 </div>
 <main
   class="border border-[var(--muted)] block overflow-y-auto lg:col-start-2 lg:row-start-2 lg:row-span-1"
@@ -34,7 +40,7 @@
   <router-outlet />
 </main>
 <div
-  class="flex items-center lg:col-start-2 lg:row-start-3 lg:row-span-1 lg:col-span-2"
+  class="px-3 flex items-center lg:col-start-2 lg:row-start-3 lg:row-span-1 lg:col-span-2"
 >
   <ev-footer />
 </div>
