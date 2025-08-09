@@ -43,6 +43,8 @@ export const routes: Routes = [
     canActivate: [authGuard, hasActiveProjectGuard('/projects')],
     data: {
       menuItems: [
+        { route: '/projects', label: 'All Projects', icon: 'lucideList' },
+        { separator: true },
         { route: '', icon: 'lucideSlidersHorizontal', label: 'Configs' },
         { route: 'envs', icon: 'lucideServer', label: 'Environments' },
         { route: 'settings', icon: 'lucideSettings', label: 'Settings' },

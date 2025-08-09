@@ -7,5 +7,5 @@ export class CreateProject {
 
 export class SelectProject {
   static type = `${prefix} select project`;
-  constructor(readonly id: string) { }
+  constructor(readonly id: string | null) { }
 }

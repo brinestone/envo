@@ -57,6 +57,7 @@ export class AllProjectsPage {
       },
       complete: () => {
         this.showNewProjectForm.set('closed');
+        this.projects.reload();
       }
     })
   }

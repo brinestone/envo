@@ -19,7 +19,7 @@ class ProjectState {
 
   @Action(SelectProject, { cancelUncompleted: true })
   onSelectProject(ctx: Context, { id }: SelectProject) {
-    ctx.setState(patch({ activeProject: id }));
+    ctx.setState(patch({ activeProject: id ?? undefined }));
   }
 
   @Action(CreateProject, { cancelUncompleted: true })

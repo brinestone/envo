@@ -3,15 +3,18 @@ import { Component, computed, HostBinding, input, output, signal } from '@angula
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideLogOut, lucideReceipt, lucideSettings } from '@ng-icons/lucide';
+import { BrnSeparatorComponent } from '@spartan-ng/brain/separator';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmButtonDirective } from '@spartan-ng/helm/button';
-import z from 'zod';
+import { HlmSeparatorDirective } from '@spartan-ng/helm/separator';
+import z, { literal } from 'zod';
 
-const MenuItemSchema = z.object({
+export const MenuItemSchema = z.discriminatedUnion('separator',[z.object({
   route: z.string(),
   label: z.string(),
-  icon: z.string()?.optional()
-});
+  icon: z.string().optional(),
+  separator: literal(false).optional().default(false)
+}), z.object({ separator: z.literal(true) })]);
 
 export type MenuItem = z.infer<typeof MenuItemSchema>;
 
@@ -29,6 +32,8 @@ export type MenuItem = z.infer<typeof MenuItemSchema>;
     NgOptimizedImage,
     RouterLinkActive,
     NgIcon,
+    HlmSeparatorDirective,
+    BrnSeparatorComponent,
     HlmAvatarImports,
     HlmButtonDirective
   ],

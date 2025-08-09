@@ -9,5 +9,8 @@
     "dev": "pnpm run --parallel dev",
     "build": "pnpm run --parallel build",
     "migrate.local": "pnpm run --filter backend migrate.local"
+  },
+  "dependencies": {
+    "tsup": "^8.5.0"
   }
 }
