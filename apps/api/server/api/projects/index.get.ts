@@ -3,9 +3,9 @@ import { ProjectSchema } from 'shared';
 
 export default defineEventHandler({
   onRequest: [requireAuth],
-  handler: async event => {
+  handler: async () => {
     const db = useDatabase({ organizations, projects })
-    const { org } = getQuery(event);
+    const { session: { activeOrganizationId: org } } = useAuth()
     return await db.select().from(projects)
       .where(eq(projects.organization, String(org)))
       .then(v => ProjectSchema.array().parse(v));

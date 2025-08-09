@@ -10,7 +10,7 @@
     @apply bg-[var(--accent)] rounded-md;
   }
   & .link-container a:not(.active-link):not(.brand) {
-    @apply opacity-40 hover:bg-[var(--accent)]/50;
+    @apply opacity-50 hover:bg-[var(--accent)]/50;
   }
   &[expanded="true"] {
     @apply w-[15rem];

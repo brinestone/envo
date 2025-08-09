@@ -75,6 +75,12 @@
       ],
       "@spartan-ng/helm/badge": [
         "./libs/ui/ui-badge-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/accordion": [
+        "./libs/ui/ui-accordion-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/tabs": [
+        "./libs/ui/ui-tabs-helm/src/index.ts"
       ]
     }
   },

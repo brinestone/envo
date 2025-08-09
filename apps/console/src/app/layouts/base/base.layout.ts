@@ -13,16 +13,9 @@ import { HlmSkeletonComponent } from '@spartan-ng/helm/skeleton';
 import { SignOut } from '@state/auth/actions';
 import { activeOrganization, principal } from '@state/selectors';
 import { map } from 'rxjs';
-import z from 'zod';
 import { Footer } from "../../components/footer/footer";
-import { MainMenu } from "../../components/main-menu/main-menu";
+import { MainMenu, MenuItemSchema } from "../../components/main-menu/main-menu";
 import { AuthService } from '../../services/auth';
-
-const MenuItemSchema = z.object({
-  label: z.string(),
-  route: z.string(),
-  icon: z.string()
-});
 
 @Component({
   selector: 'ev-base',
