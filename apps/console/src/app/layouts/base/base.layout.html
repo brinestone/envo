@@ -1,0 +1,55 @@
+<div class="lg:col-start-2 lg:col-span-2 h-[2rem]">
+  <nav hlmBreadcrumb class="flex items-center h-full mx-auto container">
+    <ol hlmBreadcrumbList>
+      @defer (when !organizations.isLoading()) {
+      <li hlmBreadcrumbItem>
+        <button [brnMenuTriggerFor]="orgs" class="flex items-center gap-1">
+          {{ activeOrg()?.name }}
+          <ng-icon hlmMenuIcon size="sm" name="lucideChevronDown" />
+        </button>
+        <ng-template #orgs>
+          <hlm-menu>
+            @for (org of organizations.value(); track $index) {
+            <button hlmMenuItem [id]="org.id">
+              <span>{{ org.name }}</span>
+            </button>
+            }
+          </hlm-menu>
+        </ng-template>
+      </li>
+      }@loading {
+      <ng-container [ngTemplateOutlet]="crumbSkeleton" />
+      }
+    </ol>
+  </nav>
+</div>
+<div
+  class="overflow-y-auto lg:col-start-1 lg:col-span-1 lg:row-span-3 lg:row-start-1 hidden lg:block"
+>
+  <ev-main-menu
+    class="h-full"
+    (signOut)="signOut()"
+    (openBilling)="navigate(['/billing'])"
+    (openSettings)="navigate(['/settings'])"
+    [menuItems]="menuItems()"
+    [userEmail]="user()?.email"
+    [userNames]="user()?.name"
+    [userAvatar]="user()?.image ?? undefined"
+  />
+</div>
+<main
+  class="border border-[var(--muted)] block overflow-y-auto lg:col-start-2 lg:row-start-2 lg:row-span-1"
+>
+  <router-outlet />
+</main>
+<div
+  class="px-3 flex items-center lg:col-start-2 lg:row-start-3 lg:row-span-1 lg:col-span-2"
+>
+  <ev-footer />
+</div>
+
+<ng-template #crumbSkeleton>
+  <li hlmBreadcrumbItem>
+    <hlm-skeleton class="h-3 w-[100px]" />
+  </li>
+</ng-template>

@@ -1,11 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { Action, State, StateContext, StateToken } from '@ngxs/store';
-import { AuthService } from '../../services/auth.service';
-import { CompleteGithubSignIn, CredentialSignIn, CredentialSignUp, SignedIn, SignedOut, SignOut } from './actions';
-import { patch } from '@ngxs/store/operators';
-import { map, tap } from "rxjs";
 import { Navigate } from "@ngxs/router-plugin";
+import { Action, State, StateContext, StateToken } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
+import { concatMap, of, switchMap, tap, throwError } from "rxjs";
 import { AuthStateModel } from '../../../models';
+import { AuthService } from '../../services/auth';
+import { CompleteGithubSignIn, CredentialSignIn, CredentialSignUp, GetOrganizations, SignedIn, SignedOut, SignOut } from './actions';
+import { PrincipalSchema } from '../../../schemas';
+import z from 'zod';
 
 export const AUTH_STATE = new StateToken<AuthStateModel>('auth');
 type Context = StateContext<AuthStateModel>;
@@ -20,7 +22,22 @@ export class AuthState {
 
   @Action(CredentialSignUp, { cancelUncompleted: true })
   onCredentialSignUp(ctx: Context, action: CredentialSignUp) {
-    return this.authService.credentialSignUp(action)
+    return this.authService.credentialSignUp(action).pipe(
+      concatMap(() => this.authService.getSession().pipe(
+        switchMap(data => {
+          if (!data) return throwError(() => new Error('Invalid session'));
+          return of(data);
+        })
+      )),
+      tap(({ session, user }) => {
+        ctx.setState(patch({
+          signedIn: true,
+          user: PrincipalSchema.parse(user),
+          sessionExpiresAt: z.coerce.date().parse(session.expiresAt),
+          activeOrganizationId: session.activeOrganizationId ?? undefined
+        }))
+      })
+    )
   }
 
   @Action(SignOut, { cancelUncompleted: true })
@@ -45,8 +62,10 @@ export class AuthState {
   @Action(CredentialSignIn, { cancelUncompleted: true })
   onCredentialSignIn(ctx: Context, { email, password }: CredentialSignIn) {
     return this.authService.credentialSignIn(email, password).pipe(
-      tap(({ user }) => ctx.setState(patch({
-        user
+      tap(({ user, session }) => ctx.setState(patch({
+        user,
+        activeOrganizationId: session.activeOrganizationId ?? undefined,
+        sessionExpiresAt: session.expiresAt ?? undefined
       }))),
       tap(() => ctx.dispatch(SignedIn))
     )

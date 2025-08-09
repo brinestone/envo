@@ -12,7 +12,13 @@ export const PrincipalSchema = z.object({
 
 export const AuthStateSchema = z.object({
   user: PrincipalSchema.optional(),
-  signedIn: z.boolean().default(false)
+  signedIn: z.boolean().default(false),
+  sessionExpiresAt: z.coerce.date().optional(),
+  activeOrganizationId: z.string().optional()
 });
 
 export const ThemeModeSchema = z.enum(['system', 'dark', 'light']);
+
+export const ProjectStateSchema = z.object({
+  activeProject: z.uuid().optional(),
+});

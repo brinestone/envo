@@ -1,0 +1,66 @@
+<section class="container mx-auto flex items-center justify-between px-4">
+  <h1 class="font-extrabold text-3xl">Projects</h1>
+  <hlm-sheet
+    (stateChanged)="showNewProjectForm.set($event)"
+    [state]="showNewProjectForm()"
+    side="right"
+  >
+    <button
+      brnSheetTrigger
+      size="sm"
+      hlmBtn
+      (click)="showNewProjectForm.set('open')"
+    >
+      <ng-icon name="lucidePlus" />
+      <span>Create</span>
+    </button>
+    <hlm-sheet-content *brnSheetContent="let ctx">
+      <hlm-sheet-header>
+        <h3 hlmSheetTitle>New Project</h3>
+        <p hlmSheetDescription>Create a new project in your organization</p>
+      </hlm-sheet-header>
+      <div class="px-4">
+        <ev-new-project-form
+          [inProgress]="creatingProject()"
+          (onSubmit)="onNewProject($event)"
+        />
+      </div>
+    </hlm-sheet-content>
+  </hlm-sheet>
+</section>
+<section
+  class="container mx-auto grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] px-4 gap-4"
+>
+  @defer (when !projects.isLoading()) { @for(project of projects.value(); track
+  project.id) {
+  <div hlmCard>
+    <div class="space-y-2" hlmCardContent>
+      <button
+        hlmCardAction
+        (click)="onProjectNameClicked(project.id)"
+        class="mb-3 font-bold text-lg opacity-80 hover:opacity-100 transition-opacity"
+      >
+        {{ project.name }}
+      </button>
+      <span
+        class="flex"
+        hlmBadge
+        [variant]="project.enabled ? 'outline' : 'destructive'"
+      >
+        <ng-icon
+          [name]="project.enabled ? 'lucideCheck' : 'lucideOctagonAlert'"
+        />
+        <span>{{ project.enabled ? 'Enabled' : 'Disabled' }}</span>
+      </span>
+    </div>
+  </div>
+  } }@loading { @for(_ of [1,1,1,1,1]; track $index) {
+  <div hlmCard>
+    <div class="space-y-2" hlmCardContent>
+      <div class="mb-4"><hlm-skeleton class="w-[200px] h-3" /></div>
+      <div><hlm-skeleton class="w-[180px] h-2" /></div>
+      <div><hlm-skeleton class="w-[50px] h-2" /></div>
+    </div>
+  </div>
+  } }
+</section>

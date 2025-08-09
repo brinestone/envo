@@ -30,3 +30,7 @@ export class CredentialSignUp {
   static type = `${prefix} credential sign up`;
   constructor(readonly name: string, readonly email: string, readonly password: string) { }
 }
+
+export class GetOrganizations {
+  static type = `${prefix} get organizations`;
+}

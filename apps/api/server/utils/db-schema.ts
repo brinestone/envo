@@ -1,14 +1,15 @@
 import { sql } from "drizzle-orm";
-import { bigint, bigserial, boolean, integer, interval, jsonb, pgEnum, pgSequence, pgTable, pgView, real, smallint, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { bigint, bigserial, boolean, integer, interval, jsonb, pgEnum, pgTable, pgView, real, smallint, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const projects = pgTable('projects', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
 	name: text().notNull(),
+	enabled: boolean().default(true).notNull(),
 	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
 	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
 	createdBy: text().references(() => member.id, { onDelete: 'set null' })
-})
+});
 
 export const events = pgTable('events', {
 	id: uuid().notNull().defaultRandom().primaryKey(),

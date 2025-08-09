@@ -1,11 +1,13 @@
 {
   "name": "envo",
   "private": true,
+  "type": "module",
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "scripts": {
     "dev": "pnpm run --parallel dev",
+    "build": "pnpm run --parallel build",
     "migrate.local": "pnpm run --filter backend migrate.local"
   }
 }

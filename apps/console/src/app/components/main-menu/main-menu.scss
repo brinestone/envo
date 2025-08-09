@@ -1,0 +1,25 @@
+@reference "tailwindcss";
+
+:host {
+  @apply pt-2 w-[3.5rem] grid grid-rows-[2rem_1fr_14rem] gap-y-2 transition-all overflow-x-hidden;
+  .link-container > a span {
+    @apply inline-flex w-0 transition-all justify-center;
+  }
+
+  & a.active-link {
+    @apply bg-[var(--accent)] rounded-md;
+  }
+  & .link-container a:not(.active-link):not(.brand) {
+    @apply opacity-40 hover:bg-[var(--accent)]/50;
+  }
+  &[expanded="true"] {
+    @apply w-[15rem];
+    .link-container {
+      @apply justify-start;
+
+      & > a > span {
+        @apply w-auto;
+      }
+    }
+  }
+}
