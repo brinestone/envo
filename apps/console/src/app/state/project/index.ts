@@ -1,6 +1,10 @@
-import { StateContext, StateToken, State, provideStates } from "@ngxs/store";
+import { EnvironmentProviders, inject, Injectable, makeEnvironmentProviders } from "@angular/core";
+import { Action, provideStates, State, StateContext, StateToken } from "@ngxs/store";
+import { ProjectService } from "@services/project";
+import { tap } from "rxjs";
 import { ProjectStateModel } from "../../../models";
-import { EnvironmentProviders, Injectable, makeEnvironmentProviders } from "@angular/core";
+import { CreateProject, SelectProject } from "./actions";
+import { patch } from "@ngxs/store/operators";
 
 export const PROJECTS = new StateToken<ProjectStateModel>('projects');
 type Context = StateContext<ProjectStateModel>;
@@ -11,7 +15,21 @@ type Context = StateContext<ProjectStateModel>;
 })
 @Injectable()
 class ProjectState {
+  private projectService = inject(ProjectService);
 
+  @Action(SelectProject, { cancelUncompleted: true })
+  onSelectProject(ctx: Context, { id }: SelectProject) {
+    ctx.setState(patch({ activeProject: id }));
+  }
+
+  @Action(CreateProject, { cancelUncompleted: true })
+  onCreateProject(ctx: Context, { name, org }: CreateProject) {
+    return this.projectService.createProject(name, org).pipe(
+      tap((project) => ctx.setState({
+        activeProject: project.id
+      }))
+    )
+  }
 }
 
 export function provideProjectState(...providers: EnvironmentProviders[]) {

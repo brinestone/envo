@@ -1,7 +1,13 @@
 <div class="link-container px-2">
-  <a class="flex brand justify-start pl-2" routerLink="/">
+  <a class="flex brand justify-start pl-2 items-center gap-4" routerLink="/">
     <img priority ngSrc="/favicon.ico" width="28" height="28" />
+    <span
+      [class.opacity-100]="isOpen()"
+      class="opacity-0 transition-all font-extrabold"
+      >Envo</span
+    >
   </a>
+  <!-- <brn-separator hlmSeparator /> -->
 </div>
 <div class="overflow-x-hidden overflow-y-auto">
   <ul
@@ -9,7 +15,7 @@
     (mouseleave)="onMouseLeave()"
     class="flex flex-col gap-3"
   >
-    @for (item of items; track $index) {
+    @for (item of menuItems(); track $index) {
     <li class="link-container px-2">
       <a
         [routerLink]="item.route"
@@ -33,7 +39,7 @@
     class="flex gap-2 pl-2 pb-2"
   >
     <hlm-avatar variant="large">
-      @if(userAvatar()) {
+      @if((userAvatar()?.length ?? 0) > 0) {
       <img
         [ngSrc]="userAvatar() ?? ''"
         alt="userNames() ?? 'user name'"
@@ -42,7 +48,10 @@
         height="32"
       />
       }
-      <span class="bg-[var(--accent)] text-accent-foreground" hlmAvatarFallback>
+      <span
+        class="bg-[var(--accent)] font-bold text-accent-foreground"
+        hlmAvatarFallback
+      >
         {{ initials() }}
       </span>
     </hlm-avatar>

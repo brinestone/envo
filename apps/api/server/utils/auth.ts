@@ -1,5 +1,5 @@
 
-import { betterAuth } from "better-auth";
+import { betterAuth, Session, User } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -97,4 +97,8 @@ export const requireAuth: EventHandler = async (event: H3Event) => {
   });
 
   event.context.auth = session;
+}
+
+export function useAuth() {
+  return useEvent().context.auth as { session: Session & { activeOrganizationId?: string }, user: User };
 }

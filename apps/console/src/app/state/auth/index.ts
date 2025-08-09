@@ -4,7 +4,7 @@ import { Action, State, StateContext, StateToken } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 import { concatMap, of, switchMap, tap, throwError } from "rxjs";
 import { AuthStateModel } from '../../../models';
-import { AuthService } from '../../services/auth.service';
+import { AuthService } from '../../services/auth';
 import { CompleteGithubSignIn, CredentialSignIn, CredentialSignUp, GetOrganizations, SignedIn, SignedOut, SignOut } from './actions';
 import { PrincipalSchema } from '../../../schemas';
 import z from 'zod';
@@ -62,8 +62,10 @@ export class AuthState {
   @Action(CredentialSignIn, { cancelUncompleted: true })
   onCredentialSignIn(ctx: Context, { email, password }: CredentialSignIn) {
     return this.authService.credentialSignIn(email, password).pipe(
-      tap(({ user }) => ctx.setState(patch({
-        user
+      tap(({ user, session }) => ctx.setState(patch({
+        user,
+        activeOrganizationId: session.activeOrganizationId ?? undefined,
+        sessionExpiresAt: session.expiresAt ?? undefined
       }))),
       tap(() => ctx.dispatch(SignedIn))
     )

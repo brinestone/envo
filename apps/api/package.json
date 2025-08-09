@@ -23,7 +23,10 @@
     "jdenticon": "^3.3.0",
     "minio": "^8.0.5",
     "pg": "^8.16.3",
+    "shared": "workspace:*",
     "unique-names-generator": "^4.7.1",
-    "shared": "workspace:*"
+    "zod": "^4.0.5",
+    "zod-openapi": "^5.3.0",
+    "zod-to-json-schema": "^3.24.6"
   }
 }

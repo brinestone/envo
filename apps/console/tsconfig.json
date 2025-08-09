@@ -19,6 +19,12 @@
       "@state/*": [
         "./src/app/state/*"
       ],
+      "@services/*": [
+        "./src/app/services/*"
+      ],
+      "@components/*": [
+        "./src/app/components/*"
+      ],
       "@spartan-ng/helm/button": [
         "./libs/ui/ui-button-helm/src/index.ts"
       ],
@@ -66,6 +72,9 @@
       ],
       "@spartan-ng/helm/sheet": [
         "./libs/ui/ui-sheet-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/badge": [
+        "./libs/ui/ui-badge-helm/src/index.ts"
       ]
     }
   },

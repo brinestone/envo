@@ -1,20 +1,27 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, computed, HostBinding, HostListener, input, output, signal } from '@angular/core';
+import { Component, computed, HostBinding, input, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideListChecks, lucideUserCog, lucideLogOut, lucideReceipt, lucideSettings } from '@ng-icons/lucide';
+import { lucideLogOut, lucideReceipt, lucideSettings } from '@ng-icons/lucide';
 import { HlmAvatarImports } from '@spartan-ng/helm/avatar';
 import { HlmButtonDirective } from '@spartan-ng/helm/button';
+import z from 'zod';
+
+const MenuItemSchema = z.object({
+  route: z.string(),
+  label: z.string(),
+  icon: z.string()?.optional()
+});
+
+export type MenuItem = z.infer<typeof MenuItemSchema>;
 
 @Component({
   selector: 'ev-main-menu',
   viewProviders: [
     provideIcons({
-      lucideListChecks,
-      lucideReceipt,
       lucideSettings,
       lucideLogOut,
-      lucideUserCog
+      lucideReceipt
     })
   ],
   imports: [
@@ -31,6 +38,7 @@ import { HlmButtonDirective } from '@spartan-ng/helm/button';
 export class MainMenu {
   readonly signOut = output();
   readonly openSettings = output();
+  readonly openBilling = output();
   readonly isOpen = signal(false);
   readonly userNames = input<string>();
   readonly userEmail = input<string>();
@@ -49,14 +57,14 @@ export class MainMenu {
     return this.isOpen();
   }
 
-  readonly items = [
-    { route: '/projects', label: 'Projects', icon: 'lucideListChecks' },
-    { route: '/billing', label: 'Billing', icon: 'lucideReceipt' },
-    // { route: '/settings', label: 'Settings', icon: 'lucideSettings' }
-  ];
+  readonly menuItems = input<MenuItem[]>([]);
 
   private onSettingsButtonClicked() {
     this.openSettings.emit();
+  }
+
+  private onBillingButtonClicked() {
+    this.openBilling.emit();
   }
 
   private onSignOutButtonClicked() {
@@ -66,6 +74,7 @@ export class MainMenu {
   readonly bottomActions = [
     { tooltip: 'Sign out', icon: 'lucideLogOut', handler: this.onSignOutButtonClicked.bind(this) },
     { tooltip: 'Settings', icon: 'lucideSettings', handler: this.onSettingsButtonClicked.bind(this) },
+    { tooltip: 'Billing', icon: 'lucideReceipt', handler: this.onBillingButtonClicked.bind(this) },
   ];
 
 

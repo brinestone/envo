@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { createAuthClient } from 'better-auth/client';
 import { organizationClient } from "better-auth/client/plugins"
-import { from, of, switchMap, throwError } from 'rxjs';
+import { concatMap, from, of, switchMap, throwError } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -54,8 +54,11 @@ export class AuthService {
       password,
       rememberMe
     })).pipe(
+      concatMap(() => this.client.getSession()),
       switchMap(({ error, data }) => {
+        debugger;
         if (error) return throwError(() => error);
+        else if (!data) return throwError(() => new Error('An error occurred'));
         return of(data);
       })
     );

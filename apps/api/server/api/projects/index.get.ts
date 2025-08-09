@@ -1,14 +1,13 @@
 import { eq } from "drizzle-orm";
 import { ProjectSchema } from 'shared';
 
-
 export default defineEventHandler({
   onRequest: [requireAuth],
   handler: async event => {
-    const db = useDatabase(event, { organizations, projects })
-    const org = getRouterParam(event, 'org');
+    const db = useDatabase({ organizations, projects })
+    const { org } = getQuery(event);
     return await db.select().from(projects)
-      .where(eq(projects.organization, org))
+      .where(eq(projects.organization, String(org)))
       .then(v => ProjectSchema.array().parse(v));
   }
-})
+});

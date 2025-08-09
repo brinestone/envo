@@ -5,6 +5,7 @@ export const ProjectSchema = z.object({
   name: z.string(),
   organization: z.string(),
   createdAt: z.coerce.date(),
+  enabled: z.boolean(),
   updatedAt: z.coerce.date(),
 });
 

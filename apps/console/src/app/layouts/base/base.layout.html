@@ -27,12 +27,14 @@
   class="overflow-y-auto lg:col-start-1 lg:col-span-1 lg:row-span-3 lg:row-start-1 hidden lg:block"
 >
   <ev-main-menu
+    class="h-full"
     (signOut)="signOut()"
+    (openBilling)="navigate(['/billing'])"
     (openSettings)="navigate(['/settings'])"
-    [userAvatar]="user()?.image ?? undefined"
+    [menuItems]="menuItems()"
     [userEmail]="user()?.email"
     [userNames]="user()?.name"
-    class="h-full"
+    [userAvatar]="user()?.image ?? undefined"
   />
 </div>
 <main
