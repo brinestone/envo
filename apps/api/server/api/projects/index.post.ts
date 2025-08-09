@@ -83,6 +83,7 @@ export default defineEventHandler({
     try {
       const [{ id }] = await db.transaction(tx => tx.insert(projects).values({
         name,
+        createdBy: session.userId,
         organization: org
       }).returning());
       setResponseStatus(event, 201, 'Created')
