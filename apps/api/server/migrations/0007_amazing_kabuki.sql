@@ -1,0 +1,3 @@
+ALTER TABLE "feature_zone_overrides" ALTER COLUMN "enabled" DROP NOT NULL;--> statement-breakpoint
+ALTER TABLE "feature_zone_overrides" ADD COLUMN "scheduledEnable" date;--> statement-breakpoint
+ALTER TABLE "feature_zone_overrides" ADD CONSTRAINT "enabledOrDate" CHECK ((("feature_zone_overrides"."enabled" is null and "feature_zone_overrides"."scheduledEnable" is not null) or ("feature_zone_overrides"."scheduledEnable" is null and "feature_zone_overrides"."enabled" is not null)));

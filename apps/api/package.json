@@ -7,7 +7,8 @@
     "prepare": "nitro prepare",
     "preview": "node .output/server/index.mjs",
     "migrate.local": "pnpm drizzle-kit generate && pnpm drizzle-kit migrate",
-    "migrate.prod": "pnpm drizzle-kit migrate"
+    "migrate.prod": "pnpm drizzle-kit migrate",
+    "drop.local": "pnpm drizzle-kit drop"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
@@ -16,17 +17,16 @@
     "nitropack": "latest"
   },
   "dependencies": {
-    "@upstash/redis": "^1.35.1",
+    "@envo/common": "workspace:*",
     "better-auth": "^1.2.12",
     "cors": "^2.8.5",
+    "countries-list": "^3.1.1",
+    "country-state-city": "^3.2.1",
     "drizzle-orm": "^0.44.2",
     "jdenticon": "^3.3.0",
     "minio": "^8.0.5",
     "pg": "^8.16.3",
-    "shared": "workspace:*",
     "unique-names-generator": "^4.7.1",
-    "zod": "^4.0.5",
-    "zod-openapi": "^5.3.0",
-    "zod-to-json-schema": "^3.24.6"
+    "zod": "^4.0.5"
   }
 }

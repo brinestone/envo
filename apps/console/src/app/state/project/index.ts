@@ -5,6 +5,7 @@ import { tap } from "rxjs";
 import { ProjectStateModel } from "../../../models";
 import { CreateProject, SelectProject } from "./actions";
 import { patch } from "@ngxs/store/operators";
+import { SignedOut } from "@state/auth/actions";
 
 export const PROJECTS = new StateToken<ProjectStateModel>('projects');
 type Context = StateContext<ProjectStateModel>;
@@ -16,6 +17,11 @@ type Context = StateContext<ProjectStateModel>;
 @Injectable()
 class ProjectState {
   private projectService = inject(ProjectService);
+
+  @Action(SignedOut)
+  onSignedOut(ctx: Context) {
+    ctx.setState({});
+  }
 
   @Action(SelectProject, { cancelUncompleted: true })
   onSelectProject(ctx: Context, { id }: SelectProject) {

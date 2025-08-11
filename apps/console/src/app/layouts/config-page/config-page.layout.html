@@ -1,7 +1,7 @@
 <div class="container mx-auto mt-4 space-y-3">
-  @defer (when !allProjects.isLoading() || !allProjects.hasValue()) {
-  <div class="flex items-center gap-3">
-    <p>Current project:</p>
+  @defer (when !allProjects.isLoading() && allProjects.hasValue()) {
+  <div class="flex items-center gap-3 justify-center lg:justify-start">
+    <p class="text-sm text-muted-foreground">Current project:</p>
     <brn-select
       [value]="activeProject()"
       class="inline-block"
@@ -27,14 +27,20 @@
     <hlm-skeleton class="w-[100px] h-[20px]" />
   </div>
   }
-  <hlm-tabs (tabActivated)="activeTab.set($event)" [tab]="activeTab()">
-    <hlm-tabs-list class="grid grid-cols-2" aria-label="tabs">
-      <button hlmTabsTrigger="flags" class="font-semibold">Features</button>
-      <button hlmTabsTrigger="env" class="font-semibold">
-        Environment Variables
-      </button>
-    </hlm-tabs-list>
-  </hlm-tabs>
+  <brn-separator hlmSeparator />
+  <div class="flex justify-center lg:justify-start items-center gap-3">
+    @for(link of links; track $index) {
+    <a
+      routerLinkActive="!opacity-100 font-bold !border-b-primary"
+      [routerLinkActiveOptions]="{ exact: false }"
+      [routerLink]="link.path"
+      class="flex items-center gap-2 pb-2 border-b-3 px-3 border-b-transparent opacity-70"
+    >
+      <ng-icon [name]="link.icon" />
+      <span>{{ link.label }}</span>
+    </a>
+    }
+  </div>
 </div>
 <main class="overflow-y-auto container mx-auto">
   <router-outlet />

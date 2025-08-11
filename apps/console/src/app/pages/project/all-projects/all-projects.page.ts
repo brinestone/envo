@@ -1,8 +1,10 @@
 import { httpResource } from '@angular/common/http';
-import { Component, model } from '@angular/core';
+import { Component, model, OnInit } from '@angular/core';
 import { NewProjectForm, Submission } from '@components/new-project-form';
+import { Project } from "@envo/common";
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideOctagonAlert, lucidePlus } from '@ng-icons/lucide';
+import { Navigate } from '@ngxs/router-plugin';
 import { dispatch, select } from '@ngxs/store';
 import { BrnDialogState } from '@spartan-ng/brain/dialog';
 import { BrnSheetContentDirective, BrnSheetTriggerDirective } from '@spartan-ng/brain/sheet';
@@ -14,10 +16,9 @@ import { HlmSkeletonModule } from '@spartan-ng/helm/skeleton';
 import { CreateProject, SelectProject } from '@state/project/actions';
 import { activeOrganization } from '@state/selectors';
 import { toast } from 'ngx-sonner';
-import { Project } from 'shared';
 import { concatMap } from 'rxjs';
-import { Navigate } from '@ngxs/router-plugin';
 import { isActionLoading } from '../../../utils';
+import { environment } from '../../../../environments/environment.development';
 
 @Component({
   viewProviders: [
@@ -42,14 +43,14 @@ import { isActionLoading } from '../../../utils';
   templateUrl: './all-projects.page.html',
   styleUrl: './all-projects.page.scss'
 })
-export class AllProjectsPage {
+export class AllProjectsPage implements OnInit {
   showNewProjectForm = model<BrnDialogState>('closed');
   private currentOrg = select(activeOrganization);
   private createProject = dispatch(CreateProject);
   private navigate = dispatch(Navigate);
   private selectProject = dispatch(SelectProject);
   readonly creatingProject = isActionLoading(CreateProject);
-  readonly projects = httpResource<Project[]>(() => `/api/projects?org=${this.currentOrg()}`, { defaultValue: [] });
+  readonly projects = httpResource<Project[]>(() => `${environment.apiBaseUrl}/projects?org=${this.currentOrg()}`, { defaultValue: [] });
   onNewProject({ name }: Submission) {
     this.createProject(name, this.currentOrg()!).subscribe({
       error: (e: Error) => {
@@ -64,7 +65,11 @@ export class AllProjectsPage {
 
   onProjectNameClicked(id: string) {
     this.selectProject(id).pipe(
-      concatMap(() => this.navigate(['/configs'], undefined, { queryParamsHandling: 'preserve' }))
+      concatMap(() => this.navigate(['/'], undefined, { queryParamsHandling: 'preserve' }))
     ).subscribe();
+  }
+
+  ngOnInit() {
+    this.selectProject(null);
   }
 }

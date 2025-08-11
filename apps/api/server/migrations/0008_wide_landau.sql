@@ -1,0 +1,1 @@
+ALTER TABLE "feature_zone_overrides" ALTER COLUMN "scheduledEnable" SET DATA TYPE timestamp;

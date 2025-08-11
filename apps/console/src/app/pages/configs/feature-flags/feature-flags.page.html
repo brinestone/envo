@@ -1,1 +1,312 @@
-<p>feature-flags works!</p>
+<div class="flex justify-between items-center py-1">
+  <div class="flex items-center gap-3">
+    <h1 class="text-2xl font-extrabold flex items-center gap-3">
+      Feature Flags
+    </h1>
+    <p variant="outline" hlmBadge class="flex gap-1 items-center">
+      <span class="text-green-500"
+        ><ng-icon size="8" name="bootstrapCircleFill"
+      /></span>
+      <span class="font-medium">Synchronized</span>
+    </p>
+  </div>
+  <button (click)="addFeatureForm()" size="sm" hlmBtn class="items-center">
+    <ng-icon name="lucidePlus" />
+    <span>New Feature</span>
+  </button>
+</div>
+<div hlmAccordion>
+  @for (group of forms.controls; track group.value.id) {
+  <div hlmAccordionItem>
+    <div class="flex justify-start items-center gap-3">
+      <div>
+        <button hlmAccordionTrigger>
+          <ng-icon size="20" name="lucideChevronDown" hlm hlmAccIcon />
+        </button>
+      </div>
+      <div class="flex items-center gap-3">
+        <p class="text-lg font-bold">
+          @if(group.value.isNew) { {{(group.value.displayName?.length ?? 0) > 0
+          ? group.value.displayName : 'New Feature'}} ✨ }@else {
+          {{group.value.displayName ?? group.value.signature}} }
+        </p>
+        <hlm-switch
+          (click)="$event.preventDefault()"
+          (changed)="toggleFeature($index, $event)"
+          [checked]="group.controls.enabled.value"
+        />
+      </div>
+    </div>
+    <hlm-accordion-content>
+      <form
+        class="space-y-3 lg:max-w-1/2 lg:min-w-[720px] px-2 py-5"
+        [id]="group.value.id"
+        [formGroup]="group"
+        (ngSubmit)="submitForm($index, $event)"
+      >
+        <div
+          class="w-full items-center gap-1 grid grid-cols-[1fr_auto] grid-rows-[36px_auto]"
+        >
+          <button
+            class="col-span-1 col-start-2 row-start-1 row-span-1"
+            type="button"
+            (click)="toggleFormSignatureType($index)"
+            size="sm"
+            variant="ghost"
+            hlmBtn
+          >
+            @if(group.value.useCustomSignature) { Use Auto }@else { Use Custom }
+          </button>
+          @if(group.value.useCustomSignature) {
+          <hlm-form-field
+            class="w-full col-start-1 col-span-1 row-start-1 row-span-1"
+          >
+            <input
+              formControlName="signature"
+              hlmInput
+              placeholder="Signature *"
+            />
+            <hlm-error>This field is required</hlm-error>
+          </hlm-form-field>
+          }@else {
+          <p class="text-sm col-span-1 col-start-1 row-start-1 row-span-1">
+            <span class="text-muted-foreground">Auto signature: </span
+            ><span>{{ group.value.signature }}</span>
+          </p>
+          } @if(!group.value.useCustomSignature) {
+          <p
+            class="text-sm text-muted-foreground col-start-1 row-start-2 col-span-2 row-span-1 w-full"
+          >
+            A unique identifier which you can use to identify this feature flag
+          </p>
+          }
+        </div>
+        <hlm-form-field class="w-full">
+          <input
+            hlmInput
+            placeholder="Display name"
+            formControlName="displayName"
+          />
+          <hlm-error>This field is required</hlm-error>
+        </hlm-form-field>
+        <hlm-form-field class="w-full">
+          <input
+            hlmInput
+            placeholder="Feature description"
+            class="w-full"
+            formControlName="description"
+          />
+          <hlm-error>Value is too long</hlm-error>
+        </hlm-form-field>
+        <!-- <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <h2 class="flex items-center gap-2">
+              <span class="text-lg font-bold">Overrides</span>
+              <brn-hover-card>
+                <ng-icon brnHoverCardTrigger name="heroQuestionMarkCircle" />
+                <hlm-hover-card-content *brnHoverCardContent class="w-80">
+                  <div class="space-y-3">
+                    <h3 class="text-lg">Information</h3>
+                    <p class="text-sm">
+                      An override is a particular value which should apply for
+                      consumers based on a condition.
+                    </p>
+                  </div>
+                </hlm-hover-card-content>
+              </brn-hover-card>
+            </h2>
+            <button
+              hlmBtn
+              size="sm"
+              type="button"
+              variant="ghost"
+              title="Add Zone override"
+              (click)="addOverride(group)"
+            >
+              <ng-icon name="lucidePlus" size="18" />
+              <span>Add</span>
+            </button>
+          </div>
+          <div formArrayName="overrides">
+            @for(overrideGroup of group.controls.overrides.controls; track
+            overrideGroup.value['trackingKey']) {
+            <div
+              class="grid gap-y-2 gap-x-2"
+              [ngClass]="{
+                'grid-cols-[auto_repeat(3,1fr)_auto]': overrideGroup.value['type'].value === 'zone',
+                'grid-cols-[auto_1fr_auto]': ['cidr','ip'].includes(overrideGroup.value['type'].value)
+              }"
+              [formGroup]="overrideGroup"
+            >
+              <div>
+                <hlm-form-field>
+                  <brn-select
+                    formControlName="type"
+                    placeholder="Override type"
+                  >
+                    <hlm-select-trigger>
+                      <hlm-select-value>
+                        <div *brnSelectValue="let override">
+                          <span>{{ override.label }}</span>
+                        </div>
+                      </hlm-select-value>
+                    </hlm-select-trigger>
+                    <hlm-select-content>
+                      @for(override of overrideTypes; track $index) {
+                      <hlm-option [value]="override"
+                        >{{ override.label }}</hlm-option
+                      >
+                      }
+                    </hlm-select-content>
+                  </brn-select>
+                </hlm-form-field>
+              </div>
+              @switch(overrideGroup.value['type']['value']) { @case('zone') {
+              <div>
+                <hlm-form-field class="w-full">
+                  <brn-select
+                    formControlName="country"
+                    placeholder="Select a country"
+                    class="w-full"
+                  >
+                    <hlm-select-trigger class="w-full">
+                      <hlm-select-value>
+                        <div
+                          *brnSelectValue="let country"
+                          class="flex items-center"
+                        >
+                          <span>{{ country.native }}</span>
+                        </div>
+                      </hlm-select-value>
+                    </hlm-select-trigger>
+                    <hlm-select-content class="max-h-96">
+                      @for(country of countries.value(); track country.iso2) {
+                      <hlm-option [value]="country">
+                        <img
+                          loading="lazy"
+                          src="https://flagsapi.com/{{country.iso2}}/flat/64.png"
+                          width="15"
+                          height="15"
+                          class="rounded-full"
+                        />
+                        <span>{{ country.native }}</span>
+                      </hlm-option>
+                      }
+                    </hlm-select-content>
+                  </brn-select>
+                </hlm-form-field>
+              </div>
+              <div>
+                <hlm-form-field class="w-full">
+                  <brn-select
+                    placeholder="Select a state"
+                    formControlName="state"
+                    class="w-full"
+                  >
+                    <hlm-select-trigger class="w-full">
+                      <hlm-select-value>
+                        <div
+                          class="flex items-center"
+                          *brnSelectValue="let state"
+                        >
+                          <span>{{ state?.name }}</span>
+                        </div>
+                      </hlm-select-value>
+                    </hlm-select-trigger>
+                    <hlm-select-content>
+                      @for(state of
+                      (stateCache()[overrideGroup.value['country']] ?? []);
+                      track $index) {
+                      <hlm-option [value]="state">{{ state.name }}</hlm-option>
+                      }@empty {
+                      <hlm-option [value]="null">Loading...</hlm-option>
+                      }
+                    </hlm-select-content>
+                  </brn-select>
+                </hlm-form-field>
+              </div>
+              <div></div>
+              } }
+              <div>
+                <button
+                  (click)="removeOverride(group, $index)"
+                  type="button"
+                  hlmBtn
+                  size="icon"
+                  variant="ghost"
+                >
+                  <ng-icon name="lucideTrash2" />
+                </button>
+              </div>
+            </div>
+            }
+          </div>
+        </div> -->
+        <div class="flex item-center justify-end gap-4">
+          @if(group.dirty) {
+          <button
+            [disabled]="group.invalid"
+            hlmBtn
+            size="sm"
+            type="submit"
+            class="font-semibold"
+          >
+            <ng-icon name="lucideSave" />
+            <span
+              >@if(group.value.isNew) { Save feature }@else { Update feature
+              }</span
+            ><!-- {{ group.value.isNew ? 'Save feature' : 'Update feature' }} -->
+          </button>
+          @if(!group.value.isNew) {
+          <button
+            type="button"
+            (click)="discardFormChanges($index)"
+            hlmBtn
+            size="sm"
+            variant="outline"
+          >
+            <ng-icon name="heroXMark" />
+            <span>Discard Changes</span>
+          </button>
+          } }
+          <button
+            class="items-center"
+            type="button"
+            hlmBtn
+            [disabled]="deleteInProgress() === $index"
+            size="sm"
+            variant="destructive"
+            (mousedown)="deletingIndex.set($index)"
+            (mouseup)="resetDeletion()"
+          >
+            <ng-icon name="lucideTrash2" />
+            @if(deletingIndex() === $index) {
+            <span>Removing feature...</span>
+            @if(deleteTimer !== undefined) {
+            <span class="p-1">{{ remainingDeletionTime() }}</span>
+            } }@else {
+            <span>Remove feature</span>
+            }
+          </button>
+        </div>
+      </form>
+    </hlm-accordion-content>
+  </div>
+  }
+</div>
+
+<hlm-alert-dialog [state]="pendingChangesDialogState()">
+  <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+    <hlm-alert-dialog-header>
+      <h3 hlmAlertDialogTitle>There are unsaved changes!</h3>
+      <p hlmAlertDialogDescription>
+        You have some pending changes which have not been saved. Exiting will
+        discard these changes. Are you sure you want to continue?
+      </p>
+    </hlm-alert-dialog-header>
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="closeDialog(true)">Cancel</button>
+      <button hlmAlertDialogAction (click)="closeDialog(false)">Leave</button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

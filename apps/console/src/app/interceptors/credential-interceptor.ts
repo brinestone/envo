@@ -16,7 +16,7 @@ export const credentialInterceptor: HttpInterceptorFn = (req, next) => {
           store.dispatch(SignedOut);
           return EMPTY;
         }
-        return throwError(() => e.error ?? e);
+        return throwError(() => typeof e.error == 'object' ? e.error : e);
       })
     );
   }

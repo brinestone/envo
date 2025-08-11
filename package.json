@@ -8,9 +8,13 @@
   "scripts": {
     "dev": "pnpm run --parallel dev",
     "build": "pnpm run --parallel build",
-    "migrate.local": "pnpm run --filter backend migrate.local"
+    "migrate.local": "pnpm run --filter backend migrate.local",
+    "drop.local": "pnpm run --filter backend drop.local"
   },
   "dependencies": {
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
     "tsup": "^8.5.0"
   }
 }

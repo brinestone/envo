@@ -81,6 +81,18 @@
       ],
       "@spartan-ng/helm/tabs": [
         "./libs/ui/ui-tabs-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/switch": [
+        "./libs/ui/ui-switch-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/tooltip": [
+        "./libs/ui/ui-tooltip-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/hover-card": [
+        "./libs/ui/ui-hover-card-helm/src/index.ts"
+      ],
+      "@spartan-ng/helm/alert-dialog": [
+        "./libs/ui/ui-alert-dialog-helm/src/index.ts"
       ]
     }
   },
