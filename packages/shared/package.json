@@ -1,5 +1,5 @@
 {
-  "name": "shared",
+  "name": "@envo/dto",
   "version": "1.0.0",
   "description": "",
   "type": "module",

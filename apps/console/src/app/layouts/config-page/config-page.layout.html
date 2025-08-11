@@ -1,6 +1,6 @@
 <div class="container mx-auto mt-4 space-y-3">
-  @defer (when !allProjects.isLoading() || !allProjects.hasValue()) {
-  <div class="flex items-center gap-3">
+  @defer (when !allProjects.isLoading() && allProjects.hasValue()) {
+  <div class="flex items-center gap-3 justify-center lg:justify-start">
     <p>Current project:</p>
     <brn-select
       [value]="activeProject()"
@@ -27,7 +27,8 @@
     <hlm-skeleton class="w-[100px] h-[20px]" />
   </div>
   }
-  <hlm-tabs (tabActivated)="activeTab.set($event)" [tab]="activeTab()">
+  <div class="flex justify-center lg:justify-start items-center">
+    <hlm-tabs (tabActivated)="activeTab.set($event)" [tab]="activeTab()">
     <hlm-tabs-list class="grid grid-cols-2" aria-label="tabs">
       <button hlmTabsTrigger="flags" class="font-semibold">Features</button>
       <button hlmTabsTrigger="env" class="font-semibold">
@@ -35,6 +36,7 @@
       </button>
     </hlm-tabs-list>
   </hlm-tabs>
+  </div>
 </div>
 <main class="overflow-y-auto container mx-auto">
   <router-outlet />

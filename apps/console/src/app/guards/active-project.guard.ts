@@ -9,6 +9,7 @@ import { map } from "rxjs";
 export const hasActiveProjectGuard: (redirect: string) => CanActivateFn = (redirect: string) => (route, state) => {
   const store = inject(Store);
   const router = inject(Router);
+  const redirectTree = router.createUrlTree([redirect], { queryParamsHandling: 'preserve' });
   const http = inject(HttpClient);
   const activeProject = store.selectSnapshot(currentProject);
   if (activeProject) {
@@ -16,11 +17,9 @@ export const hasActiveProjectGuard: (redirect: string) => CanActivateFn = (redir
       map(({ exists }) => {
         if (exists) return true;
         store.dispatch(new SelectProject(null));
-        return router.createUrlTree([redirect], { queryParamsHandling: 'preserve' })
+        return redirectTree;
       })
     )
   }
-  return router.createUrlTree([redirect], {
-    queryParamsHandling: 'preserve'
-  })
+  return redirectTree;
 }

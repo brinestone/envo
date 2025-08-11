@@ -9,12 +9,19 @@ import { HlmButtonDirective } from '@spartan-ng/helm/button';
 import { HlmSeparatorDirective } from '@spartan-ng/helm/separator';
 import z, { literal } from 'zod';
 
-export const MenuItemSchema = z.discriminatedUnion('separator',[z.object({
+export const SeparatorMenuItemSchema = z.object({ separator: z.literal(true) })
+export const NonSeparatorMenuItemSchema = z.object({
   route: z.string(),
   label: z.string(),
   icon: z.string().optional(),
   separator: literal(false).optional().default(false)
-}), z.object({ separator: z.literal(true) })]);
+});
+
+
+export const MenuItemSchema = z.discriminatedUnion('separator', [
+  SeparatorMenuItemSchema,
+  NonSeparatorMenuItemSchema
+]);
 
 export type MenuItem = z.infer<typeof MenuItemSchema>;
 

@@ -1,5 +1,5 @@
-import { sql } from "drizzle-orm";
-import { bigint, bigserial, boolean, integer, interval, jsonb, pgEnum, pgTable, pgView, real, smallint, text, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
+import { and, isNotNull, isNull, or, sql } from "drizzle-orm";
+import { bigint, bigserial, boolean, check, integer, interval, jsonb, pgEnum, pgTable, pgView, real, smallint, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const projects = pgTable('projects', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
@@ -42,12 +42,40 @@ export const secrets = pgTable("values", {
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
 });
 
-export const features = pgTable('features', {
+export const features = pgTable('feature_flags', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
-	name: text().notNull(),
-	label: text(),
-	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
-});
+	signature: text().notNull(),
+	displayName: text(),
+	description: text(),
+	enabled: boolean().notNull(),
+	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' }),
+	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date())
+}, t => [uniqueIndex().on(t.signature, t.project)]);
+
+export const overrideType = pgEnum('feature_override_type', ['zone', 'cidr', 'ip'])
+
+export const featureOverrides = pgTable('feature_overrides', {
+	feature: uuid().notNull().references(() => features.id, { onDelete: 'cascade' }),
+	meta: jsonb().notNull(),
+	type: overrideType().notNull(),
+	enabled: boolean(),
+	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
+	scheduledEnable: timestamp({ mode: 'date' })
+}, t => [
+	check('enabledOrDate', or(
+		and(
+			isNull(t.enabled),
+			isNotNull(t.scheduledEnable)
+		),
+		and(
+			isNull(t.scheduledEnable),
+			isNotNull(t.enabled)
+		)
+	)
+	)
+]);
 
 export const environments = pgTable("environments", {
 	id: uuid().primaryKey().notNull().defaultRandom(),
@@ -59,18 +87,6 @@ export const environments = pgTable("environments", {
 		.$onUpdate(() => new Date()),
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
 });
-
-export const environmentConfigs = pgTable('environment_configs', {
-	secret: uuid().notNull().references(() => secrets.id, { onDelete: 'cascade' }),
-	environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' }),
-	value: text()
-});
-
-export const environmentFeatures = pgTable('environment_features', {
-	feature: uuid().notNull().references(() => features.id, { onDelete: 'cascade' }),
-	environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' }),
-	enabled: boolean().default(true)
-})
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
