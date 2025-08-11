@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/http';
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -20,7 +19,7 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { currentProject } from '@state/selectors';
 import { toast } from 'ngx-sonner';
-import { distinctUntilChanged, filter, interval, map, Observable, startWith, Subject, take, takeUntil, tap } from 'rxjs';
+import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs';
 import z from 'zod';
 
 type OverrideType = 'ip' | 'cidr' | 'zone';
@@ -328,7 +327,6 @@ export class FeatureFlagsPage {
         record.controls['country'].valueChanges.pipe(
           takeUntilDestroyed(this.destroyRef),
           takeUntil(record.controls['type'].valueChanges.pipe(filter(v => v !== 'zone'))),
-          tap(v => console.log(v)),
           filter(v => !!v),
           map(v => v as unknown as CountryMeta),
           filter(v => !(v.iso2 in this.stateCache()))
