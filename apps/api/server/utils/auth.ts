@@ -2,11 +2,13 @@
 import { betterAuth, Session, User } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
+import { and, eq, exists } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { EventHandler, H3Event } from 'h3';
 import { session } from './db-schema';
 import { generateUniqueCode } from "./generators";
 import { generateIdenticon } from "./identicon";
+import z from "zod";
 
 const db = drizzle(process.env.NITRO_DATABASE_URL, {
   schema: { user, account, session, verification, organization: organizations, member, invitation }
@@ -97,6 +99,44 @@ export const requireAuth: EventHandler = async (event: H3Event) => {
   });
 
   event.context.auth = session;
+}
+
+export const requireOrgMembership: EventHandler = async (event: H3Event) => {
+  const headers = event.headers;
+  const { session: { activeOrganizationId: org } } = useAuth();
+  if (!org) throw createError({
+    statusCode: 403,
+    statusMessage: 'Forbidden',
+    message: 'Access denied. You must be in an active organization'
+  });
+
+  const orgMembership = await auth.api.getActiveMember({ headers });
+  if (orgMembership.organizationId !== org) throw createError({
+    statusCode: 403,
+    statusMessage: 'Forbidden',
+    message: 'Access denied. Unknown organization'
+  })
+}
+
+export const requireProjectUnderOrg: (projectIdKey: string) => EventHandler = (projectIdKey: string) => async (event: H3Event) => {
+  const headers = event.headers;
+  const membership = await auth.api.getActiveMember({ headers });
+  const { success, data } = await getValidatedRouterParams(event, z.object({ project: z.uuid() }).safeParse);
+  if (!success) throw createError({
+    statusCode: 400,
+    statusText: 'Bad Request',
+    message: 'Invalid Project ID'
+  });
+
+  const project = data.project;
+  const db = useDatabase({ projects });
+  const q = db.select().from(projects).where(and(eq(projects.id, project), eq(projects.organization, membership.organizationId)))
+  const result = await db.select().from(projects).where(exists(q));
+  if (result.length == 0) throw createError({
+    statusCode: 403,
+    statusMessage: 'Forbidden',
+    message: 'Access denied. Project not found'
+  })
 }
 
 export function useAuth() {

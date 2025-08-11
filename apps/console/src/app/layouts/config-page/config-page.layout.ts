@@ -12,7 +12,7 @@ import { HlmSkeletonComponent } from '@spartan-ng/helm/skeleton';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { SelectProject } from '@state/project/actions';
 import { currentProject } from '@state/selectors';
-import { Project, ProjectSchema } from 'shared';
+import { Project, ProjectSchema } from "@envo/dto";
 
 @Component({
   selector: 'ev-config-page',

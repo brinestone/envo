@@ -6,11 +6,11 @@ export default defineNitroConfig({
   // devErrorHandler: '~/dev-error-handler.ts',
   experimental: {
     openAPI: true,
+    tasks: true,
     asyncContext: true
   },
   runtimeConfig: {
     databaseUrl: "",
-    upstashToken: "",
     frontendOrigin: '',
     minioAccessKey: '',
     minioSecretKey: '',
