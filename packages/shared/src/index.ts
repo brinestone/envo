@@ -1,4 +1,32 @@
+export function generateRandomCode() {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = Array<string>();
+  for (let i = 0; i < 20; i++) {
+    result.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
+  }
+  return result.join('');
+}
+
 import { boolean, string, z } from 'zod';
+
+// export const 
+
+export const NewVariableRequestSchema = z.object({
+  name: z.string(),
+  fallbackValue: z.string(),
+  isSecret: z.boolean().default(false)
+});
+
+export const VariableSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  isSecret: z.boolean(),
+  fallbackMask: z.string()
+});
+
+export const UpdateVariableRequestSchema = NewVariableRequestSchema.partial();
 
 export const ProjectSchema = z.object({
   id: z.uuid(),
@@ -78,4 +106,7 @@ export type CountryInfo = z.output<typeof CountryInfoSchema>;
 export type CountryInfoKeys = z.infer<typeof CountryInfoKeysSchema>;
 export type FeatureFlag = z.infer<typeof FeatureFlagSchema>;
 export type NeFeatureRequest = z.infer<typeof NewFeatureRequestSchema>;
+export type NewVariableRequest = z.infer<typeof NewVariableRequestSchema>;
+export type UpdateVariableRequest = z.output<typeof UpdateVariableRequestSchema>;
 export type UpdateFeatureFlagRequest = z.output<typeof UpdateFeatureFlagRequestSchema>;
+export type Variable = z.infer<typeof VariableSchema>;

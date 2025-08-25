@@ -1,5 +1,15 @@
 <div class="flex justify-between items-center py-1">
-  <h1 class="text-2xl font-extrabold">Feature flags</h1>
+  <div class="flex items-center gap-3">
+    <h1 class="text-2xl font-extrabold flex items-center gap-3">
+      Feature Flags
+    </h1>
+    <p variant="outline" hlmBadge class="flex gap-1 items-center">
+      <span class="text-green-500"
+        ><ng-icon size="8" name="bootstrapCircleFill"
+      /></span>
+      <span class="font-medium">Synchronized</span>
+    </p>
+  </div>
   <button (click)="addFeatureForm()" size="sm" hlmBtn class="items-center">
     <ng-icon name="lucidePlus" />
     <span>New Feature</span>
@@ -8,26 +18,28 @@
 <div hlmAccordion>
   @for (group of forms.controls; track group.value.id) {
   <div hlmAccordionItem>
-    <div class="flex justify-between items-center">
-      <p class="text-lg font-bold">
-        @if(group.value.isNew) { {{(group.value.displayName?.length ?? 0) > 0 ?
-        group.value.displayName : 'New Feature'}} ✨ }@else {
-        {{group.value.displayName ?? group.value.signature}} }
-      </p>
-      <div class="flex items-center gap-2">
+    <div class="flex justify-start items-center gap-3">
+      <div>
+        <button hlmAccordionTrigger>
+          <ng-icon size="20" name="lucideChevronDown" hlm hlmAccIcon />
+        </button>
+      </div>
+      <div class="flex items-center gap-3">
+        <p class="text-lg font-bold">
+          @if(group.value.isNew) { {{(group.value.displayName?.length ?? 0) > 0
+          ? group.value.displayName : 'New Feature'}} ✨ }@else {
+          {{group.value.displayName ?? group.value.signature}} }
+        </p>
         <hlm-switch
           (click)="$event.preventDefault()"
           (changed)="toggleFeature($index, $event)"
           [checked]="group.controls.enabled.value"
         />
-        <button hlmAccordionTrigger>
-          <ng-icon size="20" name="lucideChevronDown" hlm hlmAccIcon />
-        </button>
       </div>
     </div>
     <hlm-accordion-content>
       <form
-        class="space-y-3 lg:max-w-1/2 lg:min-w-[720px] lg:mx-auto px-2 py-5"
+        class="space-y-3 lg:max-w-1/2 lg:min-w-[720px] px-2 py-5"
         [id]="group.value.id"
         [formGroup]="group"
         (ngSubmit)="submitForm($index, $event)"
@@ -282,3 +294,19 @@
   </div>
   }
 </div>
+
+<hlm-alert-dialog [state]="pendingChangesDialogState()">
+  <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+    <hlm-alert-dialog-header>
+      <h3 hlmAlertDialogTitle>There are unsaved changes!</h3>
+      <p hlmAlertDialogDescription>
+        You have some pending changes which have not been saved. Exiting will
+        discard these changes. Are you sure you want to continue?
+      </p>
+    </hlm-alert-dialog-header>
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="closeDialog(true)">Cancel</button>
+      <button hlmAlertDialogAction (click)="closeDialog(false)">Leave</button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

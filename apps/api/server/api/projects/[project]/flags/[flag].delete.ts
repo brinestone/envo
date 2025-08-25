@@ -16,6 +16,7 @@ export default defineEventHandler({
     });
 
     const { project, flag } = data;
+    const { session } = useAuth();
     await db.transaction(async tx => {
       const [{ total }] = await db.select({ total: count(features.id) }).from(features)
         .where(and(eq(features.id, flag), eq(features.project, project)))
@@ -32,6 +33,8 @@ export default defineEventHandler({
       runTask('event:record', {
         payload: {
           name: 'projects.flags.delete', data: {
+            actor: session.userId,
+            session: session.id,
             signature: feature.signature,
             id: feature.id,
             project,

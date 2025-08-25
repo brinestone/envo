@@ -1,1 +1,201 @@
-<p>env-variables works!</p>
+<div class="flex justify-between items-center py-1">
+  <div class="flex items-center gap-3">
+    <h1 class="text-2xl font-extrabold flex items-center gap-3">
+      Environment Variables
+    </h1>
+    <p variant="outline" hlmBadge class="flex gap-1 items-center">
+      <span class="text-green-500"
+        ><ng-icon size="8" name="bootstrapCircleFill"
+      /></span>
+      <span class="font-medium">Synchronized</span>
+    </p>
+  </div>
+  <button (click)="addVariable()" size="sm" hlmBtn class="items-center">
+    <ng-icon name="lucidePlus" />
+    <span>New Variable</span>
+  </button>
+</div>
+<div hlmAccordion>
+  @for(group of forms.controls; track group.value.trackingKey) {
+  <div hlmAccordionItem>
+    <div class="flex justify-between items-center bg-accent px-2">
+      <div class="flex items-center gap-3">
+        <div>
+          <button hlmAccordionTrigger>
+            <ng-icon size="20" name="lucideChevronDown" hlm hlmAccIcon />
+          </button>
+        </div>
+        <p class="font-bold text-lg">
+          @if(group.value.isNew) { {{ (group.value.name?.length ?? 0) > 0 ?
+          group.value.name : 'New Variable'}} ✨ }@else { {{ group.value.name ??
+          'N/A'}} }
+        </p>
+      </div>
+      <p class="text-sm text-muted-foreground">0 overrides</p>
+    </div>
+    <hlm-accordion-content>
+      @if(group.value.editing || group.value.isNew) {
+      <form
+        class="space-y-3 lg:max-w-1/2 lg:min-w-[720px] px-2 py-5"
+        [id]="group.value.id ?? group.value.trackingKey"
+        [formGroup]="group"
+        (ngSubmit)="submitForm($index, $event)"
+      >
+        <div class="grid w-full grid-cols-[1fr_auto] gap-x-3 items-center">
+          <hlm-form-field class="w-full">
+            <input
+              hlmInput
+              placeholder="Variable Name *"
+              formControlName="name"
+              autocomplete="off"
+            />
+            <hlm-error>
+              @if((group.value.name?.length ?? 0) > 0 &&
+              group.controls.name.hasError('pattern')) { Invalid value. Value
+              must match regex pattern: {{
+              group.controls.name.getError('pattern').requiredPattern }} }@if
+              (group.controls.name.hasError('required')) { This field is
+              required }
+            </hlm-error>
+          </hlm-form-field>
+          <div class="flex items-center gap-2">
+            <span>{{ group.value.isSecret ? 'Secret' : 'Non-secret'}}</span>
+            <hlm-switch
+              hlm
+              [checked]="group.value.isSecret ?? false"
+              (checkedChange)="group.controls.isSecret.setValue($event)"
+            />
+          </div>
+        </div>
+        <hlm-form-field class="w-full">
+          <input
+            autocomplete="off"
+            hlmInput
+            [type]="group.value.isSecret ? 'password' : 'text'"
+            placeholder="Default Value *"
+            formControlName="fallbackValue"
+          />
+          <hlm-error>This field is required</hlm-error>
+        </hlm-form-field>
+        <div class="flex justify-end items-center gap-3">
+          @if(group.dirty) {
+          <button [disabled]="group.invalid" hlmBtn type="submit" size="sm">
+            <ng-icon name="lucideSave" />
+            <span>Save @if(!group.value.isNew){Changes}</span>
+          </button>
+          @if(!group.value.isNew) {
+          <button
+            hlmBtn
+            type="button"
+            size="sm"
+            variant="outline"
+            (click)="resetForm($index)"
+          >
+            <ng-icon name="heroXMark" />
+            <span>Discard changes</span>
+          </button>
+          } }
+          <button
+            (mousedown)="deletingIndex.set($index)"
+            (mouseup)="resetDeletion()"
+            hlmBtn
+            type="button"
+            size="sm"
+            variant="destructive"
+          >
+            <ng-icon name="lucideTrash2" />
+            @if(deletingIndex() === $index) {
+            <span>Removing variable...</span>
+            @if(deleteTimer !== undefined) {
+            <span class="p-1">{{ remainingDeletionTime() }}</span>
+            } }@else {
+            <span>Remove variable</span>
+            }
+          </button>
+        </div>
+      </form>
+      }@else {
+      <div class="lg:max-w-1/2 lg:min-w-[720px] px-2 py-5 space-y-3">
+        <section class="flex items-center justify-start gap-3">
+          <p class="font-semibold">{{ group.value.name }}</p>
+          <button
+            (click)="toggleEditing($index)"
+            hlmBtn
+            variant="outline"
+            size="sm"
+            class="items-center gap-2"
+          >
+            <ng-icon name="lucidePencil" />
+            <span>Edit</span>
+          </button>
+        </section>
+        <section class="flex items-center gap-3 justify-start">
+          <p class="text-sm">
+            Default value:
+            <strong
+              >{{ group.value.fallbackValue || group.value.fallbackMask
+              }}</strong
+            >
+          </p>
+          @let trackingKey = group.value.trackingKey!; @defer(when
+          copiedValues()[trackingKey] !== 'copying') {
+          <button
+            [class.text-green-500]="copiedValues()[trackingKey] === 'copied'"
+            [disabled]="copiedValues()[group.value.trackingKey!] === 'copied'"
+            (click)="copyVariableValue($index)"
+            type="button"
+            variant="ghost"
+            size="icon"
+            title="Copy to clipboard"
+          >
+            @if(copiedValues()[trackingKey] === 'copied') {
+            <ng-icon name="lucideCheck" />
+            } @else {
+            <ng-icon name="lucideCopy" />
+            }
+          </button>
+          }@loading {
+          <hlm-spinner class="size-4" />
+          } @defer(when $any(showingValues()[trackingKey] !== 'loading')){
+          <button
+            (click)="showVariableValue($index)"
+            type="button"
+            variant="ghost"
+            size="icon"
+            title="Show value"
+          >
+            <ng-icon name="lucideEye" />
+          </button>
+          }@loading {
+          <hlm-spinner class="size-4" />
+          }
+        </section>
+        <section class="space-y-3">
+          <h3 class="font-bold text-lg">Overrides</h3>
+          <p class="text-muted-foreground">
+            Overrides are specific variations of this variable's value based on
+            different conditions.
+          </p>
+        </section>
+      </div>
+      }
+    </hlm-accordion-content>
+  </div>
+  }
+</div>
+
+<hlm-alert-dialog [state]="pendingChangesDialogState()">
+  <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">
+    <hlm-alert-dialog-header>
+      <h3 hlmAlertDialogTitle>There are unsaved changes!</h3>
+      <p hlmAlertDialogDescription>
+        You have some pending changes which have not been saved. Exiting will
+        discard these changes. Are you sure you want to continue?
+      </p>
+    </hlm-alert-dialog-header>
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel (click)="closeDialog(true)">Cancel</button>
+      <button hlmAlertDialogAction (click)="closeDialog(false)">Leave</button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

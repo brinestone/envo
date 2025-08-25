@@ -17,7 +17,7 @@
     "nitropack": "latest"
   },
   "dependencies": {
-    "@envo/dto": "workspace:*",
+    "@envo/common": "workspace:*",
     "better-auth": "^1.2.12",
     "cors": "^2.8.5",
     "countries-list": "^3.1.1",

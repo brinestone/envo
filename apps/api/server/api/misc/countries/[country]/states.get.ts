@@ -1,4 +1,4 @@
-import { StateInfoKeysSchema, StateInfoSchema } from '@envo/dto';
+import { StateInfoKeysSchema, StateInfoSchema } from '@envo/common';
 import { countries } from 'countries-list';
 import { State } from 'country-state-city';
 import z from 'zod';

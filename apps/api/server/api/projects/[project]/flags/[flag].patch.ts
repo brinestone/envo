@@ -1,4 +1,4 @@
-import { UpdateFeatureFlagRequestSchema } from "@envo/dto";
+import { FeatureFlagSchema, UpdateFeatureFlagRequestSchema } from "@envo/common";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 const ParamsSchema = z.object({
@@ -20,20 +20,30 @@ export default defineEventHandler({
     });
 
     const { data: { flag: flagId, project } } = validationResult;
-    const [{ total }] = await db.select({ total: count(features.id) }).from(features)
-      .where(and(eq(features.id, flagId), eq(features.project, project)))
+    const [{ total, signature }] = await db.select({ total: count(features.id), signature: features.signature }).from(features)
+      .where(
+        and(
+          eq(features.id, flagId), eq(features.project, project)
+        )
+      ).groupBy(features.signature);
     if (total != 1) throw createError({
       statusCode: 404,
       message: 'Feature not found'
     });
 
-    await db.transaction(async tx => {
-      const [flag] = await tx.update(features).set(data).returning();
+    if (data.signature === signature) delete data.signature;
+    const { session } = useAuth();
+    return await db.transaction(async tx => {
+      const [flag] = await tx.update(features).set(data).where(
+        eq(features.id, flagId)
+      ).returning();
       await tx.update(projects).set({ updatedAt: new Date() }).where(eq(projects.id, project));
       runTask('event:record', {
         payload: {
           name: 'projects.flags.update',
           data: {
+            actor: session.userId,
+            session: session.id,
             signature: flag.signature,
             id: flag.id,
             project,
@@ -41,6 +51,8 @@ export default defineEventHandler({
           }
         }
       });
+      setResponseStatus(event, 202, 'Accepted');
+      return FeatureFlagSchema.parse(flag);
     });
   }
 })

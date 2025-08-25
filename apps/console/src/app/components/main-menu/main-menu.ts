@@ -14,6 +14,7 @@ export const NonSeparatorMenuItemSchema = z.object({
   route: z.string(),
   label: z.string(),
   icon: z.string().optional(),
+  routerLinkActiveOptions: z.object({ exact: z.boolean().default(false) }).default({ exact: false }),
   separator: literal(false).optional().default(false)
 });
 

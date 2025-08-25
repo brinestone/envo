@@ -1,9 +1,7 @@
 <div align="left" style="position: relative;">
-<img src="https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/ec559a9f6bfd399b82bb44393651661b08aaf7ba/icons/folder-markdown-open.svg" align="right" width="30%" style="margin: -20px 0 0 20px;">
+<!-- <img src="https://raw.githubusercontent.com/PKief/vscode-material-icon-theme/ec559a9f6bfd399b82bb44393651661b08aaf7ba/icons/folder-markdown-open.svg" align="right" width="30%" style="margin: -20px 0 0 20px;"> -->
 <h1>ENVO</h1>
-<p align="left">
-	<em><code>❯ REPLACE-ME</code></em>
-</p>
+
 <p align="left">
 	<img src="https://img.shields.io/github/license/brinestone/envo?style=for-the-badge&logo=opensourceinitiative&logoColor=white&color=c33bce" alt="license">
 	<img src="https://img.shields.io/github/last-commit/brinestone/envo?style=for-the-badge&logo=git&logoColor=white&color=c33bce" alt="last-commit">
@@ -39,13 +37,14 @@
 
 ## 📍 Overview
 
-<code>❯ REPLACE-ME</code>
+A realtime configuration and feature flag management platform for software applications.
 
 ---
 
 ## 👾 Features
 
-<code>❯ REPLACE-ME</code>
+### Management of Feature flags
+Manage your feature flags in your applications. You can enable/disable a feature based on different conditions, which will apply to agents (or devices) which satisfy these conditions, along with a fallback value.
 
 ---
 
@@ -75,11 +74,11 @@
 			<table>
 			<tr>
 				<td><b><a href='https://github.com/brinestone/envo/blob/master/pnpm-lock.yaml'>pnpm-lock.yaml</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
+				<td>Project dependencies manifest</td>
 			</tr>
 			<tr>
 				<td><b><a href='https://github.com/brinestone/envo/blob/master/tsconfig.json'>tsconfig.json</a></b></td>
-				<td><code>❯ REPLACE-ME</code></td>
+				<td>Global TypeScript configuration.</td>
 			</tr>
 			<tr>
 				<td><b><a href='https://github.com/brinestone/envo/blob/master/pnpm-workspace.yaml'>pnpm-workspace.yaml</a></b></td>
@@ -607,7 +606,7 @@ Before getting started with envo, ensure your runtime environment meets the foll
 - **Package Manager:** pnpm
 
 
-### ⚙️ Installation
+<!-- ### ⚙️ Installation
 
 Install envo using one of the following methods:
 
@@ -660,7 +659,7 @@ Run the test suite using the following command:
 - [ ] **`Task 2`**: Implement feature two.
 - [ ] **`Task 3`**: Implement feature three.
 
----
+--- -->
 
 ## 🔰 Contributing
 

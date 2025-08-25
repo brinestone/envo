@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { provideIcons } from '@ng-icons/core';
+import { heroClock } from '@ng-icons/heroicons/outline';
 import { lucideList, lucideReceipt, lucideServer, lucideSettings, lucideSlidersHorizontal } from '@ng-icons/lucide';
 import { SESSION_STORAGE_ENGINE, withStorageFeature } from '@ngxs/storage-plugin';
 import { PROJECTS, provideProjectState } from '@state/project';
@@ -39,14 +40,15 @@ export const routes: Routes = [
     loadChildren: () => import('./projects.routes').then(m => m.projectRoutes),
   },
   {
-    path: 'configs',
+    path: 'projects/current',
     canActivate: [authGuard, hasActiveProjectGuard('/projects')],
     data: {
       menuItems: [
-        { route: '/projects', label: 'All Projects', icon: 'lucideList' },
+        { route: '/projects', label: 'All Projects', icon: 'lucideList', routerLinkActiveOptions: { exact: true } },
         { separator: true },
-        { route: '', icon: 'lucideSlidersHorizontal', label: 'Configs' },
-        { route: 'envs', icon: 'lucideServer', label: 'Environments' },
+        { route: '', icon: 'lucideSlidersHorizontal', label: 'Configurations' },
+        { route: 'environments', icon: 'lucideServer', label: 'Environments' },
+        { route: 'events', icon: 'heroClock', label: 'Events' },
         { route: 'settings', icon: 'lucideSettings', label: 'Settings' },
       ]
     },
@@ -54,6 +56,7 @@ export const routes: Routes = [
       projectState,
       provideIcons({
         lucideList,
+        heroClock,
         lucideSlidersHorizontal,
         lucideServer,
         lucideSettings,
@@ -69,6 +72,6 @@ export const routes: Routes = [
     loadChildren: () => import('./billing.routes').then(m => m.billingRoutes)
   },
   { path: 'about', title: 'About', component: AboutPage },
-  { path: '', redirectTo: 'configs', pathMatch: 'full' },
+  { path: '', redirectTo: 'projects/current', pathMatch: 'full' },
   { path: '**', title: 'Page not found', component: NotFoundPage }
 ];

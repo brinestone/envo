@@ -2,15 +2,20 @@ import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/htt
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CountryInfo, FeatureFlag, FeatureFlagSchema, NewFeatureRequestSchema, StateInfo, UpdateFeatureFlagRequestSchema } from '@envo/dto';
+import { CountryInfo, FeatureFlag, FeatureFlagSchema, generateRandomCode, NewFeatureRequestSchema, StateInfo, UpdateFeatureFlagRequestSchema } from '@envo/common';
+import { bootstrapCircleFill } from '@ng-icons/bootstrap-icons';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroQuestionMarkCircle, heroXMark } from '@ng-icons/heroicons/outline';
 import { lucideChevronDown, lucidePlus, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
 import { select } from '@ngxs/store';
+import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
+import { BrnDialogState } from '@spartan-ng/brain/dialog';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@spartan-ng/brain/forms';
 import { BrnHoverCardImports } from '@spartan-ng/brain/hover-card';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
 import { HlmAccordionImports } from '@spartan-ng/helm/accordion';
+import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
+import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmButtonDirective } from '@spartan-ng/helm/button';
 import { HlmFormFieldModule } from '@spartan-ng/helm/form-field';
 import { HlmHoverCardImports } from '@spartan-ng/helm/hover-card';
@@ -19,8 +24,10 @@ import { HlmSelectImports } from '@spartan-ng/helm/select';
 import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { currentProject } from '@state/selectors';
 import { toast } from 'ngx-sonner';
-import { distinctUntilChanged, filter, map, takeUntil } from 'rxjs';
+import { distinctUntilChanged, filter, map, Observable, takeUntil } from 'rxjs';
 import z from 'zod';
+import { environment } from '../../../../environments/environment.development';
+import { CanDeactivateType, PendingChanges } from '../../../../models';
 
 type OverrideType = 'ip' | 'cidr' | 'zone';
 
@@ -36,15 +43,6 @@ type FeatureForm = FormGroup<{
   autoSignature: FormControl<string | null>;
 }>;
 
-function generateRandomCode() {
-  const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = Array<string>();
-  for (let i = 0; i < 20; i++) {
-    result.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
-  }
-  return result.join('');
-}
-
 // const CountryMetaSchema = CountryInfoSchema.pick({ native: true, iso2: true, iso3: true }).required();
 type CountryMeta = Required<Pick<CountryInfo, 'native' | 'iso2' | 'iso3'>>;
 type StateMeta = Required<Pick<StateInfo, 'name' | 'isoCode'>>;
@@ -56,6 +54,7 @@ type StateMeta = Required<Pick<StateInfo, 'name' | 'isoCode'>>;
       lucidePlus,
       lucideSave,
       lucideChevronDown,
+      bootstrapCircleFill,
       heroQuestionMarkCircle,
       heroXMark,
       lucideTrash2
@@ -70,38 +69,48 @@ type StateMeta = Required<Pick<StateInfo, 'name' | 'isoCode'>>;
     HlmInputDirective,
     ReactiveFormsModule,
     BrnSelectImports,
+    BrnAlertDialogImports,
+    HlmAlertDialogImports,
     HlmSelectImports,
     HlmHoverCardImports,
     BrnHoverCardImports,
+    HlmBadgeImports,
     NgIcon
   ],
   templateUrl: './feature-flags.page.html',
   styleUrl: './feature-flags.page.scss'
 })
-export class FeatureFlagsPage {
+export class FeatureFlagsPage implements PendingChanges {
   private project = select(currentProject);
   readonly stateCache = signal<Record<string, StateMeta[]>>({});
   private destroyRef = inject(DestroyRef);
   private http = inject(HttpClient);
   private fb = inject(FormBuilder);
   readonly forms = new FormArray<FeatureForm>([]);
-  readonly countries = httpResource<CountryMeta[]>(() => `/api/misc/countries?fields=native,iso2,iso3`, { defaultValue: [] });
+  readonly countries = httpResource<CountryMeta[]>(() => `${environment.apiBaseUrl}/misc/countries?fields=native,iso2,iso3`, { defaultValue: [] });
   readonly overrideTypes = [
     { label: 'Geo zone', value: 'zone' },
     { label: 'CIDR block', value: 'cidr' },
     { label: 'IP address', value: 'ip' }
   ];
-  readonly featureFlags = httpResource(() => `/api/projects/${this.project()}/flags`, { defaultValue: [], parse: v => FeatureFlagSchema.array().parse(v) });
+  readonly featureFlags = httpResource(() => `${environment.apiBaseUrl}/projects/${this.project()}/flags`, { defaultValue: [], parse: v => FeatureFlagSchema.array().parse(v) });
   deleteTimer?: number;
   deletingIndex = signal<number | null>(null);
   remainingDeletionTime = signal(5);
   deleteInProgress = signal<number | null>(null);
+  readonly pendingChangesDialogState = signal<BrnDialogState>('closed');
+  closeDialog: (discardPendingChanges: boolean) => void = () => { this.pendingChangesDialogState.set('closed'); };
 
   constructor() {
     effect(() => {
       const loadingError = this.featureFlags.error();
       if (!loadingError) return;
-      toast.error('Could not load feature flags', { description: loadingError.message });
+      toast.error('Could not load feature flags', {
+        action: {
+          label: 'Retry',
+          onClick: () => this.featureFlags.reload(),
+        }, description: loadingError.message, duration: 9999, dismissible: true
+      });
     });
     effect(() => {
       const flags = this.featureFlags.value();
@@ -110,7 +119,7 @@ export class FeatureFlagsPage {
         let formIndex = this.forms.controls.findIndex(form => form.value.id === flag.id);
         form = this.toFeatureForm(flag, form);
         if (formIndex < 0) {
-          this.forms.push(form);
+          this.forms.insert(0, form);
         } else {
           this.forms.removeAt(formIndex);
           this.forms.insert(formIndex, form);
@@ -138,6 +147,20 @@ export class FeatureFlagsPage {
       this.doDeleteFeature(index);
     })
   }
+  hasPendingChanges(): CanDeactivateType {
+    if (this.forms.pristine) return true;
+    return new Observable<boolean>(subscriber => {
+      debugger;
+      this.closeDialog = (v) => {
+        debugger;
+        this.pendingChangesDialogState.set('closed');
+        subscriber.add(() => this.closeDialog = () => { this.pendingChangesDialogState.set('closed'); });
+        subscriber.next(!v);
+        subscriber.complete();
+      }
+      this.pendingChangesDialogState.set('open');
+    })
+  }
 
   private doDeleteFeature(index: number) {
     const form = this.forms.at(index);
@@ -149,7 +172,7 @@ export class FeatureFlagsPage {
     }
     // toast.loading('Removing feature...');
     this.deleteInProgress.set(index);
-    this.http.delete(`/api/projects/${this.project()}/flags/${id}`).subscribe({
+    this.http.delete(`${environment.apiBaseUrl}/projects/${this.project()}/flags/${id}`).subscribe({
       error: (e: HttpErrorResponse) => {
         toast.error('Could not remove feature: "' + displayName + '"', { description: e.error?.message ?? e.message });
         this.resetDeletion();
@@ -175,7 +198,7 @@ export class FeatureFlagsPage {
     if (form.value.isNew) return;
     const previousValue = !newValue;
     toast.loading('Saving changes');
-    this.http.patch(`/api/projects/${this.project()}/flags/${form.value.id}`, { enabled: newValue }).subscribe({
+    this.http.patch(`${environment.apiBaseUrl}/projects/${this.project()}/flags/${form.value.id}`, { enabled: newValue }).subscribe({
       error: (e: HttpErrorResponse) => {
         toast.error('Could not update feature: "' + form.value.displayName + '"', { description: e.error?.message ?? e.message });
         form.controls.enabled.setValue(previousValue);
@@ -197,7 +220,7 @@ export class FeatureFlagsPage {
   }
 
   private loadCountryStates(iso2: string) {
-    this.http.get<StateMeta[]>(`/api/misc/countries/${iso2}/states?fields=name,isoCode`).subscribe(data => {
+    this.http.get<StateMeta[]>(`${environment.apiBaseUrl}/misc/countries/${iso2}/states?fields=name,isoCode`).subscribe(data => {
       if (data.length == 0) return;
       this.stateCache.update(record => {
         record[iso2] = data;
@@ -235,13 +258,14 @@ export class FeatureFlagsPage {
     if (value.isNew === true) {
       try {
         const data = NewFeatureRequestSchema.parse(value);
-        this.http.post(`/api/projects/${project}/flags`, data).subscribe({
+        this.http.post(`${environment.apiBaseUrl}/projects/${project}/flags`, data).subscribe({
           error: (e: HttpErrorResponse) => {
             toast.error('Could not create feature: "' + value.displayName + '"', { description: e.error?.message ?? e.message });
           },
           complete: () => {
-            toast.success('Changes saved successfully');
+            this.forms.removeAt(index);
             this.featureFlags.reload();
+            toast.success('Changes saved successfully');
           }
         })
       } catch (e) {
@@ -250,13 +274,20 @@ export class FeatureFlagsPage {
     } else {
       const data = UpdateFeatureFlagRequestSchema.parse(value);
       try {
-        this.http.patch(`/api/projects/${project}/flags/${value.id}`, data).subscribe({
+        this.http.patch(`${environment.apiBaseUrl}/projects/${project}/flags/${value.id}`, data).subscribe({
+          next: (data) => {
+            const flag = FeatureFlagSchema.parse(data);
+            this.featureFlags.value.update(arr => {
+              arr[index] = flag;
+              return [...arr];
+            });
+            // this.toFeatureForm(flag, form);
+          },
           error: (e: HttpErrorResponse) => {
             toast.error('Could not update feature: "' + value.displayName + '"', { description: e.error?.message ?? e.message });
           },
           complete: () => {
             toast.success('Changes saved successfully');
-            this.featureFlags.reload();
           }
         })
       } catch (e) {

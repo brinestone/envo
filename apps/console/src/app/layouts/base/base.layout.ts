@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -62,4 +62,19 @@ export class BaseLayout {
   readonly menuItems = toSignal(this.route.data.pipe(
     map(data => MenuItemSchema.array().optional().default([]).parse(data?.['menuItems']))
   ), { initialValue: [] });
+
+  constructor() {
+    effect(() => {
+      const orgResourceError = this.organizations.error()
+      if (!orgResourceError) return;
+
+      const { cause } = orgResourceError;
+      if ('status' in (cause as any)) {
+        const { status } = cause as {} & { status: number };
+        if (status == 401) {
+          this.signOut().subscribe();
+        }
+      }
+    })
+  }
 }

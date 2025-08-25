@@ -1,4 +1,4 @@
-import { FeatureFlagSchema } from "@envo/dto";
+import { FeatureFlagSchema } from "@envo/common";
 import { desc, eq } from "drizzle-orm";
 import z from "zod";
 

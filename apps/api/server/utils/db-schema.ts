@@ -33,13 +33,25 @@ export const agents = pgTable('agents', {
 	environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' })
 });
 
-export const secrets = pgTable("values", {
+export const overrideType = pgEnum('feature_override_type', ['zone', 'cidr', 'ip', 'domain', 'environment'])
+
+export const variables = pgTable("vars", {
 	id: uuid().notNull().defaultRandom().primaryKey(),
 	name: text().notNull(),
 	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
 	isSecret: boolean().default(false).notNull(),
+	fallbackValue: text(),
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
+}, t => [uniqueIndex().on(t.name, t.project)]);
+
+export const variableOverrides = pgTable('variable_overrides', {
+	variable: uuid().notNull().references(() => variables.id, { onDelete: 'cascade' }),
+	meta: jsonb().notNull(),
+	type: overrideType().notNull(),
+	value: text(),
+	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date())
 });
 
 export const features = pgTable('feature_flags', {
@@ -52,8 +64,6 @@ export const features = pgTable('feature_flags', {
 	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
 	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date())
 }, t => [uniqueIndex().on(t.signature, t.project)]);
-
-export const overrideType = pgEnum('feature_override_type', ['zone', 'cidr', 'ip'])
 
 export const featureOverrides = pgTable('feature_overrides', {
 	feature: uuid().notNull().references(() => features.id, { onDelete: 'cascade' }),

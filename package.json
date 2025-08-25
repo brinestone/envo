@@ -12,7 +12,9 @@
     "drop.local": "pnpm run --filter backend drop.local"
   },
   "dependencies": {
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.1.0"
+  },
+  "devDependencies": {
     "tsup": "^8.5.0"
   }
 }

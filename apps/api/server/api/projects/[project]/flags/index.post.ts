@@ -1,4 +1,4 @@
-import { NewFeatureRequestSchema } from "@envo/dto";
+import { FeatureFlagSchema, NewFeatureRequestSchema } from "@envo/common";
 import { z } from "zod";
 import { requireOrgMembership, requireProjectUnderOrg } from "~/utils/auth";
 
@@ -35,10 +35,13 @@ export default defineEventHandler({
       // }
 
       setResponseStatus(event, 201, 'Created');
+      const { session } = useAuth();
       runTask('event:record', {
         payload: {
           name: 'projects.flags.create',
           data: {
+            actor: session.userId,
+            session: session.id,
             signature: feature.signature,
             project,
             id: feature.id,

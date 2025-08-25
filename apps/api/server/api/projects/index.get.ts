@@ -1,5 +1,5 @@
 import { eq } from "drizzle-orm";
-import { ProjectSchema } from "@envo/dto";
+import { ProjectSchema } from "@envo/common";
 
 export default defineEventHandler({
   onRequest: [requireAuth],

@@ -24,7 +24,7 @@
         [routerLink]="item.route"
         routerLinkActive="active-link"
         class="flex items-center gap-3 pl-2 justify-start py-2"
-        [routerLinkActiveOptions]="{exact: false}"
+        [routerLinkActiveOptions]="item.routerLinkActiveOptions"
       >
         <ng-icon [name]="item.icon" size="20" />
         <span [class.opacity-100]="isOpen()" class="opacity-0 transition-all line-clamp-1"
