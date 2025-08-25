@@ -5,7 +5,7 @@ import { lucideList, lucideReceipt, lucideServer, lucideSettings, lucideSlidersH
 import { SESSION_STORAGE_ENGINE, withStorageFeature } from '@ngxs/storage-plugin';
 import { PROJECTS, provideProjectState } from '@state/project';
 import { hasActiveProjectGuard } from './guards/active-project.guard';
-import { signedInGuard } from './guards/signed-in';
+import { signedInGuard } from './guards/signed-in.guard';
 import { AboutPage } from './pages/about/about.page';
 import { NotFoundPage } from './pages/not-found/not-found.page';
 

@@ -1,5 +1,6 @@
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
+import { runAppTask } from "~/utils/tasks";
 const ParamsSchema = z.object({
   flag: z.uuid(),
   project: z.uuid()
@@ -30,18 +31,16 @@ export default defineEventHandler({
         .returning();
       await tx.update(projects).set({ updatedAt: new Date() }).where(eq(projects.id, project));
       setResponseStatus(event, 202, 'Accepted');
-      runTask('event:record', {
-        payload: {
-          name: 'projects.flags.delete', data: {
-            actor: session.userId,
-            session: session.id,
-            signature: feature.signature,
-            id: feature.id,
-            project,
-            timestamp: new Date()
-          }
-        }
+      runAppTask('event:record', 'projects.flags.delete', {
+        actor: session.activeMembership as string,
+        organization: session.activeOrganizationId as string,
+        session: session.id,
+        note: 'Feature flag deleted',
+        project,
+        timestamp: new Date()
+      }, {
+        id: feature.id
       });
     })
   }
-})
+});

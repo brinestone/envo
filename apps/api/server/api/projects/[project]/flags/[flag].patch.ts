@@ -1,6 +1,7 @@
 import { FeatureFlagSchema, UpdateFeatureFlagRequestSchema } from "@envo/common";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
+import { runAppTask } from "~/utils/tasks";
 const ParamsSchema = z.object({
   flag: z.uuid(),
   project: z.uuid()
@@ -38,19 +39,8 @@ export default defineEventHandler({
         eq(features.id, flagId)
       ).returning();
       await tx.update(projects).set({ updatedAt: new Date() }).where(eq(projects.id, project));
-      runTask('event:record', {
-        payload: {
-          name: 'projects.flags.update',
-          data: {
-            actor: session.userId,
-            session: session.id,
-            signature: flag.signature,
-            id: flag.id,
-            project,
-            timestamp: new Date()
-          }
-        }
-      });
+
+      runAppTask('event:record', 'projects.flags.update', event, 'Feature flag updated', { signature: flag.signature });
       setResponseStatus(event, 202, 'Accepted');
       return FeatureFlagSchema.parse(flag);
     });
