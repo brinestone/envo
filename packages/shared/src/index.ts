@@ -1,3 +1,4 @@
+import { boolean, string, z } from 'zod';
 export function generateRandomCode() {
   const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = Array<string>();
@@ -6,10 +7,6 @@ export function generateRandomCode() {
   }
   return result.join('');
 }
-
-import { boolean, string, z } from 'zod';
-
-// export const 
 
 export const NewVariableRequestSchema = z.object({
   name: z.string(),
