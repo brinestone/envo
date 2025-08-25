@@ -1,5 +1,6 @@
 import { VariableSchema } from "@envo/common";
 import { desc, eq } from "drizzle-orm";
+import { maskString } from "~/utils/utils";
 
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
@@ -10,6 +11,6 @@ export default defineEventHandler({
     return await db.select().from(variables)
       .where(eq(variables.project, project))
       .orderBy(desc(variables.updatedAt))
-      .then(v => VariableSchema.array().parse(v));
+      .then(v => VariableSchema.array().parse(v.map((variable) => ({ ...variable, fallbackMask: maskString(variable.fallbackValue) }))));
   }
 })

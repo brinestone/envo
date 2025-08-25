@@ -8,10 +8,13 @@ import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroQuestionMarkCircle, heroXMark } from '@ng-icons/heroicons/outline';
 import { lucideChevronDown, lucidePlus, lucideSave, lucideTrash2 } from '@ng-icons/lucide';
 import { select } from '@ngxs/store';
+import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
+import { BrnDialogState } from '@spartan-ng/brain/dialog';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@spartan-ng/brain/forms';
 import { BrnHoverCardImports } from '@spartan-ng/brain/hover-card';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
 import { HlmAccordionImports } from '@spartan-ng/helm/accordion';
+import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
 import { HlmBadgeImports } from '@spartan-ng/helm/badge';
 import { HlmButtonDirective } from '@spartan-ng/helm/button';
 import { HlmFormFieldModule } from '@spartan-ng/helm/form-field';
@@ -25,9 +28,6 @@ import { distinctUntilChanged, filter, map, Observable, takeUntil } from 'rxjs';
 import z from 'zod';
 import { environment } from '../../../../environments/environment.development';
 import { CanDeactivateType, PendingChanges } from '../../../../models';
-import { BrnDialogContentDirective, BrnDialogState } from '@spartan-ng/brain/dialog';
-import { HlmAlertDialogImports } from '@spartan-ng/helm/alert-dialog';
-import { BrnAlertDialogImports } from '@spartan-ng/brain/alert-dialog';
 
 type OverrideType = 'ip' | 'cidr' | 'zone';
 
@@ -105,7 +105,12 @@ export class FeatureFlagsPage implements PendingChanges {
     effect(() => {
       const loadingError = this.featureFlags.error();
       if (!loadingError) return;
-      toast.error('Could not load feature flags', { description: loadingError.message });
+      toast.error('Could not load feature flags', {
+        action: {
+          label: 'Retry',
+          onClick: () => this.featureFlags.reload(),
+        }, description: loadingError.message, duration: 9999, dismissible: true
+      });
     });
     effect(() => {
       const flags = this.featureFlags.value();
@@ -114,7 +119,7 @@ export class FeatureFlagsPage implements PendingChanges {
         let formIndex = this.forms.controls.findIndex(form => form.value.id === flag.id);
         form = this.toFeatureForm(flag, form);
         if (formIndex < 0) {
-          this.forms.insert(0,form);
+          this.forms.insert(0, form);
         } else {
           this.forms.removeAt(formIndex);
           this.forms.insert(formIndex, form);

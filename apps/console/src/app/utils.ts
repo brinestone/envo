@@ -3,6 +3,13 @@ import { map, merge, throwError } from 'rxjs';
 import { Actions, ActionType, ofActionCompleted, ofActionDispatched } from '@ngxs/store';
 import { DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AbstractControl } from '@angular/forms';
+
+export function ignoreFormTrackedChanges(form: AbstractControl) {
+  form.markAsUntouched();
+  form.markAsPristine();
+  form.updateValueAndValidity();
+}
 
 export function extractHttpError(error: HttpErrorResponse) {
   return throwError(() => error.error ?? error);

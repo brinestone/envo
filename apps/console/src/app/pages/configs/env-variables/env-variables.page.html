@@ -34,6 +34,7 @@
       <p class="text-sm text-muted-foreground">0 overrides</p>
     </div>
     <hlm-accordion-content>
+      @if(group.value.editing || group.value.isNew) {
       <form
         class="space-y-3 lg:max-w-1/2 lg:min-w-[720px] px-2 py-5"
         [id]="group.value.id ?? group.value.trackingKey"
@@ -94,12 +95,90 @@
             <span>Discard changes</span>
           </button>
           } }
-          <button hlmBtn type="button" size="sm" variant="destructive">
+          <button
+            (mousedown)="deletingIndex.set($index)"
+            (mouseup)="resetDeletion()"
+            hlmBtn
+            type="button"
+            size="sm"
+            variant="destructive"
+          >
             <ng-icon name="lucideTrash2" />
-            <span>Delete</span>
+            @if(deletingIndex() === $index) {
+            <span>Removing variable...</span>
+            @if(deleteTimer !== undefined) {
+            <span class="p-1">{{ remainingDeletionTime() }}</span>
+            } }@else {
+            <span>Remove variable</span>
+            }
           </button>
         </div>
       </form>
+      }@else {
+      <div class="lg:max-w-1/2 lg:min-w-[720px] px-2 py-5 space-y-3">
+        <section class="flex items-center justify-start gap-3">
+          <p class="font-semibold">{{ group.value.name }}</p>
+          <button
+            (click)="toggleEditing($index)"
+            hlmBtn
+            variant="outline"
+            size="sm"
+            class="items-center gap-2"
+          >
+            <ng-icon name="lucidePencil" />
+            <span>Edit</span>
+          </button>
+        </section>
+        <section class="flex items-center gap-3 justify-start">
+          <p class="text-sm">
+            Default value:
+            <strong
+              >{{ group.value.fallbackValue || group.value.fallbackMask
+              }}</strong
+            >
+          </p>
+          @let trackingKey = group.value.trackingKey!; @defer(when
+          copiedValues()[trackingKey] !== 'copying') {
+          <button
+            [class.text-green-500]="copiedValues()[trackingKey] === 'copied'"
+            [disabled]="copiedValues()[group.value.trackingKey!] === 'copied'"
+            (click)="copyVariableValue($index)"
+            type="button"
+            variant="ghost"
+            size="icon"
+            title="Copy to clipboard"
+          >
+            @if(copiedValues()[trackingKey] === 'copied') {
+            <ng-icon name="lucideCheck" />
+            } @else {
+            <ng-icon name="lucideCopy" />
+            }
+          </button>
+          }@loading {
+          <hlm-spinner class="size-4" />
+          } @defer(when $any(showingValues()[trackingKey] !== 'loading')){
+          <button
+            (click)="showVariableValue($index)"
+            type="button"
+            variant="ghost"
+            size="icon"
+            title="Show value"
+          >
+            <ng-icon name="lucideEye" />
+          </button>
+          }@loading {
+          <hlm-spinner class="size-4" />
+          }
+        </section>
+        <section class="space-y-3">
+          <h3 class="font-bold text-lg">Overrides</h3>
+          <p class="text-muted-foreground">
+            Overrides are specific variations of this variable's value based on
+            different conditions.
+          </p>
+        </section>
+      </div>
+      }
     </hlm-accordion-content>
   </div>
   }

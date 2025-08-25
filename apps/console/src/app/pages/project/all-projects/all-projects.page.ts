@@ -17,8 +17,8 @@ import { CreateProject, SelectProject } from '@state/project/actions';
 import { activeOrganization } from '@state/selectors';
 import { toast } from 'ngx-sonner';
 import { concatMap } from 'rxjs';
-import { isActionLoading } from '../../../utils';
 import { environment } from '../../../../environments/environment.development';
+import { isActionLoading } from '../../../utils';
 
 @Component({
   viewProviders: [
@@ -51,6 +51,7 @@ export class AllProjectsPage implements OnInit {
   private selectProject = dispatch(SelectProject);
   readonly creatingProject = isActionLoading(CreateProject);
   readonly projects = httpResource<Project[]>(() => `${environment.apiBaseUrl}/projects?org=${this.currentOrg()}`, { defaultValue: [] });
+
   onNewProject({ name }: Submission) {
     this.createProject(name, this.currentOrg()!).subscribe({
       error: (e: Error) => {

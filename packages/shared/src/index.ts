@@ -23,8 +23,10 @@ export const VariableSchema = z.object({
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   isSecret: z.boolean(),
-  fallbackValue: z.string()
-})
+  fallbackMask: z.string()
+});
+
+export const UpdateVariableRequestSchema = NewVariableRequestSchema.partial();
 
 export const ProjectSchema = z.object({
   id: z.uuid(),
@@ -105,5 +107,6 @@ export type CountryInfoKeys = z.infer<typeof CountryInfoKeysSchema>;
 export type FeatureFlag = z.infer<typeof FeatureFlagSchema>;
 export type NeFeatureRequest = z.infer<typeof NewFeatureRequestSchema>;
 export type NewVariableRequest = z.infer<typeof NewVariableRequestSchema>;
+export type UpdateVariableRequest = z.output<typeof UpdateVariableRequestSchema>;
 export type UpdateFeatureFlagRequest = z.output<typeof UpdateFeatureFlagRequestSchema>;
 export type Variable = z.infer<typeof VariableSchema>;
