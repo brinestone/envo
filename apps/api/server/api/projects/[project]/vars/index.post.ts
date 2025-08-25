@@ -1,6 +1,7 @@
 import { NewVariableRequestSchema } from "@envo/common";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
+import { runAppTask } from "~/utils/tasks";
 
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
@@ -32,18 +33,7 @@ export default defineEventHandler({
       }).returning();
 
       setResponseStatus(event, 201, 'Created');
-      runTask('event:record', {
-        payload: {
-          name: 'projects.vars.create',
-          data: {
-            actor: session.userId,
-            session: session.id,
-            project,
-            id: variable.id,
-            timestamp: new Date()
-          }
-        }
-      });
+      runAppTask('event:record', 'projects.vars.create', event, 'Variable created', { id: variable.id });
     })
   }
 })

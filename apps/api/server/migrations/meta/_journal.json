@@ -106,6 +106,13 @@
       "when": 1754929374439,
       "tag": "0014_goofy_smasher",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1756132236368,
+      "tag": "0015_salty_gladiator",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,7 @@
 import { UpdateVariableRequestSchema, VariableSchema } from "@envo/common";
 import { and, eq } from "drizzle-orm";
 import z from "zod"
+import { runAppTask } from "~/utils/tasks";
 import { maskString } from "~/utils/utils";
 
 const ParamsSchema = z.object({
@@ -35,18 +36,10 @@ export default defineEventHandler({
         .where(eq(projects.id, paramsValidationResult.data.project));
 
       setResponseStatus(event, sanitizeStatusCode(202));
-      runTask('event:record', {
-        payload: {
-          name: 'projects.vars.update',
-          data: {
-            paths: Object.keys(bodyValidationResult.data),
-            actor: session.userId,
-            session: session.id,
-            project: paramsValidationResult.data.project,
-            id: paramsValidationResult.data.var,
-            timestamp: new Date()
-          }
-        }
+      runAppTask('event:record', 'projects.vars.update', event, 'Variable updated', {
+        paths: Object.keys(bodyValidationResult.data),
+        project: paramsValidationResult.data.project,
+        id: paramsValidationResult.data.var,
       });
       return VariableSchema.parse({ ...updatedValue, fallbackMask: maskString(updatedValue.fallbackValue) });
     })

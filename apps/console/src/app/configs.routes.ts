@@ -1,5 +1,5 @@
 import { Routes } from "@angular/router";
-import { checkPendingChangesGuard } from "./guards/check-pending-changes-guard";
+import { checkPendingChangesGuard } from "./guards/check-pending-changes.guard";
 
 export const configRoutes: Routes = [
   {

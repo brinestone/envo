@@ -17,6 +17,7 @@ export const events = pgTable('events', {
 	recordedAt: timestamp({ mode: 'date' }).defaultNow(),
 	actor: text().references(() => member.id, { onDelete: 'set null' }),
 	project: uuid().references(() => projects.id, { onDelete: 'set null' }),
+	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
 	meta: jsonb()
 });
 

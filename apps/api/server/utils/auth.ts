@@ -98,7 +98,8 @@ export const requireAuth: EventHandler = async (event: H3Event) => {
     statusMessage: 'Unauthorized'
   });
 
-  event.context.auth = session;
+  const { id } = await auth.api.getActiveMember({ headers: event.headers });
+  event.context.auth = { session: { ...session.session, activeMembership: id }, user: session.user };
 }
 
 export const requireOrgMembership: EventHandler = async (event: H3Event) => {
@@ -140,5 +141,5 @@ export const requireProjectUnderOrg: (projectIdKey: string) => EventHandler = (p
 }
 
 export function useAuth() {
-  return useEvent().context.auth as { session: Session & { activeOrganizationId?: string }, user: User };
+  return useEvent().context.auth as { session: Session & { activeOrganizationId?: string, activeMembership?: string }, user: User };
 }
