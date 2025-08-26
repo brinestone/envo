@@ -7,7 +7,7 @@ import { NavigationActionTiming, withNgxsRouterPlugin } from '@ngxs/router-plugi
 import { LOCAL_STORAGE_ENGINE, withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
 import { routes } from './app.routes';
-import { credentialInterceptor } from './interceptors/credential-interceptor';
+import { credentialInterceptor } from './interceptors/credential.interceptor';
 import { AUTH_STATE, AuthState } from './state/auth';
 
 export const appConfig: ApplicationConfig = {

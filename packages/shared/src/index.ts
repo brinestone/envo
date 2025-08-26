@@ -1,11 +1,17 @@
 import { boolean, string, z } from 'zod';
-export function generateRandomCode() {
+import { uniqueNamesGenerator, adjectives, colors, animals } from 'unique-names-generator';
+
+export function generateRandomCode(length = 20) {
   const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let result = Array<string>();
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < length; i++) {
     result.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
   }
   return result.join('');
+}
+
+export function generateUniqueName(style: 'capital' | 'lowerCase' | 'upperCase' = 'lowerCase', separator = ' ') {
+  return uniqueNamesGenerator({ separator, style, dictionaries: [adjectives, colors, animals] });
 }
 
 export const NewVariableRequestSchema = z.object({
@@ -23,6 +29,35 @@ export const VariableSchema = z.object({
   fallbackMask: z.string()
 });
 
+export const PlatformTypeSchema = z.enum(['web', 'mobile', 'cli', 'server']);
+export const EnvironmentTypeSchema = z.enum(['development', 'production', 'ci', 'staging']);
+export const NewEnvironmentRequestSchema = z.object({
+  name: z.string(),
+  type: EnvironmentTypeSchema,
+  isDefault: z.boolean().optional()
+});
+
+export const EnvironmentSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  type: EnvironmentTypeSchema,
+  isDefault: z.boolean(),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date()
+});
+
+export const EnvironmentNumericStatSchema = z.object({
+  type: z.literal('numeric'),
+  count: z.coerce.number()
+});
+
+export const EnvironmentDateStatSchema = z.object({
+  type: z.literal('date'),
+  value: z.coerce.date()
+});
+
+export const EnvironmentStatSchema = z.discriminatedUnion('type', [EnvironmentNumericStatSchema, EnvironmentDateStatSchema])
+
 export const UpdateVariableRequestSchema = NewVariableRequestSchema.partial();
 
 export const ProjectSchema = z.object({
@@ -33,8 +68,6 @@ export const ProjectSchema = z.object({
   enabled: z.boolean(),
   updatedAt: z.coerce.date(),
 });
-
-export type Project = z.infer<typeof ProjectSchema>;
 
 export const FeatureZoneOverrideSchema = z.object({
   country: z.string().max(2),
@@ -107,3 +140,9 @@ export type NewVariableRequest = z.infer<typeof NewVariableRequestSchema>;
 export type UpdateVariableRequest = z.output<typeof UpdateVariableRequestSchema>;
 export type UpdateFeatureFlagRequest = z.output<typeof UpdateFeatureFlagRequestSchema>;
 export type Variable = z.infer<typeof VariableSchema>;
+export type PlatformType = z.infer<typeof PlatformTypeSchema>;
+export type Project = z.infer<typeof ProjectSchema>;
+export type EnvironmentType = z.infer<typeof EnvironmentTypeSchema>;
+export type NewEnvironmentRequest = z.infer<typeof NewEnvironmentRequestSchema>;
+export type Environment = z.infer<typeof EnvironmentSchema>;
+export type EnvironmentStat = z.infer<typeof EnvironmentStatSchema>;

@@ -1,3 +1,4 @@
+import { EnvironmentTypeSchema, PlatformTypeSchema } from "@envo/common";
 import { and, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { bigint, bigserial, boolean, check, integer, interval, jsonb, pgEnum, pgTable, pgView, real, smallint, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 
@@ -21,22 +22,22 @@ export const events = pgTable('events', {
 	meta: jsonb()
 });
 
-export const agentTypes = pgEnum('agent_types', ['web', 'mobile', 'cli', 'server']);
+export const platformTypes = pgEnum('platform_types', PlatformTypeSchema.enum);
 export const syncTransports = pgEnum('sync_transports', ['sse', 'websocket', 'webhook', 'poll', 'pub-sub']);
-export const agents = pgTable('agents', {
+export const platforms = pgTable('platforms', {
 	id: text().primaryKey().notNull(),
 	name: text().notNull(),
-	currentIp: text().notNull(),
+	currentIp: text(),
 	ping: smallint().default(0),
-	type: agentTypes().notNull(),
+	type: platformTypes().notNull(),
 	syncTransport: syncTransports().notNull(),
 	syncParams: jsonb().notNull(),
 	environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' })
 });
 
-export const overrideType = pgEnum('feature_override_type', ['zone', 'cidr', 'ip', 'domain', 'environment'])
+export const overrideType = pgEnum('feature_override_type', ['ip', 'cidr', 'zone', 'domain', 'environment'])
 
-export const variables = pgTable("vars", {
+export const variables = pgTable("variables", {
 	id: uuid().notNull().defaultRandom().primaryKey(),
 	name: text().notNull(),
 	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
@@ -88,21 +89,26 @@ export const featureOverrides = pgTable('feature_overrides', {
 	)
 ]);
 
+export const environmentTypes = pgEnum('environment_types', EnvironmentTypeSchema.enum);
 export const environments = pgTable("environments", {
 	id: uuid().primaryKey().notNull().defaultRandom(),
 	name: text().notNull(),
+	type: environmentTypes().notNull(),
+	enabled: boolean().default(true),
 	createdAt: timestamp({ mode: "date" }).notNull().defaultNow(),
 	updatedAt: timestamp({ mode: "date" })
 		.notNull()
 		.defaultNow()
 		.$onUpdate(() => new Date()),
+	isDefault: boolean().notNull(),
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
-});
+}, t => [uniqueIndex().on(t.name, t.project)]);
 
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
 	name: text('name').notNull(),
 	email: text('email').notNull().unique(),
+
 	emailVerified: boolean('email_verified').notNull(),
 	image: text('image'),
 	createdAt: timestamp('created_at').notNull(),
@@ -177,6 +183,30 @@ export const organizations = pgTable('organization', {
 	updatedAt: timestamp({ mode: 'date' }).defaultNow().notNull().$onUpdateFn(() => new Date()),
 });
 
+export const apiKeys = pgTable('api_keys', {
+	id: text().notNull().primaryKey(),
+	name: text(),
+	start: text(),
+	prefix: text(),
+	key: text().notNull(),
+	userId: text().notNull().references(() => user.id, { onDelete: 'cascade' }),
+	refillInterval: integer(),
+	refillAmount: integer(),
+	lastRefillAt: timestamp({ mode: 'date' }),
+	enabled: boolean().default(true),
+	rateLimitEnabled: boolean().notNull(),
+	rateLimitTimeWindow: integer(),
+	rateLimitMax: integer(),
+	requestCount: integer().default(0),
+	remaining: integer(),
+	lastRequest: timestamp({ mode: 'date' }),
+	expiresAt: timestamp({ mode: 'date' }),
+	createdAt: timestamp({ mode: 'date' }).defaultNow(),
+	updatedAt: timestamp({ mode: 'date' }).defaultNow().$onUpdateFn(() => new Date()),
+	permissions: text(),
+	metadata: jsonb()
+})
+
 export const subscriptions = pgTable('subscriptions', {
 	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
 	currentTier: subscriptionTiers().notNull().default('basic'),
@@ -214,12 +244,12 @@ export const prices = pgTable('prices', {
 
 export const pgAgents = pgView('vw_agents').as(qb => {
 	return qb.select({
-		id: agents.id,
-		name: agents.name,
-		currentIp: agents.currentIp,
-		ping: agents.ping,
-		isOnline: sql<boolean>`${agents.ping} > 0`.as('is_online'),
-		environment: agents.environment
+		id: platforms.id,
+		name: platforms.name,
+		currentIp: platforms.currentIp,
+		ping: platforms.ping,
+		isOnline: sql<boolean>`${platforms.ping} > 0`.as('is_online'),
+		environment: platforms.environment
 	})
-		.from(agents)
+		.from(platforms)
 });

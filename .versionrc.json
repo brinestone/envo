@@ -1,0 +1,16 @@
+{
+  "bumpFiles": [
+    {
+      "filename": "packages/shared/package.json",
+      "type": "json"
+    },
+    {
+      "filename": "apps/console/package.json",
+      "type": "json"
+    },
+    {
+      "filename": "apps/api/package.json",
+      "type": "json"
+    }
+  ]
+}

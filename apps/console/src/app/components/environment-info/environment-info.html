@@ -1,0 +1,53 @@
+<section>
+  <div
+    class="flex flex-col items-center justify-start landscape:items-start md:items-start bg-accent/80 text-accent-foreground p-3 rounded-md border-2 space-y-3 border-accent"
+  >
+    <div class="flex justify-between flex-wrap w-full">
+      <h2 class="text-xl font-bold line-clamp-1">{{ envRef()?.name }}</h2>
+      <button
+        (click)="delete.emit(envRef()?.id)"
+        hlmBtn
+        size="sm"
+        variant="destructive"
+      >
+        <ng-icon name="lucideTrash2" />
+        <span>Delete</span>
+      </button>
+    </div>
+    <div class="flex gap-4 flex-wrap justify-around items-center">
+      @for(stat of stats; track $index) {
+      <div class="space-y-1">
+        <div class="text-muted-foreground flex items-center gap-2">
+          <ng-icon [name]="stat.icon" />
+          <span>{{stat.label}}</span>
+        </div>
+        <p class="text-xl font-semibold">
+          @switch(stat.type) { @case('date') { {{ stat.value |
+          date:'shortDate'}} } @case('numeric') { {{ stat.count | number }} } }
+        </p>
+      </div>
+      }
+    </div>
+  </div>
+</section>
+<section>
+  <hlm-tabs tab="activity" class="w-full">
+    <hlm-tabs-list class="grid w-auto grid-cols-2" aria-label="tabs example">
+      <button hlmTabsTrigger="activity">
+        <ng-icon name="lucideClockAlert" />
+        <span>Activity</span>
+      </button>
+      <button hlmTabsTrigger="agents">
+        <ng-icon name="lucideComputer" />
+        <span>Agents</span>
+      </button>
+    </hlm-tabs-list>
+    <div hlmTabsContent="activity">
+      Activity in this environment will appear here
+    </div>
+    <div hlmTabsContent="agents">
+      Statistics on traffic and sync operations on this environment will appear
+      here
+    </div>
+  </hlm-tabs>
+</section>

@@ -11,7 +11,7 @@ export function ignoreFormTrackedChanges(form: AbstractControl) {
   form.updateValueAndValidity();
 }
 
-export function extractHttpError(error: HttpErrorResponse) {
+export function unwrapHttpError(error: HttpErrorResponse) {
   return throwError(() => error.error ?? error);
 }
 

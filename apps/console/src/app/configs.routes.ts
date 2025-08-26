@@ -11,5 +11,5 @@ export const configRoutes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'flags' }
     ]
   },
-  { path: '', pathMatch: 'full', redirectTo: 'configs' }
+  {path: '', pathMatch: 'full', redirectTo: 'configs'}
 ];
