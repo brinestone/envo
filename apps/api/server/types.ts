@@ -1,12 +1,13 @@
 import { TaskContext, TaskEvent, TaskPayload } from "nitropack";
 
 type AppEventGroups = 'projects';
-type AppEventTargets = 'flags' | 'vars';
+type AppEventTargets = 'flags' | 'vars' | 'events' | 'environments';
 type AppActions = 'create' | 'update' | 'delete' | 'sync';
 type TaskGroups = 'event';
 type TaskActions = 'record';
 type PrimitiveTypes = string | number | boolean | Date;
 
+export type AppResources = `${AppEventGroups}.${AppEventTargets}`;
 export type EventSignature = `${AppEventGroups}.${AppEventTargets}.${AppActions}`;
 export type TaskNames = `${TaskGroups}:${TaskActions}`;
 export type AppEventPayload = Record<string, PrimitiveTypes | PrimitiveTypes[]> & TaskPayload;

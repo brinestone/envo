@@ -5,10 +5,10 @@ import { organization } from "better-auth/plugins";
 import { and, eq, exists } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { EventHandler, H3Event } from 'h3';
-import { session } from './db-schema';
-import { generateUniqueCode } from "./generators";
-import { generateIdenticon } from "./identicon";
 import z from "zod";
+import { session } from './db-schema';
+import { generateIdenticon } from "./identicon";
+import { generateRandomCode, generateUniqueName } from "@envo/common";
 
 const db = drizzle(process.env.NITRO_DATABASE_URL, {
   schema: { user, account, session, verification, organization: organizations, member, invitation }
@@ -19,8 +19,6 @@ const plugins = [
     allowUserToCreateOrganization: false,
     teams: { enabled: false }
   }),
-  // haveIBeenPwned(),
-  // apiKey()
 ];
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -44,7 +42,7 @@ export const auth = betterAuth({
       create: {
         before: async (user) => {
           try {
-            const objectName = generateUniqueCode(20);
+            const objectName = generateRandomCode(20);
             const png = generateIdenticon(Buffer.from(JSON.stringify(user)));
             const image = await uploadFile(png, objectName + '.png', 'image/png');
             user.image = image;
@@ -57,8 +55,8 @@ export const auth = betterAuth({
         after: async (user, ctx) => {
           try {
             await db.transaction(async tx => {
-              const name = getUniqueRandomName();
-              const slug = generateUniqueCode(10);
+              const name = generateUniqueName('capital');
+              const slug = generateRandomCode(10);
               const id = user.id;
               const png = generateIdenticon(Buffer.from(name + slug));
               const logo = await uploadFile(png, id + '.png', 'image/png');
@@ -84,6 +82,11 @@ export const auth = betterAuth({
           }
         }
       }
+    }
+  },
+  user: {
+    additionalFields: {
+      isServiceAccount: { type: 'boolean', defaultValue: false }
     }
   },
   plugins,

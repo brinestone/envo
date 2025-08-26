@@ -1,0 +1,143 @@
+<div class="page-header">
+  <h1 class="page-title">Environments</h1>
+  <hlm-sheet #sheetRef side="right">
+    <button
+      [disabled]="allEnvironments.isLoading() || !!allEnvironments.error()"
+      brnSheetTrigger
+      hlmBtn
+      size="sm"
+    >
+      <ng-icon name="lucidePlus" />
+      <span>Add Environment</span>
+    </button>
+    <hlm-sheet-content *brnSheetContent="let ctx">
+      <hlm-sheet-header>
+        <h3 hlmSheetTitle>New Environment</h3>
+        <p hlmSheetDescription>Create an environment for this project</p>
+      </hlm-sheet-header>
+      <form
+        (ngSubmit)="submitForm()"
+        #newEnvironmentForm="ngForm"
+        class="px-4 space-y-3"
+      >
+        <div class="space-y-1">
+          <input
+            #newEnvironmentNameInput="ngModel"
+            placeholder="e.g. {{ suggestedNewEnvironmentName }}"
+            hlmInput
+            name="name"
+            [(ngModel)]="newEnvironmentName"
+          />
+          @if(newEnvironmentNameInput.invalid && newEnvironmentNameInput.dirty)
+          {
+          <small class="text-red-500 block"> This field is required </small>
+          }
+        </div>
+        <div class="space-y-1">
+          <brn-select
+            name="type"
+            required
+            [(ngModel)]="newEnvironmentType"
+            #newEnvironmentTypeInput="ngModel"
+            placeholder="Select an option"
+          >
+            <hlm-select-trigger class="w-full">
+              <hlm-select-value class="capitalize" />
+            </hlm-select-trigger>
+            <hlm-select-content>
+              <!-- <hlm-option [value]="null">Select an option </hlm-option> -->
+              @for(option of environmentOptions; track option) {
+              <hlm-option [value]="option" class="capitalize"
+                >{{ option }}</hlm-option
+              >
+              }
+            </hlm-select-content>
+          </brn-select>
+          @if(newEnvironmentTypeInput.invalid && newEnvironmentTypeInput.dirty)
+          {
+          <small class="text-red-500 block"> This field is required </small>
+          }
+        </div>
+        @if(allEnvironments.value().length > 0){
+        <div class="flex items-center gap-2">
+          <span>Make default</span>
+          <hlm-switch
+            [(ngModel)]="makeNewEnvironmentDefault"
+            name="isDefault"
+          />
+        </div>
+        }
+      </form>
+      <hlm-sheet-footer>
+        <button
+          (click)="submitForm()"
+          [disabled]="newEnvironmentForm.invalid"
+          hlmBtn
+        >
+          <ng-icon name="lucideSave" />
+          <span>Save</span>
+        </button>
+      </hlm-sheet-footer>
+    </hlm-sheet-content>
+  </hlm-sheet>
+</div>
+
+<section
+  class="page-section"
+  [ngClass]="{
+    '!grid grid-cols-[1fr_80%]': (focusedEnvironments()?.value?.length ?? 0) > 0
+  }"
+>
+  @defer (when !allEnvironments.isLoading()) {
+  <div class="max-h-full overflow-y-auto">
+    <ul
+      [(cdkListboxValue)]="$any(focusedEnvironments)"
+      cdkListbox
+      class="grid auto-rows-[50px]"
+    >
+      @for(environment of allEnvironments.value(); track environment.id) {
+      <li
+        [class.justify-end]="focusedEnvironment() != null"
+        class="flex flex-wrap gap-3 items-center [&:is(.cdk-option-active)]:font-bold [&:is(.cdk-option-active)]:rounded-l [&:is(.cdk-option-active)]:bg-primary [&:is(.cdk-option-active)]:text-primary-foreground cursor-pointer hover:bg-accent/70 p-2 [&:not(first-child)]:border-b-2 [&:not(first-child)]:border-accent"
+        [cdkOption]="environment.id"
+      >
+        <p
+          [class.text-end]="focusedEnvironment() != null"
+          class="line-clamp-1 flex-1"
+        >
+          {{ environment.name }}
+        </p>
+        <span
+          hlmBadge
+          [variant]="focusedEnvironment()?.id === environment.id ? 'secondary' : 'outline'"
+          class="capitalize font-semibold"
+          >{{ environment.type }}</span
+        >
+        @if(environment.isDefault) {
+        <span
+          hlmBadge
+          [variant]="focusedEnvironment()?.id === environment.id ? 'secondary' : 'outline'"
+          class="capitalize font-semibold"
+        >
+          Default
+        </span>
+        }
+      </li>
+      }
+    </ul>
+  </div>
+  @if((focusedEnvironments()?.value?.length ?? 0) > 0) {
+  <div class="border-l border-accent space-y-3">
+    <ev-environment-info
+      (delete)="deleteEnvironment($event)"
+      [envRef]="focusedEnvironment() ?? undefined"
+    />
+  </div>
+  } }@loading { @for(__ of [1,2,3,4];track $index) {
+  <div class="grid grid-cols-[repeat(auto-fit,minmax(100px,150px))] gap-3">
+    @for(_ of [1,2,3,4];track $index) {
+    <hlm-skeleton class="block h-[20px]" />
+    }
+  </div>
+  } }
+</section>

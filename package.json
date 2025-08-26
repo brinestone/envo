@@ -6,6 +6,7 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
+    "predev": "rm -rf apps/console/.angular",
     "dev": "pnpm run --parallel dev",
     "build": "pnpm run --parallel build",
     "migrate.local": "pnpm run --filter backend migrate.local",
@@ -15,6 +16,7 @@
     "date-fns": "^4.1.0"
   },
   "devDependencies": {
+    "standard-version": "^9.5.0",
     "tsup": "^8.5.0"
   }
 }

@@ -113,6 +113,55 @@
       "when": 1756132236368,
       "tag": "0015_salty_gladiator",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1756142895112,
+      "tag": "0016_low_kingpin",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1756145407519,
+      "tag": "0017_fast_titania",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1756205974220,
+      "tag": "0018_worthless_jack_murdock",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1756210319651,
+      "tag": "0019_new_synch",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1756210382748,
+      "tag": "0020_cultured_menace",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1756212598957,
+      "tag": "0021_productive_starhawk",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1756213725426,
+      "tag": "0022_orange_spirit",
+      "breakpoints": true
     }
   ]
 }

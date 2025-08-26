@@ -46,7 +46,7 @@ export const routes: Routes = [
       menuItems: [
         { route: '/projects', label: 'All Projects', icon: 'lucideList', routerLinkActiveOptions: { exact: true } },
         { separator: true },
-        { route: '', icon: 'lucideSlidersHorizontal', label: 'Configurations' },
+        { route: 'configs', icon: 'lucideSlidersHorizontal', label: 'Configurations' },
         { route: 'environments', icon: 'lucideServer', label: 'Environments' },
         { route: 'events', icon: 'heroClock', label: 'Events' },
         { route: 'settings', icon: 'lucideSettings', label: 'Settings' },
