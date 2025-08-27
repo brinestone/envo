@@ -10,7 +10,8 @@
     "dev": "pnpm run --parallel dev",
     "build": "pnpm run --parallel build",
     "migrate.local": "pnpm run --filter backend migrate.local",
-    "drop.local": "pnpm run --filter backend drop.local"
+    "drop.local": "pnpm run --filter backend drop.local",
+    "release": "standard-version"
   },
   "dependencies": {
     "date-fns": "^4.1.0"
