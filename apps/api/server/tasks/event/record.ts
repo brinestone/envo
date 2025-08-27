@@ -1,4 +1,3 @@
-import { eq } from "drizzle-orm";
 import { AppEvent } from "~/types";
 
 export default defineTask({
@@ -6,20 +5,22 @@ export default defineTask({
     name: 'events:write',
     description: 'Register an event that has occurred'
   },
-  run: async (event: AppEvent) => {
+  run: async ({ context, name, payload }: AppEvent) => {
+    const logger = useLogger();
+    logger.info("Running task: " + name);
     const db = useDatabase({ organizations, member, events });
     try {
       await db.insert(events)
         .values({
-          note: event.context.note,
-          actor: event.context.actor,
-          organization: event.context.organization,
-          meta: event.payload,
-          project: event.context.project,
-          recordedAt: event.context.timestamp
+          note: context.note,
+          actor: context.actor,
+          organization: context.organization,
+          meta: payload,
+          project: context.project,
+          recordedAt: context.timestamp
         });
     } catch (e) {
-      console.error(e);
+      logger.error('failed to run task: ' + name, { error: e });
       throw e;
     }
     return { result: 'success' };

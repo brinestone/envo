@@ -70,7 +70,7 @@ export const auth = betterAuth({
 
               await tx.insert(member)
                 .values({
-                  id: generateUniqueCode(20),
+                  id: generateRandomCode(20),
                   organizationId: org,
                   role: 'owner',
                   userId: user.id
@@ -86,7 +86,7 @@ export const auth = betterAuth({
   },
   user: {
     additionalFields: {
-      isServiceAccount: { type: 'boolean', defaultValue: false }
+      isServiceAccount: { type: 'boolean', defaultValue: false, required: false }
     }
   },
   plugins,
