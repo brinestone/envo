@@ -1,6 +1,7 @@
 import { getTableName, is, Table } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool, Result } from "pg";
+import { useLogger } from "./logging";
 
 const pool = new Pool({
   connectionString: process.env.NITRO_DATABASE_URL ?? "",
@@ -54,8 +55,22 @@ const cache = {
 export function useDatabase<TSchema extends Record<string, unknown>>(
   schema: TSchema
 ) {
+  const logger = useLogger();
   return drizzle(pool, {
     schema,
-    cache
+    cache,
+    logger: {
+      logQuery: (query, params) => {
+        logger.info(`query: ${query} -- ${params.map(v => {
+          if (typeof v == 'string') {
+            return `"${v}"`
+          } else if (typeof v == 'object') {
+            return JSON.stringify(v);
+          } else {
+            return String(v);
+          }
+        }).join(', ')}`, { params, query });
+      }
+    }
   });
 }
