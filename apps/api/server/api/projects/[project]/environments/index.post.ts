@@ -1,5 +1,5 @@
 import { EnvironmentSchema, NewEnvironmentRequestSchema } from "@envo/common";
-import { and, eq, ne } from "drizzle-orm";
+import { and, count, eq, exists, ne } from "drizzle-orm";
 import z from "zod";
 
 const RouterParamsSchema = z.object({
@@ -24,6 +24,19 @@ export default defineEventHandler({
     const db = useDatabase({ projects, environments });
 
     return await db.transaction(async tx => {
+
+      const [{ total }] = await tx.select({ total: count() }).from(environments).where(
+        exists(db.select().from(environments).where(and(
+          eq(environments.name, bodyValidation.data.name),
+          eq(environments.project, paramsValidation.data.project),
+          eq(environments.type, bodyValidation.data.type)
+        )))
+      );
+
+      if (total > 0) {
+        throw createError({ statusCode: sanitizeStatusCode('Conflict'), message: 'An environment with this name already exists in this project' });
+      }
+
       const [newEnv] = await tx.insert(environments)
         .values({
           ...bodyValidation.data,
