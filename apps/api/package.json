@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.0.0",
+  "version": null,
   "name": "@envo/api",
   "scripts": {
     "build": "nitro build",

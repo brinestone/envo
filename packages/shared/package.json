@@ -1,6 +1,6 @@
 {
   "name": "@envo/common",
-  "version": "0.0.0",
+  "version": null,
   "description": "",
   "type": "module",
   "main": "./dist/index.cjs",

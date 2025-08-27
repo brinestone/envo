@@ -1,6 +1,6 @@
 {
   "name": "@envo/console",
-  "version": "0.0.0",
+  "version": null,
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
