@@ -2,6 +2,7 @@
   "name": "envo",
   "private": true,
   "type": "module",
+  "version": null,
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
