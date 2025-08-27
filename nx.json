@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "master",
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build"]
+      }
+    }
+  },
+  "namedInputs": {
+    "noMarkdown": ["!{projectRoot}/**/*.md"],
+    "noTest": ["!{projectRoot}/**/*.spec.ts", "!{projectRoot}/**/*.test.ts"]
+  },
+  "targetDefaults": {
+    "build": {
+      "inputs": ["^noMarkdown", "noTest"],
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "inputs": ["^noMarkdown", "noTest"]
+    },
+    "test": {
+      "inputs": ["^noMarkdown"],
+      "dependsOn": ["^test"]
+    }
+  }
+}
