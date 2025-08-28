@@ -8,7 +8,7 @@ const client = new Client({
   useSSL: useRuntimeConfig().minioHost !== 'localhost'
 });
 
-export async function uploadFile(data: Buffer, objectName: string, contentType: string) {
+export async function uploadFile(data: Buffer, objectName: string, contentType: string = 'image/png') {
   const { minioUploadBucket, minioHost } = useRuntimeConfig(useEvent());
   await client.putObject(
     minioUploadBucket,

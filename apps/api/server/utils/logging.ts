@@ -10,10 +10,10 @@ function createLogger() {
   if (import.meta.dev) {
     transports.push(
       new winston.transports.Console({
+        level: 'silly',
         format: winston.format.combine(
           winston.format.timestamp(),
           winston.format.label({ label: 'ENVO', message: true }),
-          // winston.format.colorize(),
           winston.format.cli(),
         )
       }),

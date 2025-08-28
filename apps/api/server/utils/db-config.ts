@@ -61,7 +61,7 @@ export function useDatabase<TSchema extends Record<string, unknown>>(
     cache,
     logger: {
       logQuery: (query, params) => {
-        logger.info(`query: ${query} -- ${params.map(v => {
+        logger.verbose(`query: ${query} -- ${params.map(v => {
           if (typeof v == 'string') {
             return `"${v}"`
           } else if (typeof v == 'object') {

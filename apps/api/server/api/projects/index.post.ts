@@ -8,55 +8,8 @@ const RequestSchema = z.object({
     example: 'Foo',
   })
 });
-
-defineRouteMeta({
-  openAPI: {
-    tags: ['Projects'],
-    description: 'Creates a project in current organization',
-    summary: 'Create a project',
-    responses: {
-      '201': {
-        description: 'The project was created successfully',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                id: {
-                  type: 'string',
-                  example: randomUUID()
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    requestBody: {
-      required: true,
-      content: {
-        'application/json': {
-          schema: {
-            type: 'object',
-            properties: {
-              name: {
-                type: 'string',
-                example: 'Foo',
-                description: 'The Project\'s name'
-              },
-              org: {
-                type: 'string',
-                description: 'The ID of the organization'
-              }
-            }
-          }
-        }
-      }
-    },
-  }
-})
 export default defineEventHandler({
-  onRequest: [requireAuth],
+  onRequest: [requireAuth, requireOrgMembership],
   handler: async event => {
     const { session } = useAuth();
     const body = await readBody(event);
@@ -80,17 +33,15 @@ export default defineEventHandler({
         message: 'Organization not found'
       });
 
-    try {
-      const [{ id }] = await db.transaction(tx => tx.insert(projects).values({
-        name,
-        createdBy: session.userId,
-        organization: org
-      }).returning());
-      setResponseStatus(event, 201, 'Created')
+    return await db.transaction(async tx => {
+      const [{ id }] = await tx.insert(projects).values({
+        name, createdBy: session.activeMembership, organization: org
+      }).returning();
+
+      setResponseStatus(event, 201);
+      runAppTask('event:record', 'projects.create', event, 'Project created', { id });
+
       return { id };
-    } catch (e) {
-      console.error(e);
-      throw createError({ cause: e, message: e.message, status: 500, statusMessage: 'Internal Server Error' })
-    }
+    });
   }
 })

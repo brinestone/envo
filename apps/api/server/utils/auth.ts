@@ -1,22 +1,24 @@
 
-import { betterAuth, Session, User } from "better-auth";
+import { generateRandomCode, generateUniqueName } from "@envo/common";
+import { betterAuth, Session } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { organization } from "better-auth/plugins";
-import { and, eq, exists } from "drizzle-orm";
+import { createAuthMiddleware } from 'better-auth/api';
+import { organization as organizationPlugin } from "better-auth/plugins";
+import { and, desc, eq, exists, isNotNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { EventHandler, H3Event } from 'h3';
 import z from "zod";
+import { AppSession, AppUser } from "~/types";
 import { session } from './db-schema';
 import { generateIdenticon } from "./identicon";
-import { generateRandomCode, generateUniqueName } from "@envo/common";
 
 const db = drizzle(process.env.NITRO_DATABASE_URL, {
-  schema: { user, account, session, verification, organization: organizations, member, invitation }
+  schema: { apiKeys, user, account, session, verification, organization: organizations, member, invitation }
 });
 
 const plugins = [
-  organization({
-    allowUserToCreateOrganization: false,
+  organizationPlugin({
+    allowUserToCreateOrganization: true,
     teams: { enabled: false }
   }),
 ];
@@ -25,68 +27,111 @@ export const auth = betterAuth({
     provider: "pg",
   }),
   emailAndPassword: { enabled: true },
+  user: {
+    additionalFields: {
+      isServiceAccount: { type: 'boolean', defaultValue: false, required: false, input: false }
+    }
+  },
   databaseHooks: {
     session: {
       create: {
-        before: async (session) => {
-          return {
-            data: {
-              ...session,
-              activeOrganizationId: session.userId
-            }
+        before: async (newSession: AppSession, context) => {
+          const [lastSession] = await db.select()
+            .from(session)
+            .where(and(
+              eq(session.userId, newSession.userId),
+              isNotNull(session.activeOrganizationId)
+            ))
+            .orderBy(desc(session.updatedAt))
+            .limit(1);
+
+          if (!lastSession) {
+            await db.select()
+              .from(member)
+              .where(and(
+                eq(member.userId, newSession.userId),
+                eq(member.role, 'owner')
+              )).then(([ownedOrg]) => newSession.activeOrganizationId = ownedOrg?.organizationId);
           }
+          else
+            newSession.activeOrganizationId = lastSession?.activeOrganizationId;
+
+          return { data: { ...newSession } };
         }
-      }
+      },
     },
     user: {
       create: {
-        before: async (user) => {
-          try {
-            const objectName = generateRandomCode(20);
-            const png = generateIdenticon(Buffer.from(JSON.stringify(user)));
-            const image = await uploadFile(png, objectName + '.png', 'image/png');
-            user.image = image;
-            return { data: user };
-          } catch (e) {
-            console.error(e);
-            throw e;
-          }
-        },
-        after: async (user, ctx) => {
+        after: async (newUser, ctx) => {
           try {
             await db.transaction(async tx => {
-              const name = generateUniqueName('capital');
+              runAppTask('event:record', 'users.create', useEvent(), 'New user signed up');
+              let logoUrl: string, png: Buffer<ArrayBufferLike>;
+              png = generateIdenticon(Buffer.from(newUser.id));
+              logoUrl = await uploadFile(png, newUser.id + '.png');
+              await tx.update(user).set({ image: logoUrl }).where(eq(user.id, newUser.id));
+
               const slug = generateRandomCode(10);
-              const id = user.id;
-              const png = generateIdenticon(Buffer.from(name + slug));
-              const logo = await uploadFile(png, id + '.png', 'image/png');
-              const [{ org }] = await tx.insert(organizations)
+              png = generateIdenticon(Buffer.from(String(Date.now()) + slug));
+              logoUrl = await uploadFile(png, generateRandomCode(20) + '.png', 'image/png');
+
+              const [org] = await tx.insert(organizations)
                 .values({
-                  name,
-                  logo,
-                  slug,
-                  id
-                }).returning({ org: organizations.id });
+                  name: generateUniqueName('capital'),
+                  slug: generateRandomCode(10),
+                  logo: logoUrl,
+                  id: generateRandomCode(32)
+                }).returning();
 
               await tx.insert(member)
                 .values({
-                  id: generateRandomCode(20),
-                  organizationId: org,
+                  id: generateRandomCode(32),
+                  organizationId: org.id,
                   role: 'owner',
-                  userId: user.id
+                  userId: newUser.id
                 });
-            })
+
+              if (ctx.context.newSession) {
+                await tx.update(session)
+                  .set({ activeOrganizationId: org.id })
+                  .where(eq(session.id, ctx.context.newSession.session.id));
+                ctx.context.newSession.session.activeOrganizationId = org.id;
+              }
+
+              const svcName = 'Organization Service Account';
+              const svcEmail = `${org.slug}.${Date.now()}.svc@envoservices.space`;
+              const svcPassword = generateRandomCode(20);
+              png = generateIdenticon(Buffer.from(svcName + svcEmail + svcPassword));
+              logoUrl = await uploadFile(png, generateRandomCode(10) + '.png', 'image/png');
+              const [serviceAccount] = await tx.insert(user)
+                .values({
+                  name: svcName,
+                  image: logoUrl,
+                  emailVerified: true,
+                  isServiceAccount: true,
+                  id: generateRandomCode(32),
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                  email: svcEmail
+                }).returning();
+              await tx.insert(member)
+                .values({
+                  id: generateRandomCode(32),
+                  organizationId: org.id,
+                  role: 'admin',
+                  userId: serviceAccount.id
+                });
+              runAppTask('event:record', 'users.create', undefined, 'New service account user created', {
+                organization: org.id,
+                id: serviceAccount.id
+              });
+            });
           } catch (e) {
             console.error(e);
             throw e;
           }
         }
       }
-    }
-  },
-  user: {
-    additionalFields: {
-      isServiceAccount: { type: 'boolean', defaultValue: false, required: false }
     }
   },
   plugins,
@@ -101,8 +146,8 @@ export const requireAuth: EventHandler = async (event: H3Event) => {
     statusMessage: 'Unauthorized'
   });
 
-  const { id } = await auth.api.getActiveMember({ headers: event.headers });
-  event.context.auth = { session: { ...session.session, activeMembership: id }, user: session.user };
+  const membershipInfo = await auth.api.getActiveMember({ headers: event.headers });
+  event.context.auth = { session: { ...session.session, activeMembership: membershipInfo?.id }, user: session.user };
 }
 
 export const requireOrgMembership: EventHandler = async (event: H3Event) => {
@@ -143,6 +188,6 @@ export const requireProjectUnderOrg: (projectIdKey: string) => EventHandler = (p
   })
 }
 
-export function useAuth() {
-  return useEvent().context.auth as { session: Session & { activeOrganizationId?: string, activeMembership?: string }, user: User };
+export function useAuth(): { user: AppUser, session: AppSession } {
+  return useEvent().context.auth as { session: Session & { activeOrganizationId?: string, activeMembership?: string }, user: AppUser };
 }

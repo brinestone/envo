@@ -162,6 +162,20 @@
       "when": 1756213725426,
       "tag": "0022_orange_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1756336944055,
+      "tag": "0023_brief_queen_noir",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1756338661986,
+      "tag": "0024_steady_umar",
+      "breakpoints": true
     }
   ]
 }

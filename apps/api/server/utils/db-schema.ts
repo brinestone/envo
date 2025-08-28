@@ -1,6 +1,6 @@
 import { EnvironmentTypeSchema, PlatformTypeSchema } from "@envo/common";
-import { and, isNotNull, isNull, or, sql } from "drizzle-orm";
-import { bigint, bigserial, boolean, check, integer, interval, jsonb, pgEnum, pgTable, pgView, real, smallint, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
+import { and, isNotNull, isNull, or } from "drizzle-orm";
+import { bigint, bigserial, boolean, check, integer, interval, jsonb, pgEnum, pgTable, real, smallint, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 
 export const projects = pgTable('projects', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
@@ -18,7 +18,7 @@ export const events = pgTable('events', {
 	recordedAt: timestamp({ mode: 'date' }).defaultNow(),
 	actor: text().references(() => member.id, { onDelete: 'set null' }),
 	project: uuid().references(() => projects.id, { onDelete: 'set null' }),
-	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
+	organization: text().references(() => organizations.id, { onDelete: 'set null' }),
 	meta: jsonb()
 });
 
@@ -108,7 +108,7 @@ export const user = pgTable("user", {
 	id: text("id").primaryKey(),
 	name: text('name').notNull(),
 	email: text('email').notNull().unique(),
-
+	isServiceAccount: boolean().default(false),
 	emailVerified: boolean('email_verified').notNull(),
 	image: text('image'),
 	createdAt: timestamp('created_at').notNull(),
@@ -240,16 +240,4 @@ export const prices = pgTable('prices', {
 	value: real().notNull(),
 	currency: varchar({ length: 3 }).notNull(),
 	exchangeRate: real()
-});
-
-export const pgAgents = pgView('vw_agents').as(qb => {
-	return qb.select({
-		id: platforms.id,
-		name: platforms.name,
-		currentIp: platforms.currentIp,
-		ping: platforms.ping,
-		isOnline: sql<boolean>`${platforms.ping} > 0`.as('is_online'),
-		environment: platforms.environment
-	})
-		.from(platforms)
 });

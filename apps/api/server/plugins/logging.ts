@@ -6,7 +6,7 @@ export default defineNitroPlugin(app => {
     if (!url.pathname.startsWith('/api')) return;
     const profiler = logger.startTimer();
     event.node.res.on('finish', () => {
-      const msg = `${ip} - ${event.method} - ${url.pathname} -> ${event.node.res.statusCode}`;
+      const msg = `${ip} - ${event.method} ${url.pathname} -> ${event.node.res.statusCode}`;
       profiler.done({ message: msg, level: 'http' });
     });
   })
