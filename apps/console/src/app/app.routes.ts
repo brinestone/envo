@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { provideIcons } from '@ng-icons/core';
 import { heroClock } from '@ng-icons/heroicons/outline';
-import { lucideList, lucideReceipt, lucideServer, lucideSettings, lucideSlidersHorizontal } from '@ng-icons/lucide';
+import { lucideKey, lucideList, lucideReceipt, lucideServer, lucideSettings, lucideShieldCheck, lucideSlidersHorizontal } from '@ng-icons/lucide';
 import { SESSION_STORAGE_ENGINE, withStorageFeature } from '@ngxs/storage-plugin';
 import { PROJECTS, provideProjectState } from '@state/project';
 import { hasActiveProjectGuard } from './guards/active-project.guard';
@@ -48,6 +48,7 @@ export const routes: Routes = [
         { separator: true },
         { route: 'configs', icon: 'lucideSlidersHorizontal', label: 'Configurations' },
         { route: 'environments', icon: 'lucideServer', label: 'Environments' },
+        { route: 'clients', icon: 'lucideShieldCheck', label: 'Clients' },
         { route: 'events', icon: 'heroClock', label: 'Events' },
         { route: 'settings', icon: 'lucideSettings', label: 'Settings' },
       ]
@@ -57,6 +58,7 @@ export const routes: Routes = [
       provideIcons({
         lucideList,
         heroClock,
+        lucideShieldCheck,
         lucideSlidersHorizontal,
         lucideServer,
         lucideSettings,

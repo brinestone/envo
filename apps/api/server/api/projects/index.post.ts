@@ -1,19 +1,13 @@
-import { randomUUID } from 'crypto';
+import { NewProjectRequestSchema } from '@envo/common';
 import { eq, exists } from 'drizzle-orm';
 import z from "zod";
 
-const RequestSchema = z.object({
-  name: z.string().meta({
-    description: 'The name of the project',
-    example: 'Foo',
-  })
-});
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership],
   handler: async event => {
     const { session } = useAuth();
     const body = await readBody(event);
-    const { success, error, data } = RequestSchema.safeParse(body);
+    const { success, error, data } = NewProjectRequestSchema.safeParse(body);
     if (!success)
       throw createError({
         statusCode: 400,

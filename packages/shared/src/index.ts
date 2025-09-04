@@ -60,14 +60,14 @@ export const EnvironmentStatSchema = z.discriminatedUnion('type', [EnvironmentNu
 
 export const UpdateVariableRequestSchema = NewVariableRequestSchema.partial();
 
-export const NewProjectSchema = z.object({
+export const NewProjectRequestSchema = z.object({
   name: z.string().meta({
     description: 'The name of the project',
     title: 'Project name'
   })
 });
 
-export const ProjectSchema = NewProjectSchema.extend({
+export const ProjectSchema = NewProjectRequestSchema.extend({
   id: z.uuid(),
   organization: z.string(),
   createdAt: z.coerce.date(),
@@ -152,3 +152,4 @@ export type EnvironmentType = z.infer<typeof EnvironmentTypeSchema>;
 export type NewEnvironmentRequest = z.infer<typeof NewEnvironmentRequestSchema>;
 export type Environment = z.infer<typeof EnvironmentSchema>;
 export type EnvironmentStat = z.infer<typeof EnvironmentStatSchema>;
+export type NewProjectRequest = z.infer<typeof NewProjectRequestSchema>;

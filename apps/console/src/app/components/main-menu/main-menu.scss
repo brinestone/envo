@@ -6,12 +6,13 @@
     @apply inline-flex w-0 transition-all justify-center;
   }
 
-  & a.active-link {
-    @apply bg-[var(--accent)] rounded-md;
+  & a.active-link:not(.brand) {
+    @apply rounded-md bg-[var(--primary)] text-[var(--primary-foreground)];
   }
   & .link-container a:not(.active-link):not(.brand) {
-    @apply opacity-50 hover:bg-[var(--accent)]/50;
+    @apply opacity-70 hover:bg-[var(--primary)]/50;
   }
+
   &[expanded="true"] {
     @apply w-[15rem];
     .link-container {

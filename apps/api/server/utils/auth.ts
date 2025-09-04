@@ -1,8 +1,6 @@
-
 import { generateRandomCode, generateUniqueName } from "@envo/common";
 import { betterAuth, Session } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { createAuthMiddleware } from 'better-auth/api';
 import { organization as organizationPlugin } from "better-auth/plugins";
 import { and, desc, eq, exists, isNotNull } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -23,6 +21,12 @@ const plugins = [
   }),
 ];
 export const auth = betterAuth({
+  logger: {
+    log: (level, message) => {
+      const logger = useLogger();
+      logger.log(level, message, { label: 'Better Auth' });
+    }
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -35,7 +39,7 @@ export const auth = betterAuth({
   databaseHooks: {
     session: {
       create: {
-        before: async (newSession: AppSession, context) => {
+        before: async (newSession: AppSession) => {
           const [lastSession] = await db.select()
             .from(session)
             .where(and(

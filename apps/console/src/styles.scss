@@ -67,7 +67,7 @@ button {
 }
 
 .page {
-  @apply pt-6 block space-y-4;
+  @apply pt-6 block space-y-4 h-full max-h-full overflow-auto;
   & > .page-header,
   & > .page-section {
     @apply container mx-auto px-4 flex-wrap gap-y-3;

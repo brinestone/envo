@@ -104,6 +104,13 @@ export const environments = pgTable("environments", {
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
 }, t => [uniqueIndex().on(t.name, t.project)]);
 
+export const projectClients = pgTable('clients', {
+	id: uuid().notNull().defaultRandom().primaryKey(),
+	name: text().notNull(),
+	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' }),
+	accessKey: text().notNull()
+})
+
 export const user = pgTable("user", {
 	id: text("id").primaryKey(),
 	name: text('name').notNull(),
