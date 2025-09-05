@@ -3,6 +3,7 @@ import { checkPendingChangesGuard } from "./guards/check-pending-changes.guard";
 
 export const configRoutes: Routes = [
   { title: 'Environments', path: 'environments', loadComponent: () => import('./pages/project-environments/project-environments.page').then(m => m.ProjectEnvironmentsPage) },
+  { title: 'New Client', path: 'clients/new', loadComponent: () => import('./pages/new-client/new-client.page').then(m => m.NewClientPage) },
   { title: 'Clients', path: 'clients', loadComponent: () => import('./pages/project-clients/project-clients.page').then(m => m.ProjectClientsPage) },
   {
     path: 'configs',

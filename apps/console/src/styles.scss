@@ -62,8 +62,8 @@ body {
   }
 }
 
-button {
-  @apply cursor-pointer gap-2 items-center disabled:cursor-auto;
+[hlmBtn] {
+  @apply cursor-pointer gap-2 items-center disabled:cursor-auto font-semibold;
 }
 
 .page {

@@ -20,15 +20,35 @@ export const NewVariableRequestSchema = z.object({
   isSecret: z.boolean().default(false)
 });
 
-export const VariableSchema = z.object({
-  id: z.uuid(),
-  name: z.string(),
-  createdAt: z.coerce.date(),
-  updatedAt: z.coerce.date(),
-  isSecret: z.boolean(),
-  fallbackMask: z.string()
-});
 
+export const PermissionTargetSchema = z.enum(['vars', 'flags', 'environments']);
+export const ClientTypeSchema = z.enum(['web', 'server', 'function', 'android', 'ios']);
+export const NewClientRequestSchema = z.object({
+  name: z.string('The name field is required').nonempty('The name field is required').describe('The name of the new client to be created'),
+  type: ClientTypeSchema.nullable(),
+  metaFields: z.record(z.string(), z.union([
+    z.string(),
+    z.number(),
+    z.boolean(),
+    z.date()
+  ])).optional(),
+  permissions: z.object({
+    allow: z.boolean(),
+    targetGroup: PermissionTargetSchema,
+    targetId: z.uuid().optional(),
+  }).array().optional()
+}).describe('Represents a user\'s intent to add a client to a project they have access to');
+
+export const VariableSchema = NewVariableRequestSchema.pick({ isSecret: true })
+  .extend({
+    id: z.uuid(),
+    name: z.string(),
+    createdAt: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    fallbackMask: z.string()
+  });
+
+export const SyncTransportSchema = z.enum(['sse', 'websocket', 'webhook', 'poll', 'pub-sub']);
 export const PlatformTypeSchema = z.enum(['web', 'mobile', 'cli', 'server']);
 export const EnvironmentTypeSchema = z.enum(['development', 'production', 'ci', 'staging']);
 export const NewEnvironmentRequestSchema = z.object({
@@ -106,7 +126,7 @@ export const NewFeatureRequestSchema = z.object({
   displayName: string().describe('A display name for this flag').optional(),
   description: string().optional().nullable().describe('A description of the feature'),
   enabled: boolean().default(false).optional().describe('Whether the feature should be enabled or not'),
-  overrides: FeatureValueOverrideSchema.array().optional().default([]).describe('Zones where this feature should be available to agents'),
+  overrides: FeatureValueOverrideSchema.array().optional().default([]).describe('Zones where this feature should be available to clients'),
 });
 
 export const UpdateFeatureFlagRequestSchema = NewFeatureRequestSchema
@@ -153,3 +173,6 @@ export type NewEnvironmentRequest = z.infer<typeof NewEnvironmentRequestSchema>;
 export type Environment = z.infer<typeof EnvironmentSchema>;
 export type EnvironmentStat = z.infer<typeof EnvironmentStatSchema>;
 export type NewProjectRequest = z.infer<typeof NewProjectRequestSchema>;
+export type NewClientRequest = z.infer<typeof NewClientRequestSchema>;
+export type ClientType = z.output<typeof ClientTypeSchema>;
+export type SyncTransport = z.output<typeof SyncTransportSchema>;

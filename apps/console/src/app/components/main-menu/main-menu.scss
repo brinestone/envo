@@ -10,7 +10,7 @@
     @apply rounded-md bg-[var(--primary)] text-[var(--primary-foreground)];
   }
   & .link-container a:not(.active-link):not(.brand) {
-    @apply opacity-70 hover:bg-[var(--primary)]/50;
+    @apply opacity-70 hover:bg-[var(--primary)]/50 rounded-md;
   }
 
   &[expanded="true"] {

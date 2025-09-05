@@ -1,4 +1,4 @@
-import { EnvironmentTypeSchema, PlatformTypeSchema } from "@envo/common";
+import { ClientTypeSchema, EnvironmentTypeSchema, PlatformTypeSchema, SyncTransportSchema } from "@envo/common";
 import { and, isNotNull, isNull, or } from "drizzle-orm";
 import { bigint, bigserial, boolean, check, integer, interval, jsonb, pgEnum, pgTable, real, smallint, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 
@@ -20,19 +20,6 @@ export const events = pgTable('events', {
 	project: uuid().references(() => projects.id, { onDelete: 'set null' }),
 	organization: text().references(() => organizations.id, { onDelete: 'set null' }),
 	meta: jsonb()
-});
-
-export const platformTypes = pgEnum('platform_types', PlatformTypeSchema.enum);
-export const syncTransports = pgEnum('sync_transports', ['sse', 'websocket', 'webhook', 'poll', 'pub-sub']);
-export const platforms = pgTable('platforms', {
-	id: text().primaryKey().notNull(),
-	name: text().notNull(),
-	currentIp: text(),
-	ping: smallint().default(0),
-	type: platformTypes().notNull(),
-	syncTransport: syncTransports().notNull(),
-	syncParams: jsonb().notNull(),
-	environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' })
 });
 
 export const overrideType = pgEnum('feature_override_type', ['ip', 'cidr', 'zone', 'domain', 'environment'])
@@ -104,11 +91,20 @@ export const environments = pgTable("environments", {
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
 }, t => [uniqueIndex().on(t.name, t.project)]);
 
+export const clientTypes = pgEnum('client_types', ClientTypeSchema.enum);
+export const transportTypes = pgEnum('sync_protocols', SyncTransportSchema.enum);
 export const projectClients = pgTable('clients', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
 	name: text().notNull(),
+	type: clientTypes().notNull(),
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' }),
-	accessKey: text().notNull()
+	accessKey: text().notNull(),
+	secretKey: text().notNull(),
+
+});
+export const clientPermissions = pgTable('client_permissions', {
+	id: uuid().notNull().defaultRandom().primaryKey(),
+
 })
 
 export const user = pgTable("user", {

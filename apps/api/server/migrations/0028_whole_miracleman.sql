@@ -1,0 +1,1 @@
+ALTER TYPE "public"."transports" RENAME TO "sync_protocols";

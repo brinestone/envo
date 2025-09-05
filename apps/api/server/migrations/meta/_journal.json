@@ -176,6 +176,34 @@
       "when": 1756338661986,
       "tag": "0024_steady_umar",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1757038304834,
+      "tag": "0025_rainy_black_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1757075280802,
+      "tag": "0026_wonderful_speed",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1757095471077,
+      "tag": "0027_nebulous_eddie_brock",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1757095531888,
+      "tag": "0028_whole_miracleman",
+      "breakpoints": true
     }
   ]
 }

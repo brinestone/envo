@@ -17,13 +17,13 @@
     <div class="flex gap-4 flex-wrap justify-around items-center">
       @for(stat of stats; track $index) {
       <div class="space-y-1">
-        <div class="text-muted-foreground flex items-center gap-2">
+        <div class="text-muted-foreground flex items-center gap-1">
           <ng-icon [name]="stat.icon" />
           <span>{{stat.label}}</span>
         </div>
         <p class="text-xl font-semibold">
           @switch(stat.type) { @case('date') { {{ stat.value |
-          date:'shortDate'}} } @case('numeric') { {{ stat.count | number }} } }
+          date:'mediumDate'}} } @case('numeric') { {{ stat.count | number }} } }
         </p>
       </div>
       }
@@ -38,8 +38,8 @@
         <span>Activity</span>
       </button>
       <button hlmTabsTrigger="agents">
-        <ng-icon name="lucideComputer" />
-        <span>Agents</span>
+        <ng-icon name="lucideShieldCheck" />
+        <span>Clients</span>
       </button>
     </hlm-tabs-list>
     <div hlmTabsContent="activity">

@@ -277,7 +277,7 @@ export class EnvVariablesPage implements PendingChanges {
 
   private toEnvForm(env: Variable, form?: EnvVariableFormType) {
     form = form ?? this.newVariableForm();
-    form.patchValue({ ...env, isNew: false, editing: false });
+    form.patchValue({ ...env, isNew: false, editing: false }, { emitEvent: false });
     form.markAsPristine();
     form.markAsUntouched();
     form.updateValueAndValidity();
