@@ -56,7 +56,7 @@ defineRouteMeta({
   }
 })
 export default defineEventHandler({
-  onRequest: [requireAuth],
+  onRequest: [requireAuth, requireOrgMembership],
   handler: async event => {
     const { session } = useAuth();
     const body = await readBody(event);
@@ -70,15 +70,7 @@ export default defineEventHandler({
 
     const db = useDatabase({ projects, organizations });
     const { name } = data;
-    const org = session.activeOrganizationId ?? session.userId;
-    const orgs = await db.select().from(organizations)
-      .where(exists(db.select().from(organizations).where(eq(organizations.id, org))));
-
-    if (orgs.length == 0)
-      throw createError({
-        statusCode: 404,
-        message: 'Organization not found'
-      });
+    const { session: { activeOrganizationId: org } } = useAuth();
 
     try {
       const [{ id }] = await db.transaction(tx => tx.insert(projects).values({
@@ -86,7 +78,8 @@ export default defineEventHandler({
         createdBy: session.activeMembership,
         organization: org
       }).returning());
-      setResponseStatus(event, 201, 'Created')
+      setResponseStatus(event, 201, 'Created');
+      runAppTask('event:record', 'projects.create', event, 'Project Created', 'PROJ_CREATE', { id })
       return { id };
     } catch (e) {
       console.error(e);

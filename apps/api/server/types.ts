@@ -8,7 +8,7 @@ type TaskActions = 'record';
 type PrimitiveTypes = string | number | boolean | Date;
 
 export type AppResources = `${AppEventGroups}.${AppEventTargets}`;
-export type EventSignature = `${AppEventGroups}.${AppEventTargets}.${AppActions}`;
+export type EventSignature = `${AppEventGroups}.${AppActions}`|`${AppEventGroups}.${AppEventTargets}.${AppActions}`;
 export type TaskNames = `${TaskGroups}:${TaskActions}`;
 export type AppEventPayload = Record<string, PrimitiveTypes | PrimitiveTypes[]> & TaskPayload;
 export type AppEventContext = TaskContext & {
