@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, computed, HostBinding, HostListener, input, output, signal } from '@angular/core';
+import { Component, computed, HostListener, input, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideLogOut, lucideReceipt, lucideSettings } from '@ng-icons/lucide';
@@ -9,8 +9,8 @@ import { HlmButtonDirective } from '@spartan-ng/helm/button';
 import { HlmSeparatorDirective } from '@spartan-ng/helm/separator';
 import z, { literal } from 'zod';
 
-export const SeparatorMenuItemSchema = z.object({ separator: z.literal(true) })
-export const NonSeparatorMenuItemSchema = z.object({
+export const SeparatorMenuItem = z.object({ separator: z.literal(true) })
+export const NonSeparatorMenuItem = z.object({
   route: z.string(),
   label: z.string(),
   icon: z.string().optional(),
@@ -19,12 +19,12 @@ export const NonSeparatorMenuItemSchema = z.object({
 });
 
 
-export const MenuItemSchema = z.discriminatedUnion('separator', [
-  SeparatorMenuItemSchema,
-  NonSeparatorMenuItemSchema
+export const MenuItem = z.discriminatedUnion('separator', [
+  SeparatorMenuItem,
+  NonSeparatorMenuItem
 ]);
 
-export type MenuItem = z.infer<typeof MenuItemSchema>;
+export type MenuItem = z.infer<typeof MenuItem>;
 
 @Component({
   selector: 'ev-main-menu',

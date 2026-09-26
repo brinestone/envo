@@ -1,4 +1,4 @@
-import { FeatureFlagSchema, NewFeatureRequestSchema } from "@envo/common";
+import { FeatureFlag, NewFeatureRequestSchema } from "@envo/common";
 import { z } from "zod";
 import { requireOrgMembership, requireProjectUnderOrg } from "~/utils/auth";
 import { runAppTask } from "~/utils/tasks";
@@ -6,7 +6,7 @@ import { runAppTask } from "~/utils/tasks";
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg],
   handler: async event => {
-    const { success, data, error } = await readValidatedBody(event, NewFeatureRequestSchema.safeParse)
+    const { success, data, error } = await readValidatedBody(event, NewFeatureRequest.safeParse)
     if (!success) throw createError({
       message: z.prettifyError(error),
       statusMessage: 'Bad Request',

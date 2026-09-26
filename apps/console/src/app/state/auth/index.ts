@@ -5,9 +5,9 @@ import { patch } from '@ngxs/store/operators';
 import { concatMap, of, switchMap, tap, throwError } from "rxjs";
 import z from 'zod';
 import { AuthStateModel } from '../../../models';
-import { PrincipalSchema } from '../../../schemas';
 import { AuthService } from '../../services/auth';
 import { CompleteGithubSignIn, CredentialSignIn, CredentialSignUp, SignedIn, SignedOut, SignOut } from './actions';
+import { Principal } from '../../../schemas';
 
 export const AUTH_STATE = new StateToken<AuthStateModel>('auth');
 type Context = StateContext<AuthStateModel>;
@@ -32,7 +32,7 @@ export class AuthState {
       tap(({ session, user }) => {
         ctx.setState(patch({
           signedIn: true,
-          user: PrincipalSchema.parse(user),
+          user: Principal.parse(user),
           sessionExpiresAt: z.coerce.date().parse(session.expiresAt),
           activeOrganizationId: session.activeOrganizationId ?? undefined
         }))
@@ -75,7 +75,7 @@ export class AuthState {
   onGitHubSignIn(ctx: Context, { jwt }: CompleteGithubSignIn) {
     alert('not implemented');
     // const payload = jwtDecode(jwt);
-    // const userInfo = PrincipalSchema.parse(payload);
+    // const userInfo = Principal.parse(payload);
     // if (payload.exp === undefined) throw new Error('Token is invalid');
     // ctx.setState(patch({
     //   token: jwt,

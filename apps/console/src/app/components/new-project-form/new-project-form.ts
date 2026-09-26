@@ -8,11 +8,11 @@ import { HlmFormFieldModule } from '@spartan-ng/helm/form-field';
 import { HlmInputDirective } from '@spartan-ng/helm/input';
 import z from 'zod';
 
-const FormSchema = z.object({
+const Form = z.object({
   name: z.string()
 });
 
-export type Submission = z.infer<typeof FormSchema>;
+export type Submission = z.infer<typeof Form>;
 
 @Component({
   selector: 'ev-new-project-form',
@@ -58,7 +58,7 @@ export class NewProjectForm {
 
   onFormSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const value = FormSchema.parse(this.form.value);
+    const value = Form.parse(this.form.value);
     this.onSubmit.emit(value);
   }
 }

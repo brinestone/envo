@@ -1,8 +1,8 @@
-import { FeatureFlagSchema, UpdateFeatureFlagRequestSchema } from "@envo/common";
+import { FeatureFlag, UpdateFeatureFlagRequestSchema } from "@envo/common";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { runAppTask } from "~/utils/tasks";
-const ParamsSchema = z.object({
+const Params = z.object({
   flag: z.uuid(),
   project: z.uuid()
 });
@@ -10,10 +10,10 @@ const ParamsSchema = z.object({
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
   handler: async event => {
-    const validationResult = await getValidatedRouterParams(event, ParamsSchema.safeParse);
+    const validationResult = await getValidatedRouterParams(event, Params.safeParse);
     const db = useDatabase({ features, projects });
     const body = await readBody(event);
-    const { success, data, error } = UpdateFeatureFlagRequestSchema.safeParse(body);
+    const { success, data, error } = UpdateFeatureFlagRequest.safeParse(body);
     if (!success || !validationResult.success) throw createError({
       statusCode: 400,
       statusMessage: 'Bad Request',
@@ -42,7 +42,7 @@ export default defineEventHandler({
 
       runAppTask('event:record', 'projects.flags.update', event, 'Feature flag updated', { signature: flag.signature });
       setResponseStatus(event, 202, 'Accepted');
-      return FeatureFlagSchema.parse(flag);
+      return FeatureFlag.parse(flag);
     });
   }
 })

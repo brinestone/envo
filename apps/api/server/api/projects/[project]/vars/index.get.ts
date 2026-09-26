@@ -11,6 +11,6 @@ export default defineEventHandler({
     return await db.select().from(variables)
       .where(eq(variables.project, project))
       .orderBy(desc(variables.updatedAt))
-      .then(v => VariableSchema.array().parse(v.map((variable) => ({ ...variable, fallbackMask: maskString(variable.fallbackValue) }))));
+      .then(v => Variable.array().parse(v.map((variable) => ({ ...variable, fallbackMask: maskString(variable.fallbackValue) }))));
   }
 })

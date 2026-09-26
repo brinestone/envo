@@ -1,10 +1,10 @@
-import { UpdateVariableRequestSchema, VariableSchema } from "@envo/common";
+import { UpdateVariableRequest, VariableSchema } from "@envo/common";
 import { and, eq } from "drizzle-orm";
 import z from "zod"
 import { runAppTask } from "~/utils/tasks";
 import { maskString } from "~/utils/utils";
 
-const ParamsSchema = z.object({
+const Params = z.object({
   project: z.uuid(),
   var: z.uuid()
 });
@@ -12,8 +12,8 @@ const ParamsSchema = z.object({
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
   handler: async event => {
-    const paramsValidationResult = await getValidatedRouterParams(event, ParamsSchema.safeParse);
-    const bodyValidationResult = await readBody(event).then(v => UpdateVariableRequestSchema.safeParse(v));
+    const paramsValidationResult = await getValidatedRouterParams(event, Params.safeParse);
+    const bodyValidationResult = await readBody(event).then(v => UpdateVariableRequest.safeParse(v));
 
     if (!paramsValidationResult.success || !bodyValidationResult.success) {
       const params = { statusCode: 400, statusMessage: 'Bad Request', message: z.prettifyError((paramsValidationResult.error ?? bodyValidationResult.error) as any) };
@@ -41,7 +41,7 @@ export default defineEventHandler({
         project: paramsValidationResult.data.project,
         id: paramsValidationResult.data.var,
       });
-      return VariableSchema.parse({ ...updatedValue, fallbackMask: maskString(updatedValue.fallbackValue) });
+      return Variable.parse({ ...updatedValue, fallbackMask: maskString(updatedValue.fallbackValue) });
     })
   }
 })

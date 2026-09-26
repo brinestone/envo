@@ -8,6 +8,6 @@ export default defineEventHandler({
     const { session: { activeOrganizationId: org } } = useAuth()
     return await db.select().from(projects)
       .where(eq(projects.organization, String(org)))
-      .then(v => ProjectSchema.array().parse(v));
+      .then(v => Project.array().parse(v));
   }
 });

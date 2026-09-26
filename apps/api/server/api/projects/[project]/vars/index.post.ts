@@ -6,7 +6,7 @@ import { runAppTask } from "~/utils/tasks";
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
   handler: async event => {
-    const { success, data, error } = await readValidatedBody(event, NewVariableRequestSchema.safeParse);
+    const { success, data, error } = await readValidatedBody(event, NewVariableRequest.safeParse);
     if (!success) throw createError({
       status: 400,
       message: z.prettifyError(error),

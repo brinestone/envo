@@ -1,21 +1,20 @@
 import { httpResource } from '@angular/common/http';
 import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Project } from "@envo/common";
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideCheck, lucideFlag, lucideSearch, lucideWrench } from '@ng-icons/lucide';
 import { Navigate } from '@ngxs/router-plugin';
 import { dispatch, select } from '@ngxs/store';
 import { BrnDialogState } from '@spartan-ng/brain/dialog';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
+import { BrnSeparatorComponent } from '@spartan-ng/brain/separator';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
+import { HlmSeparatorDirective } from '@spartan-ng/helm/separator';
 import { HlmSkeletonComponent } from '@spartan-ng/helm/skeleton';
-import { HlmTabsImports } from '@spartan-ng/helm/tabs';
 import { SelectProject } from '@state/project/actions';
 import { currentProject } from '@state/selectors';
-import { Project, ProjectSchema } from "@envo/common";
 import { environment } from '../../../environments/environment.development';
-import { HlmSeparatorDirective } from '@spartan-ng/helm/separator';
-import { BrnSeparatorComponent } from '@spartan-ng/brain/separator';
 
 @Component({
   selector: 'ev-config-page',
@@ -51,7 +50,7 @@ export class ConfigPageLayout implements OnInit {
   readonly activeTab = signal('flags');
   readonly activeProjectId = select(currentProject);
   readonly projectSelectorState = signal<BrnDialogState>('closed');
-  readonly allProjects = httpResource<Project[]>(() => `${environment.apiBaseUrl}/projects`, { parse: (value) => ProjectSchema.array().parse(value) })
+  readonly allProjects = httpResource<Project[]>(() => `${environment.apiBaseUrl}/projects`, { parse: (value) => Project.array().parse(value) })
   readonly selectProject = dispatch(SelectProject);
   readonly activeProject = computed(() => {
     const activeId = this.activeProjectId();
@@ -71,4 +70,6 @@ export class ConfigPageLayout implements OnInit {
     const tab = this.route.snapshot.children[0].url[0].path;
     this.activeTab.set(tab);
   }
+
+
 }

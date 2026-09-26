@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import z from "zod";
 import { runAppTask } from "~/utils/tasks";
 
-const ParamsSchema = z.object({
+const Params = z.object({
   project: z.uuid(),
   var: z.uuid()
 });
@@ -10,7 +10,7 @@ const ParamsSchema = z.object({
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
   handler: async event => {
-    const { success, error, data } = await getValidatedRouterParams(event, ParamsSchema.safeParse);
+    const { success, error, data } = await getValidatedRouterParams(event, Params.safeParse);
     if (!success) throw createError({ message: z.prettifyError(error), statusCode: 400 });
 
     const db = useDatabase({ projects, variables });

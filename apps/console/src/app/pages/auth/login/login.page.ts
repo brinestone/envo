@@ -17,7 +17,7 @@ import { z } from 'zod';
 import { environment } from '../../../../environments/environment.development';
 import { isActionLoading } from '../../../utils';
 
-const FormSchema = z.object({
+const Form = z.object({
   username: z.string(),
   password: z.string()
 })
@@ -78,7 +78,7 @@ export class LoginPage {
 
   onFormSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const { username, password } = FormSchema.parse(this.form.value);
+    const { username, password } = Form.parse(this.form.value);
     this.credentialSignIn(username, password).subscribe({
       error: (e: Error) => {
         toast.error('Could not sign in', { description: e.message });

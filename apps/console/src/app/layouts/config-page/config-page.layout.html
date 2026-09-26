@@ -4,6 +4,7 @@
     <p class="text-sm text-muted-foreground">Current project:</p>
     <brn-select
       [value]="activeProject()"
+      (valueChange)="selectProject($any($event).id)"
       class="inline-block"
       placeholder="Select a project"
     >

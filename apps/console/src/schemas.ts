@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const PrincipalSchema = z.object({
+export const Principal = z.object({
   id: z.string(),
   email: z.email(),
   name: z.string(),
@@ -10,15 +10,15 @@ export const PrincipalSchema = z.object({
   updatedAt: z.date()
 });
 
-export const AuthStateSchema = z.object({
-  user: PrincipalSchema.optional(),
+export const AuthState = z.object({
+  user: Principal.optional(),
   signedIn: z.boolean().default(false),
   sessionExpiresAt: z.coerce.date().optional(),
   activeOrganizationId: z.string().optional()
 });
 
-export const ThemeModeSchema = z.enum(['system', 'dark', 'light']);
+export const ThemeMode = z.enum(['system', 'dark', 'light']);
 
-export const ProjectStateSchema = z.object({
+export const ProjectState = z.object({
   activeProject: z.uuid().optional(),
 });

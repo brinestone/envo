@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { eq, exists } from 'drizzle-orm';
 import z from "zod";
 
-const RequestSchema = z.object({
+const Request = z.object({
   name: z.string().meta({
     description: 'The name of the project',
     example: 'Foo',
@@ -60,7 +60,7 @@ export default defineEventHandler({
   handler: async event => {
     const { session } = useAuth();
     const body = await readBody(event);
-    const { success, error, data } = RequestSchema.safeParse(body);
+    const { success, error, data } = Request.safeParse(body);
     if (!success)
       throw createError({
         statusCode: 400,

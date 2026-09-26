@@ -1,13 +1,16 @@
 import { CdkListbox, CdkOption } from '@angular/cdk/listbox';
-import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/http';
-import { Component, computed, effect, inject, linkedSignal, model, signal, viewChild } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { HttpClient, httpResource } from '@angular/common/http';
+import { Component, computed, inject, model, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { EnvironmentSchema, EnvironmentType, EnvironmentTypeSchema, generateUniqueName, NewEnvironmentRequestSchema } from '@envo/common';
+import { EnvironmentInfo } from '@components/environment-info/environment-info';
+import { Environment, EnvironmentType, generateUniqueName, NewEnvironmentRequest } from '@envo/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucidePlus, lucideSave } from '@ng-icons/lucide';
 import { select } from '@ngxs/store';
 import { BrnSelectImports } from '@spartan-ng/brain/select';
 import { BrnSheetImports } from '@spartan-ng/brain/sheet';
+import { HlmBadgeDirective } from '@spartan-ng/helm/badge';
 import { HlmButtonDirective } from '@spartan-ng/helm/button';
 import { HlmInputDirective } from '@spartan-ng/helm/input';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
@@ -17,9 +20,6 @@ import { HlmSwitchComponent } from '@spartan-ng/helm/switch';
 import { currentProject } from '@state/selectors';
 import { toast } from 'ngx-sonner';
 import { environment } from '../../../environments/environment.development';
-import { NgClass } from '@angular/common';
-import { EnvironmentInfo } from '@components/environment-info/environment-info';
-import { HlmBadgeDirective } from '@spartan-ng/helm/badge';
 
 type CdkListBoxSelection<T> = {
   listbox: CdkListbox;
@@ -64,7 +64,7 @@ export class ProjectEnvironmentsPage {
   private project = select(currentProject);
   private form = viewChild(NgForm);
   private newEnvironmentSheet = viewChild(HlmSheetComponent);
-  readonly allEnvironments = httpResource(() => `${environment.apiBaseUrl}/projects/${this.project()}/environments`, { defaultValue: [], parse: v => EnvironmentSchema.array().parse(v) });
+  readonly allEnvironments = httpResource(() => `${environment.apiBaseUrl}/projects/${this.project()}/environments`, { defaultValue: [], parse: v => Environment.array().parse(v) });
   readonly focusedEnvironments = model<CdkListBoxSelection<string>>();
   readonly focusedEnvironment = computed(() => {
     const [focused] = this.focusedEnvironments()?.value ?? [];
@@ -75,7 +75,7 @@ export class ProjectEnvironmentsPage {
   readonly newEnvironmentName = model<string>();
   readonly newEnvironmentType = model<EnvironmentType | null>('production');
   readonly makeNewEnvironmentDefault = model<boolean | undefined>(false);
-  readonly environmentOptions = Object.values(EnvironmentTypeSchema.enum);
+  readonly environmentOptions = Object.values(EnvironmentType.enum);
 
   deleteEnvironment(id?: string) {
     if (!id) return;
@@ -92,7 +92,7 @@ export class ProjectEnvironmentsPage {
   }
 
   submitForm() {
-    const requestData = NewEnvironmentRequestSchema.parse({
+    const requestData = NewEnvironmentRequest.parse({
       ...this.form()?.value,
       isDefault: this.allEnvironments.value().length == 0,
       name: this.form()?.value?.name || this.suggestedNewEnvironmentName

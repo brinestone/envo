@@ -4,19 +4,20 @@
       Environment Variables
     </h1>
     <p variant="outline" hlmBadge class="flex gap-1 items-center">
-      <span class="text-green-500"
-        ><ng-icon size="8" name="bootstrapCircleFill"
-      /></span>
+      <span class="text-green-500"><ng-icon size="8" name="bootstrapCircleFill" /></span>
       <span class="font-medium">Synchronized</span>
     </p>
   </div>
-  <button (click)="addVariable()" size="sm" hlmBtn class="items-center">
+  <button size="sm" hlmBtn class="items-center">
     <ng-icon name="lucidePlus" />
     <span>New Variable</span>
   </button>
 </div>
 <div hlmAccordion>
-  @for(group of forms.controls; track group.value.trackingKey) {
+  @for(v of variables.value(); track $index) {
+  <ev-var [var]="v"/>
+  }
+  <!-- @for(group of forms.controls; track group.value.trackingKey) {
   <div hlmAccordionItem>
     <div class="flex justify-between items-center bg-accent px-2">
       <div class="flex items-center gap-3">
@@ -182,7 +183,7 @@
       }
     </hlm-accordion-content>
   </div>
-  }
+  } -->
 </div>
 
 <hlm-alert-dialog [state]="pendingChangesDialogState()">

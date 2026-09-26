@@ -14,7 +14,7 @@ import { SignOut } from '@state/auth/actions';
 import { activeOrganization, principal } from '@state/selectors';
 import { map } from 'rxjs';
 import { Footer } from "../../components/footer/footer";
-import { MainMenu, MenuItemSchema } from "../../components/main-menu/main-menu";
+import { MainMenu, MenuItem } from "../../components/main-menu/main-menu";
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -60,7 +60,7 @@ export class BaseLayout {
     return orgs.find(org => org.id === active);
   });
   readonly menuItems = toSignal(this.route.data.pipe(
-    map(data => MenuItemSchema.array().optional().default([]).parse(data?.['menuItems']))
+    map(data => MenuItem.array().optional().default([]).parse(data?.['menuItems']))
   ), { initialValue: [] });
 
   constructor() {

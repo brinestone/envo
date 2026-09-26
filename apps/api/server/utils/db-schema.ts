@@ -1,4 +1,4 @@
-import { EnvironmentTypeSchema, PlatformTypeSchema } from "@envo/common";
+import { EnvironmentType, PlatformType } from "@envo/common";
 import { and, isNotNull, isNull, or, sql } from "drizzle-orm";
 import { bigint, bigserial, boolean, check, integer, interval, jsonb, pgEnum, pgTable, pgView, real, smallint, text, timestamp, uniqueIndex, uuid, varchar } from "drizzle-orm/pg-core";
 
@@ -23,7 +23,7 @@ export const events = pgTable('events', {
 	meta: jsonb()
 });
 
-export const platformTypes = pgEnum('platform_types', PlatformTypeSchema.enum);
+export const platformTypes = pgEnum('platform_types', PlatformType.enum);
 export const syncTransports = pgEnum('sync_transports', ['sse', 'websocket', 'webhook', 'poll', 'pub-sub']);
 export const platforms = pgTable('platforms', {
 	id: text().primaryKey().notNull(),
@@ -91,7 +91,7 @@ export const featureOverrides = pgTable('feature_overrides', {
 	)
 ]);
 
-export const environmentTypes = pgEnum('environment_types', EnvironmentTypeSchema.enum);
+export const environmentTypes = pgEnum('environment_types', EnvironmentType.enum);
 export const environments = pgTable("environments", {
 	id: uuid().primaryKey().notNull().defaultRandom(),
 	name: text().notNull(),

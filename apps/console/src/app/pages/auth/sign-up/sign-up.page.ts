@@ -19,7 +19,7 @@ import { toast } from 'ngx-sonner';
 import z from 'zod';
 import { isActionLoading } from '../../../utils';
 
-const formSchema = z.object({
+const form = z.object({
   name: z.string(),
   email: z.email(),
   password: z.string()
@@ -79,7 +79,7 @@ export class SignUpPage {
 
   onFormSubmit(event: SubmitEvent) {
     event.preventDefault();
-    const { name, password, email } = formSchema.parse(this.form.value);
+    const { name, password, email } = form.parse(this.form.value);
     this.credentialSignUp(name, email, password).subscribe({
       error: (e: Error) => {
         toast.error('Could not sign in', { description: e.message });

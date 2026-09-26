@@ -1,7 +1,7 @@
 import { and, eq, sql } from "drizzle-orm";
 import z from "zod";
 
-const ParamsSchema = z.object({
+const Params = z.object({
   project: z.uuid(),
   env: z.uuid()
 });
@@ -9,7 +9,7 @@ const ParamsSchema = z.object({
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
   handler: async event => {
-    const { success, error, data } = await getValidatedRouterParams(event, ParamsSchema.safeParse);
+    const { success, error, data } = await getValidatedRouterParams(event, Params.safeParse);
     if (!success) {
       throw createError({
         statusCode: 400,

@@ -14,13 +14,13 @@ export function generateUniqueName(style: 'capital' | 'lowerCase' | 'upperCase' 
   return uniqueNamesGenerator({ separator, style, dictionaries: [adjectives, colors, animals] });
 }
 
-export const NewVariableRequestSchema = z.object({
+export const NewVariableRequest = z.object({
   name: z.string(),
   fallbackValue: z.string(),
   isSecret: z.boolean().default(false)
 });
 
-export const VariableSchema = z.object({
+export const Variable = z.object({
   id: z.uuid(),
   name: z.string(),
   createdAt: z.coerce.date(),
@@ -29,38 +29,38 @@ export const VariableSchema = z.object({
   fallbackMask: z.string()
 });
 
-export const PlatformTypeSchema = z.enum(['web', 'mobile', 'cli', 'server']);
-export const EnvironmentTypeSchema = z.enum(['development', 'production', 'ci', 'staging']);
-export const NewEnvironmentRequestSchema = z.object({
+export const PlatformType = z.enum(['web', 'mobile', 'cli', 'server']);
+export const EnvironmentType = z.enum(['development', 'production', 'ci', 'staging']);
+export const NewEnvironmentRequest = z.object({
   name: z.string(),
-  type: EnvironmentTypeSchema,
+  type: EnvironmentType,
   isDefault: z.boolean().optional()
 });
 
-export const EnvironmentSchema = z.object({
+export const Environment = z.object({
   id: z.uuid(),
   name: z.string(),
-  type: EnvironmentTypeSchema,
+  type: EnvironmentType,
   isDefault: z.boolean(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 });
 
-export const EnvironmentNumericStatSchema = z.object({
+export const EnvironmentNumericStat = z.object({
   type: z.literal('numeric'),
   count: z.coerce.number()
 });
 
-export const EnvironmentDateStatSchema = z.object({
+export const EnvironmentDateStat = z.object({
   type: z.literal('date'),
   value: z.coerce.date()
 });
 
-export const EnvironmentStatSchema = z.discriminatedUnion('type', [EnvironmentNumericStatSchema, EnvironmentDateStatSchema])
+export const EnvironmentStat = z.discriminatedUnion('type', [EnvironmentNumericStat, EnvironmentDateStat])
 
-export const UpdateVariableRequestSchema = NewVariableRequestSchema.partial();
+export const UpdateVariableRequest = NewVariableRequest.partial();
 
-export const ProjectSchema = z.object({
+export const Project = z.object({
   id: z.uuid(),
   name: z.string(),
   organization: z.string(),
@@ -69,7 +69,7 @@ export const ProjectSchema = z.object({
   updatedAt: z.coerce.date(),
 });
 
-export const FeatureZoneOverrideSchema = z.object({
+export const FeatureZoneOverride = z.object({
   country: z.string().max(2),
   state: z.string().optional(),
   city: z.string().optional(),
@@ -77,42 +77,42 @@ export const FeatureZoneOverrideSchema = z.object({
   enabled: z.union([z.boolean(), z.union([z.iso.datetime(), z.iso.date()])])
 });
 
-export const FeatureCidrOverrideSchema = z.object({
+export const FeatureCidrOverride = z.object({
   cidr: z.union([z.cidrv4(), z.cidrv6()]),
   type: z.literal('cidr'),
   enabled: z.union([z.boolean(), z.union([z.iso.datetime(), z.iso.date()])])
 });
 
-export const FeatureIpOverrideSchema = z.object({
+export const FeatureIpOverride = z.object({
   ip: z.union([z.ipv4(), z.ipv6()]),
   type: z.literal('ip'),
   enabled: z.union([z.boolean(), z.union([z.iso.datetime(), z.iso.date()])])
 });
 
-export const FeatureValueOverrideSchema = z.discriminatedUnion('type', [
-  FeatureZoneOverrideSchema,
-  FeatureIpOverrideSchema,
-  FeatureCidrOverrideSchema
+export const FeatureValueOverride = z.discriminatedUnion('type', [
+  FeatureZoneOverride,
+  FeatureIpOverride,
+  FeatureCidrOverride
 ]);
 
-export const NewFeatureRequestSchema = z.object({
+export const NewFeatureRequest = z.object({
   signature: string().describe('A unique identifier for this flag'),
   displayName: string().describe('A display name for this flag').optional(),
   description: string().optional().nullable().describe('A description of the feature'),
   enabled: boolean().default(false).optional().describe('Whether the feature should be enabled or not'),
-  overrides: FeatureValueOverrideSchema.array().optional().default([]).describe('Zones where this feature should be available to agents'),
+  overrides: FeatureValueOverride.array().optional().default([]).describe('Zones where this feature should be available to agents'),
 });
 
-export const UpdateFeatureFlagRequestSchema = NewFeatureRequestSchema
+export const UpdateFeatureFlagRequest = NewFeatureRequest
   .partial();
 
-export const FeatureFlagSchema = NewFeatureRequestSchema.extend({
+export const FeatureFlag = NewFeatureRequest.extend({
   id: z.uuid(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date()
 }).omit({ overrides: true });
 
-export const CountryInfoSchema = z.object({
+export const CountryInfo = z.object({
   name: z.string(),
   native: z.string(),
   phone: z.number().array(),
@@ -121,7 +121,7 @@ export const CountryInfoSchema = z.object({
   iso2: z.string().max(2)
 }).partial();
 
-export const StateInfoSchema = z.object({
+export const StateInfo = z.object({
   name: z.string(),
   isoCode: z.string(),
   countryCode: z.string(),
@@ -129,20 +129,20 @@ export const StateInfoSchema = z.object({
   longitude: z.string().optional().nullable()
 }).partial();
 
-export const CountryInfoKeysSchema = z.keyof(CountryInfoSchema)
-export const StateInfoKeysSchema = z.keyof(StateInfoSchema);
-export type StateInfo = z.output<typeof StateInfoSchema>;
-export type CountryInfo = z.output<typeof CountryInfoSchema>;
-export type CountryInfoKeys = z.infer<typeof CountryInfoKeysSchema>;
-export type FeatureFlag = z.infer<typeof FeatureFlagSchema>;
-export type NeFeatureRequest = z.infer<typeof NewFeatureRequestSchema>;
-export type NewVariableRequest = z.infer<typeof NewVariableRequestSchema>;
-export type UpdateVariableRequest = z.output<typeof UpdateVariableRequestSchema>;
-export type UpdateFeatureFlagRequest = z.output<typeof UpdateFeatureFlagRequestSchema>;
-export type Variable = z.infer<typeof VariableSchema>;
-export type PlatformType = z.infer<typeof PlatformTypeSchema>;
-export type Project = z.infer<typeof ProjectSchema>;
-export type EnvironmentType = z.infer<typeof EnvironmentTypeSchema>;
-export type NewEnvironmentRequest = z.infer<typeof NewEnvironmentRequestSchema>;
-export type Environment = z.infer<typeof EnvironmentSchema>;
-export type EnvironmentStat = z.infer<typeof EnvironmentStatSchema>;
+export const CountryInfoKeys = z.keyof(CountryInfo)
+export const StateInfoKeys = z.keyof(StateInfo);
+export type StateInfo = z.output<typeof StateInfo>;
+export type CountryInfo = z.output<typeof CountryInfo>;
+export type CountryInfoKeys = z.infer<typeof CountryInfoKeys>;
+export type FeatureFlag = z.infer<typeof FeatureFlag>;
+export type NeFeatureRequest = z.infer<typeof NewFeatureRequest>;
+export type NewVariableRequest = z.infer<typeof NewVariableRequest>;
+export type UpdateVariableRequest = z.output<typeof UpdateVariableRequest>;
+export type UpdateFeatureFlagRequest = z.output<typeof UpdateFeatureFlagRequest>;
+export type Variable = z.infer<typeof Variable>;
+export type PlatformType = z.infer<typeof PlatformType>;
+export type Project = z.infer<typeof Project>;
+export type EnvironmentType = z.infer<typeof EnvironmentType>;
+export type NewEnvironmentRequest = z.infer<typeof NewEnvironmentRequest>;
+export type Environment = z.infer<typeof Environment>;
+export type EnvironmentStat = z.infer<typeof EnvironmentStat>;

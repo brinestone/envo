@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, httpResource } from '@angular/common/htt
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormRecord, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CountryInfo, FeatureFlag, FeatureFlagSchema, generateRandomCode, NewFeatureRequestSchema, StateInfo, UpdateFeatureFlagRequestSchema } from '@envo/common';
+import { CountryInfo, FeatureFlag, generateRandomCode, NewFeatureRequest, StateInfo, UpdateFeatureFlagRequest } from '@envo/common';
 import { bootstrapCircleFill } from '@ng-icons/bootstrap-icons';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { heroQuestionMarkCircle, heroXMark } from '@ng-icons/heroicons/outline';
@@ -43,7 +43,7 @@ type FeatureForm = FormGroup<{
   autoSignature: FormControl<string | null>;
 }>;
 
-// const CountryMetaSchema = CountryInfoSchema.pick({ native: true, iso2: true, iso3: true }).required();
+// const CountryMeta = CountryInfo.pick({ native: true, iso2: true, iso3: true }).required();
 type CountryMeta = Required<Pick<CountryInfo, 'native' | 'iso2' | 'iso3'>>;
 type StateMeta = Required<Pick<StateInfo, 'name' | 'isoCode'>>;
 
@@ -93,7 +93,7 @@ export class FeatureFlagsPage implements PendingChanges {
     { label: 'CIDR block', value: 'cidr' },
     { label: 'IP address', value: 'ip' }
   ];
-  readonly featureFlags = httpResource(() => `${environment.apiBaseUrl}/projects/${this.project()}/flags`, { defaultValue: [], parse: v => FeatureFlagSchema.array().parse(v) });
+  readonly featureFlags = httpResource(() => `${environment.apiBaseUrl}/projects/${this.project()}/flags`, { defaultValue: [], parse: v => FeatureFlag.array().parse(v) });
   deleteTimer?: number;
   deletingIndex = signal<number | null>(null);
   remainingDeletionTime = signal(5);
@@ -255,7 +255,7 @@ export class FeatureFlagsPage implements PendingChanges {
     toast.loading('Saving changes...');
     if (value.isNew === true) {
       try {
-        const data = NewFeatureRequestSchema.parse(value);
+        const data = NewFeatureRequest.parse(value);
         this.http.post(`${environment.apiBaseUrl}/projects/${project}/flags`, data).subscribe({
           error: (e: HttpErrorResponse) => {
             toast.error('Could not create feature: "' + value.displayName + '"', { description: e.error?.message ?? e.message });
@@ -270,11 +270,11 @@ export class FeatureFlagsPage implements PendingChanges {
         toast.error(z.prettifyError(e as z.ZodError));
       }
     } else {
-      const data = UpdateFeatureFlagRequestSchema.parse(value);
+      const data = UpdateFeatureFlagRequest.parse(value);
       try {
         this.http.patch(`${environment.apiBaseUrl}/projects/${project}/flags/${value.id}`, data).subscribe({
           next: (data) => {
-            const flag = FeatureFlagSchema.parse(data);
+            const flag = FeatureFlag.parse(data);
             this.featureFlags.value.update(arr => {
               arr[index] = flag;
               return [...arr];

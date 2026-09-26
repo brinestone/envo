@@ -1,17 +1,17 @@
-import { EnvironmentSchema, NewEnvironmentRequestSchema } from "@envo/common";
+import { Environment, NewEnvironmentRequestSchema } from "@envo/common";
 import { and, count, eq, exists, ne } from "drizzle-orm";
 import z from "zod";
 
-const RouterParamsSchema = z.object({
+const RouterParams = z.object({
   project: z.uuid()
 });
 
 export default defineEventHandler({
   onRequest: [requireAuth, requireOrgMembership, requireProjectUnderOrg('project')],
   handler: async event => {
-    const paramsValidation = await getValidatedRouterParams(event, RouterParamsSchema.safeParse);
+    const paramsValidation = await getValidatedRouterParams(event, RouterParams.safeParse);
     const requestBody = await readBody(event);
-    const bodyValidation = NewEnvironmentRequestSchema.safeParse(requestBody);
+    const bodyValidation = NewEnvironmentRequest.safeParse(requestBody);
 
     if (!paramsValidation.success || !bodyValidation.success) {
       throw createError({
@@ -59,7 +59,7 @@ export default defineEventHandler({
       });
 
       setResponseStatus(event, 201);
-      return EnvironmentSchema.parse(newEnv);
+      return Environment.parse(newEnv);
     })
   }
 })

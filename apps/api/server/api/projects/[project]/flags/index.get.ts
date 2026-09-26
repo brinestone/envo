@@ -20,6 +20,6 @@ export default defineEventHandler({
       .from(features)
       .where(eq(features.project, project))
       .orderBy(desc(features.updatedAt)) // TODO: Enable caching results
-      .then(m => FeatureFlagSchema.array().parse(m))
+      .then(m => FeatureFlag.array().parse(m))
   }
 })
