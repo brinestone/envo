@@ -162,6 +162,13 @@
       "when": 1756213725426,
       "tag": "0022_orange_spirit",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1790452884922,
+      "tag": "0023_wakeful_centennial",
+      "breakpoints": true
     }
   ]
 }

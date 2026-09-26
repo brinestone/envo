@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, computed, HostBinding, input, output, signal } from '@angular/core';
+import { Component, computed, HostBinding, HostListener, input, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideLogOut, lucideReceipt, lucideSettings } from '@ng-icons/lucide';
@@ -45,6 +45,9 @@ export type MenuItem = z.infer<typeof MenuItemSchema>;
     HlmAvatarImports,
     HlmButtonDirective
   ],
+  host: {
+    '[attr.expanded]': 'isOpen()'
+  },
   templateUrl: './main-menu.ng.html',
   styleUrl: './main-menu.scss'
 })
@@ -64,11 +67,6 @@ export class MainMenu {
       .map(v => v[0].toUpperCase())
       .join('');
   })
-
-  @HostBinding('attr.expanded')
-  get expanded() {
-    return this.isOpen();
-  }
 
   readonly menuItems = input<MenuItem[]>([]);
 
@@ -91,10 +89,12 @@ export class MainMenu {
   ];
 
 
+  @HostListener('mouseenter')
   onMouseOver() {
     this.isOpen.set(true);
   }
 
+  @HostListener('mouseleave')
   onMouseLeave() {
     this.isOpen.set(false);
   }

@@ -15,7 +15,6 @@ export default defineEventHandler({
     const project = getRouterParam(event, 'project');
     const db = useDatabase({ projects, variables });
 
-    const { session } = useAuth();
     await db.transaction(async tx => {
       const [{ total }] = await tx.select({ total: count() }).from(variables).where(and(
         eq(variables.project, project),
@@ -33,7 +32,7 @@ export default defineEventHandler({
       }).returning();
 
       setResponseStatus(event, 201, 'Created');
-      runAppTask('event:record', 'projects.vars.create', event, 'Variable created', { id: variable.id });
+      runAppTask('event:record', 'projects.vars.create', event, 'Variable created', 'VAR_CREATE', { id: variable.id });
     })
   }
 })

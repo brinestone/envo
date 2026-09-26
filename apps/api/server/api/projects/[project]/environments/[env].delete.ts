@@ -37,7 +37,7 @@ export default defineEventHandler({
             eq(environments.id, sql<string>`(SELECT ${environments.id} FROM ${environments} WHERE ${eq(environments.project, data.project)} ORDER BY ${environments.createdAt} DESC LIMIT 1)`)
           )).returning();
         if (newDefaultEnvironment) {
-          runAppTask('event:record', 'projects.environments.update', event, 'Environment made default automatically', {
+          runAppTask('event:record', 'projects.environments.update', event, 'Environment made default automatically', 'ENV_UPDATE', {
             id: newDefaultEnvironment.id
           });
         }
@@ -48,7 +48,7 @@ export default defineEventHandler({
         .where(eq(projects.id, data.project));
 
       setResponseStatus(event, 202);
-      runAppTask('event:record', 'projects.environments.delete', event, 'Environment removed from project', {
+      runAppTask('event:record', 'projects.environments.delete', event, 'Environment removed from project', 'PROJ_DEL', {
         id: deletedEnv.id
       })
     })

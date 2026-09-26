@@ -7,15 +7,16 @@ export const projects = pgTable('projects', {
 	name: text().notNull(),
 	enabled: boolean().default(true).notNull(),
 	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
-	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
-	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
-	createdBy: text().references(() => member.id, { onDelete: 'set null' })
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
+	createdBy: text('created_by').references(() => member.id, { onDelete: 'set null' })
 });
 
 export const events = pgTable('events', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
 	note: text().notNull(),
-	recordedAt: timestamp({ mode: 'date' }).defaultNow(),
+	code: text(),
+	recordedAt: timestamp('recorded_at', { mode: 'date' }).defaultNow(),
 	actor: text().references(() => member.id, { onDelete: 'set null' }),
 	project: uuid().references(() => projects.id, { onDelete: 'set null' }),
 	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
@@ -27,11 +28,11 @@ export const syncTransports = pgEnum('sync_transports', ['sse', 'websocket', 'we
 export const platforms = pgTable('platforms', {
 	id: text().primaryKey().notNull(),
 	name: text().notNull(),
-	currentIp: text(),
+	currentIp: text('current_ip'),
 	ping: smallint().default(0),
 	type: platformTypes().notNull(),
-	syncTransport: syncTransports().notNull(),
-	syncParams: jsonb().notNull(),
+	syncTransport: syncTransports('sync_transports').notNull(),
+	syncParams: jsonb('sync_params').notNull(),
 	environment: uuid().notNull().references(() => environments.id, { onDelete: 'cascade' })
 });
 
@@ -40,10 +41,11 @@ export const overrideType = pgEnum('feature_override_type', ['ip', 'cidr', 'zone
 export const variables = pgTable("variables", {
 	id: uuid().notNull().defaultRandom().primaryKey(),
 	name: text().notNull(),
-	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
-	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
-	isSecret: boolean().default(false).notNull(),
-	fallbackValue: text(),
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdate(() => new Date()),
+	isSecret: boolean('is_secret').default(false).notNull(),
+	fallbackValue: text('fallback_value'),
+	createdBy: text('created_by').references(() => member.id),
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
 }, t => [uniqueIndex().on(t.name, t.project)]);
 
@@ -52,19 +54,19 @@ export const variableOverrides = pgTable('variable_overrides', {
 	meta: jsonb().notNull(),
 	type: overrideType().notNull(),
 	value: text(),
-	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
-	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date())
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date())
 });
 
 export const features = pgTable('feature_flags', {
 	id: uuid().notNull().defaultRandom().primaryKey(),
 	signature: text().notNull(),
-	displayName: text(),
+	displayName: text('display_name'),
 	description: text(),
 	enabled: boolean().notNull(),
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' }),
-	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
-	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date())
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date())
 }, t => [uniqueIndex().on(t.signature, t.project)]);
 
 export const featureOverrides = pgTable('feature_overrides', {
@@ -72,9 +74,9 @@ export const featureOverrides = pgTable('feature_overrides', {
 	meta: jsonb().notNull(),
 	type: overrideType().notNull(),
 	enabled: boolean(),
-	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
-	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
-	scheduledEnable: timestamp({ mode: 'date' })
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
+	scheduledEnable: timestamp('scheduled_enable',{ mode: 'date' })
 }, t => [
 	check('enabledOrDate', or(
 		and(
@@ -95,12 +97,9 @@ export const environments = pgTable("environments", {
 	name: text().notNull(),
 	type: environmentTypes().notNull(),
 	enabled: boolean().default(true),
-	createdAt: timestamp({ mode: "date" }).notNull().defaultNow(),
-	updatedAt: timestamp({ mode: "date" })
-		.notNull()
-		.defaultNow()
-		.$onUpdate(() => new Date()),
-	isDefault: boolean().notNull(),
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
+	isDefault: boolean('is_default').notNull(),
 	project: uuid().notNull().references(() => projects.id, { onDelete: 'cascade' })
 }, t => [uniqueIndex().on(t.name, t.project)]);
 
@@ -111,16 +110,16 @@ export const user = pgTable("user", {
 
 	emailVerified: boolean('email_verified').notNull(),
 	image: text('image'),
-	createdAt: timestamp('created_at').notNull(),
-	updatedAt: timestamp('updated_at').notNull()
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
 });
 
 export const session = pgTable("session", {
 	id: text("id").primaryKey(),
 	expiresAt: timestamp('expires_at').notNull(),
 	token: text('token').notNull().unique(),
-	createdAt: timestamp('created_at').notNull(),
-	updatedAt: timestamp('updated_at').notNull(),
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
 	ipAddress: text('ip_address'),
 	userAgent: text('user_agent'),
 	activeOrganizationId: text().references(() => organizations.id, { onDelete: 'set null' }),
@@ -139,8 +138,8 @@ export const account = pgTable("account", {
 	refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
 	scope: text('scope'),
 	password: text('password'),
-	createdAt: timestamp('created_at').notNull(),
-	updatedAt: timestamp('updated_at').notNull()
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
 });
 
 export const verification = pgTable("verification", {
@@ -155,20 +154,20 @@ export const verification = pgTable("verification", {
 export const invitation = pgTable('invitation', {
 	id: text().notNull().primaryKey(),
 	email: text().notNull(),
-	inviterId: text().references(() => user.id, { onDelete: 'set null' }),
-	organizationid: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
+	inviterId: text('inviter_id').references(() => user.id, { onDelete: 'set null' }),
+	organizationid: text('organization_id').notNull().references(() => organizations.id, { onDelete: 'cascade' }),
 	role: text().notNull(),
 	status: text().notNull(),
-	createdAt: timestamp().notNull().defaultNow(),
-	expiresAt: timestamp().notNull(),
+	createdAt: timestamp('created_at').notNull().defaultNow(),
+	expiresAt: timestamp('expires_at').notNull(),
 })
 
 export const member = pgTable('member', {
 	id: text().notNull().primaryKey(),
-	userId: text().notNull().references(() => user.id, { onDelete: 'cascade' }),
-	organizationId: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
+	userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+	organizationId: text('organization_id').notNull().references(() => organizations.id, { onDelete: 'cascade' }),
 	role: text().notNull(),
-	createdAt: timestamp().defaultNow().notNull()
+	createdAt: timestamp('created_at').defaultNow().notNull()
 });
 
 export const subscriptionTiers = pgEnum('billing_plans', ['basic', 'standard', 'enterprise']);
@@ -179,8 +178,8 @@ export const organizations = pgTable('organization', {
 	slug: text().notNull(),
 	logo: text(),
 	metadata: text(),
-	createdAt: timestamp().defaultNow().notNull(),
-	updatedAt: timestamp({ mode: 'date' }).defaultNow().notNull().$onUpdateFn(() => new Date()),
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
 });
 
 export const apiKeys = pgTable('api_keys', {
@@ -189,44 +188,44 @@ export const apiKeys = pgTable('api_keys', {
 	start: text(),
 	prefix: text(),
 	key: text().notNull(),
-	userId: text().notNull().references(() => user.id, { onDelete: 'cascade' }),
-	refillInterval: integer(),
-	refillAmount: integer(),
-	lastRefillAt: timestamp({ mode: 'date' }),
+	userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+	refillInterval: integer('refill_interval'),
+	refillAmount: integer('refill_amount'),
+	lastRefillAt: timestamp('last_refill_at',{ mode: 'date' }),
 	enabled: boolean().default(true),
-	rateLimitEnabled: boolean().notNull(),
-	rateLimitTimeWindow: integer(),
-	rateLimitMax: integer(),
-	requestCount: integer().default(0),
+	rateLimitEnabled: boolean('rate_limit_enabled').notNull(),
+	rateLimitTimeWindow: integer('rate_limit_time_window'),
+	rateLimitMax: integer('rate_limit_max'),
+	requestCount: integer('request_count').default(0),
 	remaining: integer(),
-	lastRequest: timestamp({ mode: 'date' }),
-	expiresAt: timestamp({ mode: 'date' }),
-	createdAt: timestamp({ mode: 'date' }).defaultNow(),
-	updatedAt: timestamp({ mode: 'date' }).defaultNow().$onUpdateFn(() => new Date()),
+	lastRequest: timestamp('last_request',{ mode: 'date' }),
+	expiresAt: timestamp('expires_at',{ mode: 'date' }),
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
 	permissions: text(),
 	metadata: jsonb()
 })
 
 export const subscriptions = pgTable('subscriptions', {
 	organization: text().notNull().references(() => organizations.id, { onDelete: 'cascade' }),
-	currentTier: subscriptionTiers().notNull().default('basic'),
-	createdAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
-	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow(),
-	lastInvoiceDate: timestamp(),
-	invoicingInterval: interval().notNull()
+	currentTier: subscriptionTiers('current_tier').notNull().default('basic'),
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
+	lastInvoiceDate: timestamp('last_invoice_date'),
+	invoicingInterval: interval('invoicing_interval').notNull()
 });
 
 export const invoiceStatus = pgEnum('invoice_status', ['pending-issue', 'issued', 'cancelled', 'completed'])
 
 export const invoices = pgTable('invoices', {
 	number: bigserial({ mode: 'number' }).primaryKey().notNull(),
-	createdAt: timestamp({ mode: 'date' }).defaultNow().notNull(),
-	updatedAt: timestamp({ mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
-	issuedAt: timestamp({ mode: 'date' }),
+	createdAt: timestamp('created_at', { mode: 'date' }).notNull().defaultNow(),
+	updatedAt: timestamp('updated_at', { mode: 'date' }).notNull().defaultNow().$onUpdateFn(() => new Date()),
+	issuedAt: timestamp('issued_at',{ mode: 'date' }),
 	tax: real().notNull().default(0),
-	percentageTax: real().default(0).notNull(),
+	percentageTax: real('percentage_tax').default(0).notNull(),
 	status: invoiceStatus().notNull().default('pending-issue'),
-	issuedTo: text().references(() => user.id, { onDelete: 'set null' }),
+	issuedTo: text('issued_to').references(() => user.id, { onDelete: 'set null' }),
 });
 
 export const invoiceItems = pgTable('invoice_items', {
@@ -239,7 +238,7 @@ export const prices = pgTable('prices', {
 	id: uuid().defaultRandom().primaryKey(),
 	value: real().notNull(),
 	currency: varchar({ length: 3 }).notNull(),
-	exchangeRate: real()
+	exchangeRate: real('exchange_rate')
 });
 
 export const pgAgents = pgView('vw_agents').as(qb => {

@@ -19,6 +19,7 @@ export type AppEventContext = TaskContext & {
   timestamp: Date;
   project?: string;
   organization: string;
+  code: string;
 };
 
 export type AppEvent = TaskEvent & {

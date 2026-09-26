@@ -7,7 +7,7 @@ const pool = new Pool({
   connectionString: process.env.NITRO_DATABASE_URL ?? "",
 });
 
-const usedTablesPerKey: Record<string, string[]> = {};
+const usedTablesPerKey: Record<string, string[]> = {}; 
 const CACHE_KEY = 'redis' as const;
 
 const cache = {

@@ -17,7 +17,8 @@ export default defineTask({
           organization: context.organization,
           meta: payload,
           project: context.project,
-          recordedAt: context.timestamp
+          recordedAt: context.timestamp,
+          code: context.code
         });
     } catch (e) {
       logger.error('failed to run task: ' + name, { error: e });

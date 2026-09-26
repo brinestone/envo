@@ -148,11 +148,9 @@ export class FeatureFlagsPage implements PendingChanges {
     })
   }
   hasPendingChanges(): CanDeactivateType {
-    if (this.forms.pristine) return true;
+    if (this.forms.pristine) return false;
     return new Observable<boolean>(subscriber => {
-      debugger;
       this.closeDialog = (v) => {
-        debugger;
         this.pendingChangesDialogState.set('closed');
         subscriber.add(() => this.closeDialog = () => { this.pendingChangesDialogState.set('closed'); });
         subscriber.next(!v);

@@ -6,7 +6,8 @@ export function runAppTask(
   signature: EventSignature,
   event: H3Event,
   note: string,
-  payload?: AppEventPayload
+  code: string,
+  payload?: AppEventPayload,
 ) {
   const { session } = useAuth();
   const context: AppEventContext = {
@@ -16,7 +17,8 @@ export function runAppTask(
     organization: session.activeOrganizationId as string,
     timestamp: new Date(),
     project: getRouterParam(event, 'project'),
-    session: session.id
+    session: session.id,
+    code,
   };
   runTask(name, {
     context: {

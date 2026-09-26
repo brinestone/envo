@@ -1,4 +1,4 @@
-
+import { generateRandomCode, generateUniqueName } from "@envo/common";
 import { betterAuth, Session, User } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { organization } from "better-auth/plugins";
@@ -8,7 +8,6 @@ import { EventHandler, H3Event } from 'h3';
 import z from "zod";
 import { session } from './db-schema';
 import { generateIdenticon } from "./identicon";
-import { generateRandomCode, generateUniqueName } from "@envo/common";
 
 const db = drizzle(process.env.NITRO_DATABASE_URL, {
   schema: { user, account, session, verification, organization: organizations, member, invitation }
@@ -40,18 +39,18 @@ export const auth = betterAuth({
     },
     user: {
       create: {
-        before: async (user) => {
-          try {
-            const objectName = generateRandomCode(20);
-            const png = generateIdenticon(Buffer.from(JSON.stringify(user)));
-            const image = await uploadFile(png, objectName + '.png', 'image/png');
-            user.image = image;
-            return { data: user };
-          } catch (e) {
-            console.error(e);
-            throw e;
-          }
-        },
+        // before: async (user) => {
+        //   try {
+        //     const objectName = generateRandomCode(20);
+        //     const png = generateIdenticon(Buffer.from(JSON.stringify(user)));
+        //     const url = await uploadFile(png, objectName + '.png', 'image/png');
+        //     user.image = url;
+        //     return { data: user };
+        //   } catch (e) {
+        //     console.error(e);
+        //     throw e;
+        //   }
+        // },
         after: async (user, ctx) => {
           try {
             await db.transaction(async tx => {
@@ -59,11 +58,11 @@ export const auth = betterAuth({
               const slug = generateRandomCode(10);
               const id = user.id;
               const png = generateIdenticon(Buffer.from(name + slug));
-              const logo = await uploadFile(png, id + '.png', 'image/png');
+              // const logo = await uploadFile(png, id + '.png', 'image/png');
               const [{ org }] = await tx.insert(organizations)
                 .values({
                   name,
-                  logo,
+                  // logo,
                   slug,
                   id
                 }).returning({ org: organizations.id });

@@ -2,8 +2,6 @@
 export default defineNitroConfig({
   srcDir: "server",
   compatibilityDate: "2025-07-12",
-  // errorHandler: '~/error-handler.ts',
-  // devErrorHandler: '~/dev-error-handler.ts',
   experimental: {
     openAPI: true,
     tasks: true,
@@ -16,6 +14,8 @@ export default defineNitroConfig({
     minioSecretKey: '',
     minioUploadBucket: '',
     minioUploadPath: '',
+    minioOrigin: '',
+    minioPort: 0,
     minioHost: '',
     redisHost: '',
     redisPort: ''
@@ -28,8 +28,9 @@ export default defineNitroConfig({
     },
     ui: {
       scalar: {
-        route: '/_docs/scalar'
-      }
+        route: '/_docs/scalar',
+        theme: 'purple'
+      },
     }
   },
   devStorage: {

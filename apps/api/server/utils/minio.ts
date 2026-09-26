@@ -1,15 +1,14 @@
 import { Client } from "minio";
 
-const client = new Client({
-  endPoint: useRuntimeConfig().minioHost,
-  port: 9000,
-  accessKey: useRuntimeConfig().minioAccessKey,
-  secretKey: useRuntimeConfig().minioSecretKey,
-  useSSL: useRuntimeConfig().minioHost !== 'localhost'
-});
-
 export async function uploadFile(data: Buffer, objectName: string, contentType: string) {
-  const { minioUploadBucket, minioHost } = useRuntimeConfig(useEvent());
+  const { minioUploadBucket, minioOrigin, minioAccessKey, minioSecretKey, minioPort, minioHost } = useRuntimeConfig(useEvent());
+  const client = new Client({
+    endPoint: minioHost,
+    port: minioPort,
+    accessKey: minioAccessKey,
+    secretKey: minioSecretKey,
+    useSSL: minioOrigin.startsWith('https')
+  });
   await client.putObject(
     minioUploadBucket,
     objectName,
@@ -22,5 +21,5 @@ export async function uploadFile(data: Buffer, objectName: string, contentType: 
   return new URL([
     minioUploadBucket,
     objectName,
-  ].join('/'), `http://${minioHost}:9000`).toString();
+  ].join('/'), minioOrigin).toString();
 }

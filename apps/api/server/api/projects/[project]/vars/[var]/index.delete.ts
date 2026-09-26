@@ -15,10 +15,10 @@ export default defineEventHandler({
 
     const db = useDatabase({ projects, variables });
     await db.transaction(async tx => {
-      await tx.delete(variables).where(and(eq(variables.project, data.project), eq(variables.id, data.var))).returning();
-      await tx.update(projects).set({ updatedAt: new Date() }).where(eq(projects.id, data.project));
+      await tx.delete(variables).where(and(eq(variables.project, data.project), eq(variables.id, data.var)));
+      await tx.update(projects).set({}).where(eq(projects.id, data.project));
       setResponseStatus(event, 202);
-      runAppTask('event:record', 'projects.vars.delete', event, 'Variable deleted', { variable: data.var });
+      runAppTask('event:record', 'projects.vars.delete', event, 'Variable deleted', 'VAR_DEL', { variable: data.var });
     })
   }
 })

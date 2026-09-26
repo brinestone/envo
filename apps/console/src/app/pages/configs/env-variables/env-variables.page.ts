@@ -332,7 +332,7 @@ export class EnvVariablesPage implements PendingChanges {
   }
 
   hasPendingChanges() {
-    if (this.forms.pristine) return true;
+    if (this.forms.pristine) return false;
     return new Observable<boolean>(subscriber => {
       this.closeDialog = (v) => {
         this.pendingChangesDialogState.set('closed');

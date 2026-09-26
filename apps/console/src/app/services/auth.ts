@@ -1,19 +1,21 @@
 import { Injectable } from '@angular/core';
 import { createAuthClient } from 'better-auth/client';
-import { organizationClient } from "better-auth/client/plugins"
-import { concatMap, from, of, switchMap, throwError, EMPTY } from 'rxjs';
+import { organizationClient } from "better-auth/client/plugins";
+import { concatMap, from, of, switchMap, throwError } from 'rxjs';
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private readonly client = createAuthClient({
+  #client = createAuthClient({
     plugins: [
       organizationClient()
     ]
   });
 
   getOrganizations() {
-    return from(this.client.organization.list()).pipe(
+    return from(this.#client.organization.list()).pipe(
       switchMap(({ error, data }) => {
         if (error) return throwError(() => error);
         return of(data);
@@ -22,7 +24,7 @@ export class AuthService {
   }
 
   getSession() {
-    return from(this.client.getSession()).pipe(
+    return from(this.#client.getSession()).pipe(
       switchMap(({ error, data }) => {
         if (error) return throwError(() => error);
         return of(data);
@@ -31,7 +33,7 @@ export class AuthService {
   }
 
   credentialSignUp(obj: { email: string, name: string, password: string }) {
-    return from(this.client.signUp.email(obj)).pipe(
+    return from(this.#client.signUp.email(obj)).pipe(
       switchMap(({ error, data }) => {
         if (error) return throwError(() => error);
         return of(data);
@@ -40,7 +42,7 @@ export class AuthService {
   }
 
   signOut() {
-    return from(this.client.signOut()).pipe(
+    return from(this.#client.signOut()).pipe(
       switchMap(({ error, data }) => {
         if (error) return throwError(() => error);
         return of(data);
@@ -49,13 +51,13 @@ export class AuthService {
   }
 
   credentialSignIn(email: string, password: string, rememberMe = false) {
-    return from(this.client.signIn.email({
+    return from(this.#client.signIn.email({
       email,
       password,
       rememberMe
     })).pipe(
       switchMap(({ error }) => error ? throwError(() => error) : of(1)),
-      concatMap(() => this.client.getSession()),
+      concatMap(() => this.#client.getSession()),
       switchMap(({ error, data }) => {
         if (error) return throwError(() => error);
         else if (!data) return throwError(() => new Error('An error occurred'));
