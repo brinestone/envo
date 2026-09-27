@@ -1,4 +1,4 @@
-import { FeatureFlag, NewFeatureRequestSchema } from "@envo/common";
+import { NewFeatureRequest } from "@envo/common";
 import { z } from "zod";
 import { requireOrgMembership, requireProjectUnderOrg } from "~/utils/auth";
 import { runAppTask } from "~/utils/tasks";
@@ -28,8 +28,11 @@ export default defineEventHandler({
       console.log('feature flag created: ' + feature.id);
 
       setResponseStatus(event, 201, 'Created');
-      runAppTask('event:record', 'projects.flags.create',
-        event, 'Feature flag created', {
+      runAppTask(
+        'event:record',
+        'projects.flags.create',
+        event, 'Feature flag created',
+        'FLAG_CREATE', {
         signature: feature.signature,
         id: feature.id,
       });

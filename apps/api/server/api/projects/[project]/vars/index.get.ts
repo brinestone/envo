@@ -1,4 +1,4 @@
-import { VariableSchema } from "@envo/common";
+import { Variable } from "@envo/common";
 import { desc, eq } from "drizzle-orm";
 import { maskString } from "~/utils/utils";
 

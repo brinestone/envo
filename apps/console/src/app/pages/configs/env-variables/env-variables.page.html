@@ -4,20 +4,20 @@
       Environment Variables
     </h1>
     <p variant="outline" hlmBadge class="flex gap-1 items-center">
-      <span class="text-green-500"><ng-icon size="8" name="bootstrapCircleFill" /></span>
+      <span class="text-green-500"
+        ><ng-icon size="8" name="bootstrapCircleFill"
+      /></span>
       <span class="font-medium">Synchronized</span>
     </p>
   </div>
-  <button size="sm" hlmBtn class="items-center">
+  <button (click)="addVariable()" size="sm" hlmBtn class="items-center">
     <ng-icon name="lucidePlus" />
-    <span>New Variable</span>
+    <span>Add Variable</span>
   </button>
 </div>
+@defer(when !variables.isLoading()) {
 <div hlmAccordion>
-  @for(v of variables.value(); track $index) {
-  <ev-var [var]="v"/>
-  }
-  <!-- @for(group of forms.controls; track group.value.trackingKey) {
+  @for(group of forms.controls; track group.value.trackingKey) {
   <div hlmAccordionItem>
     <div class="flex justify-between items-center bg-accent px-2">
       <div class="flex items-center gap-3">
@@ -95,8 +95,7 @@
             <ng-icon name="heroXMark" />
             <span>Discard changes</span>
           </button>
-          } 
-        }
+          } }
           <button
             (mousedown)="deletingIndex.set($index)"
             (mouseup)="resetDeletion()"
@@ -183,8 +182,19 @@
       }
     </hlm-accordion-content>
   </div>
-  } -->
+  }@empty {
+  <div class="text-center text-lg border-accent border-2 rounded-md bg-accent/50 h-40 flex items-center justify-center">
+    <p>There are no feature flags available. Click the <strong>"Add Variable"</strong> button to add one.</p>
+  </div>
+  }
 </div>
+}@placeholder {
+<div class="space-y-3">
+  @for(_ of [1,2,3,4]; track $index) {
+    <hlm-skeleton class="h-10 w-full"/>
+  }
+</div>
+}
 
 <hlm-alert-dialog [state]="pendingChangesDialogState()">
   <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">

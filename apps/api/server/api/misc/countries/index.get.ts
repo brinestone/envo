@@ -1,4 +1,4 @@
-import { CountryInfoKeys, CountryInfoSchema } from "@envo/common";
+import { CountryInfoKeys, CountryInfo } from "@envo/common";
 import { getCountryDataList } from 'countries-list';
 import z from "zod";
 

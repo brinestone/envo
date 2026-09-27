@@ -1,4 +1,4 @@
-import { FeatureFlag, UpdateFeatureFlagRequestSchema } from "@envo/common";
+import { FeatureFlag, UpdateFeatureFlagRequest } from "@envo/common";
 import { and, count, eq } from "drizzle-orm";
 import z from "zod";
 import { runAppTask } from "~/utils/tasks";
@@ -40,7 +40,7 @@ export default defineEventHandler({
       ).returning();
       await tx.update(projects).set({ updatedAt: new Date() }).where(eq(projects.id, project));
 
-      runAppTask('event:record', 'projects.flags.update', event, 'Feature flag updated', { signature: flag.signature });
+      runAppTask('event:record', 'projects.flags.update', event, 'Feature flag updated', 'FLAG_UPDATE', { signature: flag.signature });
       setResponseStatus(event, 202, 'Accepted');
       return FeatureFlag.parse(flag);
     });

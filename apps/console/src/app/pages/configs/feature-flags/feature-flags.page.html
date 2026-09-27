@@ -4,17 +4,16 @@
       Feature Flags
     </h1>
     <p variant="outline" hlmBadge class="flex gap-1 items-center">
-      <span class="text-green-500"
-        ><ng-icon size="8" name="bootstrapCircleFill"
-      /></span>
+      <span class="text-green-500"><ng-icon size="8" name="bootstrapCircleFill" /></span>
       <span class="font-medium">Synchronized</span>
     </p>
   </div>
   <button (click)="addFeatureForm()" size="sm" hlmBtn class="items-center">
     <ng-icon name="lucidePlus" />
-    <span>New Feature</span>
+    <span>Add Feature</span>
   </button>
 </div>
+@defer(when !featureFlags.isLoading()) {
 <div hlmAccordion>
   @for (group of forms.controls; track group.value.id) {
   <div hlmAccordionItem>
@@ -24,78 +23,48 @@
           <ng-icon size="20" name="lucideChevronDown" hlm hlmAccIcon />
         </button>
       </div>
-      <div class="flex items-center gap-3">
-        <p class="text-lg font-bold">
-          @if(group.value.isNew) { {{(group.value.displayName?.length ?? 0) > 0
-          ? group.value.displayName : 'New Feature'}} ✨ }@else {
-          {{group.value.displayName ?? group.value.signature}} }
-        </p>
-        <hlm-switch
-          (click)="$event.preventDefault()"
-          (changed)="toggleFeature($index, $event)"
-          [checked]="group.controls.enabled.value"
-        />
+      <div class="space-y-2">
+        <div class="flex items-center gap-3">
+          <p class="text-lg font-bold">
+            @if(group.value.isNew) { {{(group.value.displayName?.length ?? 0) > 0
+            ? group.value.displayName : 'New Feature'}} ✨ }@else {
+            {{group.value.displayName ?? group.value.signature}} }
+          </p>
+          <hlm-switch (click)="$event.preventDefault()" (changed)="toggleFeature($index, $event)"
+            [checked]="group.controls.enabled.value" />
+        </div>
+        <p class="text-sm line-clamp-4 text-muted-foreground">{{ group.value.description }}</p>
       </div>
     </div>
     <hlm-accordion-content>
-      <form
-        class="space-y-3 lg:max-w-1/2 lg:min-w-[720px] px-2 py-5"
-        [id]="group.value.id"
-        [formGroup]="group"
-        (ngSubmit)="submitForm($index, $event)"
-      >
-        <div
-          class="w-full items-center gap-1 grid grid-cols-[1fr_auto] grid-rows-[36px_auto]"
-        >
-          <button
-            class="col-span-1 col-start-2 row-start-1 row-span-1"
-            type="button"
-            (click)="toggleFormSignatureType($index)"
-            size="sm"
-            variant="ghost"
-            hlmBtn
-          >
+      <form class="space-y-3 lg:max-w-1/2 lg:min-w-[720px] px-2 py-5" [id]="group.value.id" [formGroup]="group"
+        (ngSubmit)="submitForm($index, $event)">
+        <div class="w-full items-center gap-1 grid grid-cols-[1fr_auto] grid-rows-[36px_auto]">
+          <button class="col-span-1 col-start-2 row-start-1 row-span-1" type="button"
+            (click)="toggleFormSignatureType($index)" size="sm" variant="ghost" hlmBtn>
             @if(group.value.useCustomSignature) { Use Auto }@else { Use Custom }
           </button>
           @if(group.value.useCustomSignature) {
-          <hlm-form-field
-            class="w-full col-start-1 col-span-1 row-start-1 row-span-1"
-          >
-            <input
-              formControlName="signature"
-              hlmInput
-              placeholder="Signature *"
-            />
+          <hlm-form-field class="w-full col-start-1 col-span-1 row-start-1 row-span-1">
+            <input formControlName="signature" hlmInput placeholder="Signature *" />
             <hlm-error>This field is required</hlm-error>
           </hlm-form-field>
           }@else {
           <p class="text-sm col-span-1 col-start-1 row-start-1 row-span-1">
-            <span class="text-muted-foreground">Auto signature: </span
-            ><span>{{ group.value.signature }}</span>
+            <span class="text-muted-foreground">Auto signature: </span><span>{{ group.value.signature }}</span>
           </p>
           } @if(!group.value.useCustomSignature) {
-          <p
-            class="text-sm text-muted-foreground col-start-1 row-start-2 col-span-2 row-span-1 w-full"
-          >
+          <p class="text-sm text-muted-foreground col-start-1 row-start-2 col-span-2 row-span-1 w-full">
             A unique identifier which you can use to identify this feature flag
           </p>
           }
         </div>
         <hlm-form-field class="w-full">
-          <input
-            hlmInput
-            placeholder="Display name"
-            formControlName="displayName"
-          />
+          <input hlmInput placeholder="Display name" formControlName="displayName" />
           <hlm-error>This field is required</hlm-error>
         </hlm-form-field>
         <hlm-form-field class="w-full">
-          <input
-            hlmInput
-            placeholder="Feature description"
-            class="w-full"
-            formControlName="description"
-          />
+          <input hlmInput placeholder="Feature description" class="w-full" formControlName="description" />
           <hlm-error>Value is too long</hlm-error>
         </hlm-form-field>
         <!-- <div class="space-y-2">
@@ -244,41 +213,19 @@
         </div> -->
         <div class="flex item-center justify-end gap-4">
           @if(group.dirty) {
-          <button
-            [disabled]="group.invalid"
-            hlmBtn
-            size="sm"
-            type="submit"
-            class="font-semibold"
-          >
+          <button [disabled]="group.invalid" hlmBtn size="sm" type="submit" class="font-semibold">
             <ng-icon name="lucideSave" />
-            <span
-              >@if(group.value.isNew) { Save feature }@else { Update feature
-              }</span
-            ><!-- {{ group.value.isNew ? 'Save feature' : 'Update feature' }} -->
+            <span>@if(group.value.isNew) { Save feature }@else { Update feature
+              }</span><!-- {{ group.value.isNew ? 'Save feature' : 'Update feature' }} -->
           </button>
           @if(!group.value.isNew) {
-          <button
-            type="button"
-            (click)="discardFormChanges($index)"
-            hlmBtn
-            size="sm"
-            variant="outline"
-          >
+          <button type="button" (click)="discardFormChanges($index)" hlmBtn size="sm" variant="outline">
             <ng-icon name="heroXMark" />
             <span>Discard Changes</span>
           </button>
           } }
-          <button
-            class="items-center"
-            type="button"
-            hlmBtn
-            [disabled]="deleteInProgress() === $index"
-            size="sm"
-            variant="destructive"
-            (mousedown)="deletingIndex.set($index)"
-            (mouseup)="resetDeletion()"
-          >
+          <button class="items-center" type="button" hlmBtn [disabled]="deleteInProgress() === $index" size="sm"
+            variant="destructive" (mousedown)="deletingIndex.set($index)" (mouseup)="resetDeletion()">
             <ng-icon name="lucideTrash2" />
             @if(deletingIndex() === $index) {
             <span>Removing feature...</span>
@@ -292,8 +239,19 @@
       </form>
     </hlm-accordion-content>
   </div>
+  }@empty {
+  <div class="text-center text-lg border-accent border-2 rounded-md bg-accent/50 h-40 flex items-center justify-center">
+    <p>There are no feature flags available. Click the <strong>"Add Feature"</strong> button to add one.</p>
+  </div>
   }
 </div>
+}@placeholder {
+<div class="space-y-3">
+  @for(_ of [1,2,3,4]; track $index) {
+  <hlm-skeleton class="h-10 w-full" />
+  }
+</div>
+}
 
 <hlm-alert-dialog [state]="pendingChangesDialogState()">
   <hlm-alert-dialog-content *brnAlertDialogContent="let ctx">

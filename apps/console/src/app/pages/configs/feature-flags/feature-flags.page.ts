@@ -28,6 +28,7 @@ import { distinctUntilChanged, filter, map, Observable, takeUntil } from 'rxjs';
 import z from 'zod';
 import { environment } from '../../../../environments/environment.development';
 import { CanDeactivateType, PendingChanges } from '../../../../models';
+import { HlmSkeletonComponent } from '@spartan-ng/helm/skeleton';
 
 type OverrideType = 'ip' | 'cidr' | 'zone';
 
@@ -57,7 +58,7 @@ type StateMeta = Required<Pick<StateInfo, 'name' | 'isoCode'>>;
       bootstrapCircleFill,
       heroQuestionMarkCircle,
       heroXMark,
-      lucideTrash2
+      lucideTrash2,
     }),
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher }
   ],
@@ -75,6 +76,7 @@ type StateMeta = Required<Pick<StateInfo, 'name' | 'isoCode'>>;
     HlmHoverCardImports,
     BrnHoverCardImports,
     HlmBadgeImports,
+    HlmSkeletonComponent,
     NgIcon
   ],
   templateUrl: './feature-flags.page.html',
@@ -125,6 +127,9 @@ export class FeatureFlagsPage implements PendingChanges {
           this.forms.insert(formIndex, form);
         }
       });
+      if (flags.length == 0) {
+        this.forms.clear();
+      }
     });
 
     effect(() => {

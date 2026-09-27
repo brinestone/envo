@@ -26,20 +26,19 @@ export default defineEventHandler({
         message: 'Feature not found'
       });
 
-      const [feature] = await tx.delete(features)
+      const [{ id }] = await tx.delete(features)
         .where(and(eq(features.id, flag), eq(features.project, project)))
         .returning();
       await tx.update(projects).set({ updatedAt: new Date() }).where(eq(projects.id, project));
       setResponseStatus(event, 202, 'Accepted');
-      runAppTask('event:record', 'projects.flags.delete', {
+      runAppTask('event:record', 'projects.flags.delete', event, 'Flag deleted', 'FLAG_DELETE', {
         actor: session.activeMembership as string,
         organization: session.activeOrganizationId as string,
         session: session.id,
         note: 'Feature flag deleted',
+        id: id,
         project,
         timestamp: new Date()
-      }, {
-        id: feature.id
       });
     })
   }

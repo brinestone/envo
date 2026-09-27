@@ -70,6 +70,8 @@ export class ConfigPageLayout implements OnInit {
     const tab = this.route.snapshot.children[0].url[0].path;
     this.activeTab.set(tab);
   }
-
+  #foo = effect(() => {
+    console.log(this.activeProject())
+  })
 
 }
