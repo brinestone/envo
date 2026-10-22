@@ -1,5 +1,5 @@
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { environment } from '../../environments/environment.development';
+import { environment } from '../../environments/environment';
 import { inject } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { catchError, EMPTY, throwError } from 'rxjs';

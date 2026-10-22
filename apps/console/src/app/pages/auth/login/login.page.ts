@@ -14,7 +14,7 @@ import { HlmSeparatorDirective } from '@spartan-ng/helm/separator';
 import { CredentialSignIn } from '@state/auth/actions';
 import { toast } from 'ngx-sonner';
 import { z } from 'zod';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { isActionLoading } from '../../../utils';
 
 const Form = z.object({

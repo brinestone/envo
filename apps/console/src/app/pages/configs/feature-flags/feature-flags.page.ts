@@ -26,7 +26,7 @@ import { currentProject } from '@state/selectors';
 import { toast } from 'ngx-sonner';
 import { distinctUntilChanged, filter, map, Observable, takeUntil } from 'rxjs';
 import z from 'zod';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { CanDeactivateType, PendingChanges } from '../../../../models';
 import { HlmSkeletonComponent } from '@spartan-ng/helm/skeleton';
 

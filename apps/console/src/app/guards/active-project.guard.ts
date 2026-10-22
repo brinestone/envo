@@ -5,7 +5,7 @@ import { Store } from "@ngxs/store";
 import { SelectProject } from "@state/project/actions";
 import { currentProject } from "@state/selectors";
 import { map } from "rxjs";
-import { environment } from "../../environments/environment.development";
+import { environment } from "../../environments/environment";
 
 export const hasActiveProjectGuard: (redirect: string) => CanActivateFn = (redirect: string) => (route, state) => {
   const store = inject(Store);

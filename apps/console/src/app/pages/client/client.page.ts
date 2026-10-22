@@ -19,7 +19,7 @@ import { HlmSkeletonModule } from '@spartan-ng/helm/skeleton';
 import { HlmSwitchComponent } from '@spartan-ng/helm/switch';
 import { currentProject } from '@state/selectors';
 import { toast } from 'ngx-sonner';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 type CdkListBoxSelection<T> = {
   listbox: CdkListbox;
@@ -40,14 +40,14 @@ type CdkListBoxSelection<T> = {
     'class': 'page'
   },
   imports: [
-    NgIcon,
     BrnSheetImports,
     HlmSheetImports,
+    BrnSelectImports,
+    HlmSelectImports,
+    NgIcon,
     HlmButtonDirective,
     HlmSwitchComponent,
     HlmInputDirective,
-    HlmSelectImports,
-    BrnSelectImports,
     CdkListbox,
     EnvironmentInfo,
     NgClass,
@@ -56,10 +56,10 @@ type CdkListBoxSelection<T> = {
     HlmBadgeDirective,
     FormsModule,
   ],
-  templateUrl: './project-environments.page.html',
-  styleUrl: './project-environments.page.scss'
+  templateUrl: './client.page.html',
+  styleUrl: './client.page.scss'
 })
-export class ProjectEnvironmentsPage {
+export class ClientsPage {
   private http = inject(HttpClient);
   private project = select(currentProject);
   private form = viewChild(NgForm);

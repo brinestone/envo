@@ -1,15 +1,9 @@
 <section>
   <div
-    class="flex flex-col items-center justify-start landscape:items-start md:items-start bg-accent/80 text-accent-foreground p-3 rounded-md border-2 space-y-3 border-accent"
-  >
+    class="flex flex-col items-center justify-start landscape:items-start md:items-start bg-accent/80 text-accent-foreground p-3 rounded-md border-2 space-y-3 border-accent">
     <div class="flex justify-between flex-wrap w-full">
       <h2 class="text-xl font-bold line-clamp-1">{{ envRef()?.name }}</h2>
-      <button
-        (click)="delete.emit(envRef()?.id)"
-        hlmBtn
-        size="sm"
-        variant="destructive"
-      >
+      <button (click)="delete.emit(envRef()?.id)" hlmBtn size="sm" variant="destructive">
         <ng-icon name="lucideTrash2" />
         <span>Delete</span>
       </button>
@@ -31,15 +25,15 @@
   </div>
 </section>
 <section>
-  <hlm-tabs tab="activity" class="w-full">
-    <hlm-tabs-list class="grid w-auto grid-cols-2" aria-label="tabs example">
-      <button hlmTabsTrigger="activity">
-        <ng-icon name="lucideClockAlert" />
-        <span>Activity</span>
-      </button>
+  <hlm-tabs tab="agents" class="w-full">
+    <hlm-tabs-list class="grid w-auto grid-cols-2" aria-label="tabs example" var>
       <button hlmTabsTrigger="agents">
         <ng-icon name="lucideComputer" />
         <span>Agents</span>
+      </button>
+      <button hlmTabsTrigger="activity">
+        <ng-icon name="lucideClockAlert" />
+        <span>Activity</span>
       </button>
     </hlm-tabs-list>
     <div hlmTabsContent="activity">

@@ -1,4 +1,4 @@
-import { EnvironmentSchema } from "@envo/common";
+import { Environment } from "@envo/common";
 import { desc, eq } from "drizzle-orm";
 import z from "zod"
 

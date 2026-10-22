@@ -2,7 +2,7 @@ import { Routes } from "@angular/router";
 import { checkPendingChangesGuard } from "./guards/check-pending-changes.guard";
 
 export const configRoutes: Routes = [
-  { title: 'Environments', path: 'environments', loadComponent: () => import('./pages/project-environments/project-environments.page').then(m => m.ProjectEnvironmentsPage) },
+  { title: 'Clients', path: 'clients', loadComponent: () => import('./pages/client/client.page').then(m => m.ClientsPage) },
   {
     path: 'configs',
     loadComponent: () => import('./layouts/config-page/config-page.layout').then(m => m.ConfigPageLayout), children: [

@@ -14,7 +14,7 @@ import { HlmSeparatorDirective } from '@spartan-ng/helm/separator';
 import { HlmSkeletonComponent } from '@spartan-ng/helm/skeleton';
 import { SelectProject } from '@state/project/actions';
 import { currentProject } from '@state/selectors';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'ev-config-page',

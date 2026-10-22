@@ -17,7 +17,7 @@ import { CreateProject, SelectProject } from '@state/project/actions';
 import { activeOrganization } from '@state/selectors';
 import { toast } from 'ngx-sonner';
 import { concatMap } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { isActionLoading } from '../../../utils';
 
 @Component({

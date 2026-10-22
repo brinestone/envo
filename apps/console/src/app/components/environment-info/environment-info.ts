@@ -2,7 +2,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, input, output } from '@angular/core';
 import { Environment, EnvironmentStat } from '@envo/common';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideClock, lucideClockAlert, lucideComputer, lucideLogs, lucideTrash2 } from '@ng-icons/lucide';
+import { lucideClock, lucideClockAlert, lucideComputer, lucideLink, lucideLogs, lucideTrash2 } from '@ng-icons/lucide';
 import { BrnTabsImports } from '@spartan-ng/brain/tabs';
 import { HlmButtonDirective } from '@spartan-ng/helm/button';
 import { HlmTabsImports } from '@spartan-ng/helm/tabs';
@@ -14,7 +14,8 @@ import { HlmTabsImports } from '@spartan-ng/helm/tabs';
       lucideComputer,
       lucideClock,
       lucideClockAlert,
-      lucideTrash2
+      lucideTrash2,
+      lucideLink
     })
   ],
   imports: [

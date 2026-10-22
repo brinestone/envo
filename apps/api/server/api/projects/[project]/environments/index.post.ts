@@ -1,4 +1,4 @@
-import { Environment, NewEnvironmentRequestSchema } from "@envo/common";
+import { Environment, NewEnvironmentRequest } from "@envo/common";
 import { and, count, eq, exists, ne } from "drizzle-orm";
 import z from "zod";
 
@@ -54,7 +54,7 @@ export default defineEventHandler({
           ));
       }
 
-      runAppTask('event:record', 'projects.environments.create', event, 'New environment created', {
+      runAppTask('event:record', 'projects.environments.create', event, 'New environment created', 'ENV_CREATE', {
         id: newEnv.id
       });
 

@@ -21,7 +21,7 @@ import { HlmSwitchImports } from '@spartan-ng/helm/switch';
 import { currentProject } from '@state/selectors';
 import { toast } from 'ngx-sonner';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 import { PendingChanges } from '../../../../models';
 import { ignoreFormTrackedChanges } from '../../../utils';
 import { HlmSkeletonComponent } from '@spartan-ng/helm/skeleton';
