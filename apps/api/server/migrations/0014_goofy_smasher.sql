@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX "vars_name_project_index" ON "vars" USING btree ("name","project");

@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX "environments_name_project_index" ON "environments" USING btree ("name","project");

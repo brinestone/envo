@@ -1,1 +1,0 @@
-ALTER TABLE "vars" ADD COLUMN "fallbackValue" text;
