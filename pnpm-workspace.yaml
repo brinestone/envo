@@ -1,17 +1,34 @@
 packages:
-  - packages/*
   - apps/*
+  - packages/*
+  - tools/*
 
+catalogMode: prefer
+
+catalog:
+  "@types/node": ^24
+  better-auth: ^1.7.22
+  typescript: ^7.0.2
+  vite: npm:@voidzero-dev/vite-plus-core@1.3.0
+  vite-plus: 1.3.0
+  vitest: 5.0.5
+overrides:
+  vite@*: 'catalog:'
+  vitest@*: 'catalog:'
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: '*'
+    vitest: '*'
+supportedArchitectures:
+  cpu:
+    - current
+  os:
+    - current
 allowBuilds:
   '@parcel/watcher': true
-  '@tailwindcss/oxide': true
   esbuild: true
   lmdb: true
   msgpackr-extract: true
-  nx: true
-
-supportedArchitectures:
-  os:
-    - current
-  cpu:
-    - current

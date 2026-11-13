@@ -1,1 +1,0 @@
-ALTER TABLE "environment_features" ALTER COLUMN "enabled" SET DEFAULT true;
