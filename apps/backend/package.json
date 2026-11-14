@@ -4,10 +4,23 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
-    "preview": "vite preview"
+    "migrate.local": "pnpm drizzle-kit generate && pnpm drizzle-kit migrate",
+    "preview": "vite preview",
+    "studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@better-auth/drizzle-adapter": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
+    "pg": "catalog:",
+    "ulid": "catalog:"
   },
   "devDependencies": {
     "@types/node": "latest",
+    "@types/pg": "catalog:",
+    "dotenv": "catalog:",
+    "dotenv-expand": "catalog:",
+    "drizzle-kit": "catalog:",
     "nitro": "latest",
     "typescript": "latest",
     "vite": "latest"

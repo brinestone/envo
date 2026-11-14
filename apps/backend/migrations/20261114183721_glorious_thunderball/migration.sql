@@ -1,0 +1,3 @@
+ALTER TABLE "session" ADD COLUMN "active_organization" text;--> statement-breakpoint
+CREATE INDEX "session_active_organization_index" ON "session" ("active_organization") WHERE ("active_organization" is not null);--> statement-breakpoint
+ALTER TABLE "session" ADD CONSTRAINT "session_active_organization_organization_id_fkey" FOREIGN KEY ("active_organization") REFERENCES "organization"("id") ON DELETE SET NULL;

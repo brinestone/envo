@@ -1,0 +1,134 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "10d2c2e8-c94f-45ce-a466-270c8a55f73d",
+  "prevIds": [
+    "6e68f6ae-f393-4664-a838-2efa592baed5"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "session",
+        "active_organization"
+      ],
+      "writes": [
+        "s|col|public.session.active_organization",
+        "n|col|public.session.active_organization",
+        "e|col|public.session.active_organization"
+      ],
+      "reads": [
+        "n|tbl|public.session",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "session",
+        "session_active_organization_index"
+      ],
+      "writes": [
+        "s|idx|public.session_active_organization_index",
+        "n|idx|public.session_active_organization_index",
+        "e|idx|public.session_active_organization_index",
+        "n|rel|public.session_active_organization_index"
+      ],
+      "reads": [
+        "n|tbl|public.session",
+        "n|sch|public",
+        "n|col|public.session.active_organization"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "session"
+      ],
+      "writes": [
+        "s|fk|public.session.session_active_organization_organization_id_fkey",
+        "n|fk|public.session.session_active_organization_organization_id_fkey",
+        "e|fk|public.session.session_active_organization_organization_id_fkey",
+        "n|con|public.session.session_active_organization_organization_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.session",
+        "n|sch|public",
+        "n|tbl|public.organization",
+        "n|sch|public",
+        "n|col|public.session.active_organization",
+        "n|col|public.organization.id",
+        "e|uniqueness|public.organization.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "session",
+        "name": "active_organization",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "session",
+        "name": "session_active_organization_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "active_organization",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": "(\"active_organization\" is not null)",
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "session",
+        "name": "session_active_organization_organization_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "active_organization"
+        ],
+        "schemaTo": "public",
+        "tableTo": "organization",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "SET NULL",
+        "entityType": "fks"
+      }
+    }
+  ]
+}
