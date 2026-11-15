@@ -1,0 +1,126 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "d87f43c3-6694-4d4b-89ee-6a3552a1b18c",
+  "prevIds": [
+    "fcb6aaa5-f0af-4917-8ad5-e4ffddba1998"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_pk",
+      "statementTarget": [
+        "table",
+        "public",
+        "configs"
+      ],
+      "writes": [
+        "s|pk|public.configs",
+        "n|pk|public.configs",
+        "e|pk|public.configs",
+        "n|con|public.configs.configs_pkey",
+        "n|rel|public.configs_pkey"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "e|col|public.configs.project",
+        "e|col|public.configs.key"
+      ],
+      "sharedWrites": [
+        "e|uniqueness|public.configs.key.project"
+      ]
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "outbox",
+        "processor"
+      ],
+      "writes": [
+        "s|colprop|public.outbox.processor.notNull"
+      ],
+      "reads": [
+        "n|tbl|public.outbox",
+        "n|sch|public",
+        "n|col|public.outbox.processor"
+      ],
+      "sqlHash": "7187ee6df9f8c2e2"
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_project_key_version_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_project_key_version_index",
+        "n|idx|public.configs_project_key_version_index",
+        "e|idx|public.configs_project_key_version_index",
+        "n|rel|public.configs_project_key_version_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.project",
+        "n|col|public.configs.key",
+        "n|col|public.configs.version"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_project_key_version_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "project",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "key",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "version",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": true,
+        "where": "(\"deleted_at\" is not null)",
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "drop",
+      "key": "pks\u0000[\"public\",\"configs\",\"configs_pkey\"]"
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"outbox\",\"processor\"]",
+      "set": {
+        "notNull": false
+      }
+    }
+  ]
+}

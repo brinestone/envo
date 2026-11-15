@@ -1,0 +1,1 @@
+CREATE INDEX "outbox_processor_index" ON "outbox" ("processor");

@@ -1,6 +1,6 @@
 import { defineConfig } from "nitro";
 
-const dbUrl = process.env.NITRO_DB_URL;
+const corsOrigins = process.env.NITRO_CORS_ORIGINS;
 export default defineConfig({
   serverDir: "./server",
   experimental: {
@@ -8,10 +8,11 @@ export default defineConfig({
     envExpansion: true,
   },
   routeRules: {
-    "/api/auth/**": {
+    "/api/**": {
       cors: {
-        origin: dbUrl?.split(",") ?? [],
+        origin: corsOrigins?.split(",") ?? [],
         credentials: true,
+        allowHeaders: ["x-project"],
       },
     },
   },

@@ -1,0 +1,212 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "db9d193b-9646-45dc-a053-3364f5b8cf05",
+  "prevIds": [
+    "38ffff61-8e37-48b9-97ca-288db0f238de"
+  ],
+  "footprints": [
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "events",
+        "user_id"
+      ],
+      "writes": [
+        "s|col|public.events.user_id",
+        "n|col|public.events.user_id",
+        "e|col|public.events.user_id"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "events",
+        "traceId"
+      ],
+      "writes": [
+        "s|col|public.events.traceId",
+        "n|col|public.events.traceId",
+        "e|col|public.events.traceId"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "events",
+        "events_traceId_index"
+      ],
+      "writes": [
+        "s|idx|public.events_traceId_index",
+        "n|idx|public.events_traceId_index",
+        "e|idx|public.events_traceId_index",
+        "n|rel|public.events_traceId_index"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public",
+        "n|col|public.events.traceId"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "events",
+        "events_user_id_index"
+      ],
+      "writes": [
+        "s|idx|public.events_user_id_index",
+        "n|idx|public.events_user_id_index",
+        "e|idx|public.events_user_id_index",
+        "n|rel|public.events_user_id_index"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public",
+        "n|col|public.events.user_id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "events"
+      ],
+      "writes": [
+        "s|fk|public.events.events_user_id_user_id_fkey",
+        "n|fk|public.events.events_user_id_user_id_fkey",
+        "e|fk|public.events.events_user_id_user_id_fkey",
+        "n|con|public.events.events_user_id_user_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public",
+        "n|tbl|public.user",
+        "n|sch|public",
+        "n|col|public.events.user_id",
+        "n|col|public.user.id",
+        "e|uniqueness|public.user.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "events",
+        "name": "user_id",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "events",
+        "name": "traceId",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "events",
+        "name": "events_traceId_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "traceId",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "events",
+        "name": "events_user_id_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "user_id",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": "(\"user_id\" is not null)",
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "events",
+        "name": "events_user_id_user_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "user_id"
+        ],
+        "schemaTo": "public",
+        "tableTo": "user",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "SET NULL",
+        "entityType": "fks"
+      }
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "1f3bc4df-cdeb-45c3-87a2-6c6afa879d92",
+  "prevIds": [
+    "db9d193b-9646-45dc-a053-3364f5b8cf05"
+  ],
+  "footprints": [
+    {
+      "statementType": "rename_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "events",
+        "traceId"
+      ],
+      "writes": [
+        "s|col|public.events.traceId",
+        "n|col|public.events.traceId",
+        "s|col|public.events.trace_id",
+        "n|col|public.events.trace_id"
+      ],
+      "reads": [
+        "n|tbl|public.events",
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "rename",
+      "key": "columns\u0000[\"public\",\"events\",\"traceId\"]",
+      "set": {
+        "name": "trace_id"
+      }
+    }
+  ]
+}

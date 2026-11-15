@@ -1,0 +1,73 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "05cb451d-12e1-4eaf-9568-d9e516a63bda",
+  "prevIds": [
+    "122ddd14-2c1d-4c19-882f-d11dc3f5d1ea"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_project_key_version_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_project_key_version_index",
+        "n|idx|public.configs_project_key_version_index",
+        "e|idx|public.configs_project_key_version_index",
+        "n|rel|public.configs_project_key_version_index"
+      ],
+      "reads": [
+        "e|tbl|public.configs",
+        "n|sch|public",
+        "e|col|public.configs.project",
+        "e|col|public.configs.key",
+        "e|col|public.configs.version"
+      ],
+      "sharedWrites": []
+    },
+    {
+      "statementType": "alter_pk",
+      "statementTarget": [
+        "table",
+        "public",
+        "configs"
+      ],
+      "writes": [
+        "s|pk|public.configs"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.project",
+        "n|col|public.configs.key",
+        "n|col|public.configs.version"
+      ],
+      "sharedWrites": [
+        "e|uniqueness|public.configs.key.project"
+      ],
+      "sqlHash": "d7768522abe93769"
+    }
+  ],
+  "deltas": [
+    {
+      "op": "drop",
+      "key": "indexes\u0000[\"public\",\"configs_project_key_version_index\"]"
+    },
+    {
+      "op": "alter",
+      "key": "pks\u0000[\"public\",\"configs\",\"configs_pkey\"]",
+      "set": {
+        "columns": [
+          "project",
+          "key",
+          "version"
+        ]
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite dev",
+    "dev": "vite dev --watch",
     "migrate.local": "pnpm drizzle-kit generate && pnpm drizzle-kit migrate",
     "preview": "vite preview",
     "studio": "drizzle-kit studio"
@@ -13,7 +13,8 @@
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
     "pg": "catalog:",
-    "ulid": "catalog:"
+    "ulid": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/node": "latest",

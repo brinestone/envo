@@ -1,0 +1,1091 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "a10d6d43-3b80-4369-b031-afc4003bbc65",
+  "prevIds": [
+    "10d2c2e8-c94f-45ce-a466-270c8a55f73d"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "configs"
+      ],
+      "writes": [
+        "s|tbl|public.configs",
+        "n|tbl|public.configs",
+        "e|tbl|public.configs",
+        "n|rel|public.configs",
+        "n|type|public.configs",
+        "n|rel|public.configs_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "projects"
+      ],
+      "writes": [
+        "s|tbl|public.projects",
+        "n|tbl|public.projects",
+        "e|tbl|public.projects",
+        "n|rel|public.projects",
+        "n|type|public.projects",
+        "n|rel|public.projects_pkey"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "drop_table",
+      "statementTarget": [
+        "table",
+        "public",
+        "events"
+      ],
+      "writes": [
+        "s|tbl|public.events",
+        "n|tbl|public.events",
+        "e|tbl|public.events",
+        "n|rel|public.events",
+        "n|type|public.events"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_project_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_project_index",
+        "n|idx|public.configs_project_index",
+        "e|idx|public.configs_project_index",
+        "n|rel|public.configs_project_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.project"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_key_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_key_index",
+        "n|idx|public.configs_key_index",
+        "e|idx|public.configs_key_index",
+        "n|rel|public.configs_key_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.key"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_version_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_version_index",
+        "n|idx|public.configs_version_index",
+        "e|idx|public.configs_version_index",
+        "n|rel|public.configs_version_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.version"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_project_key_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_project_key_index",
+        "n|idx|public.configs_project_key_index",
+        "e|idx|public.configs_project_key_index",
+        "n|rel|public.configs_project_key_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.project",
+        "n|col|public.configs.key"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_key_version_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_key_version_index",
+        "n|idx|public.configs_key_version_index",
+        "e|idx|public.configs_key_version_index",
+        "n|rel|public.configs_key_version_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.key",
+        "n|col|public.configs.version"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_created_at_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_created_at_index",
+        "n|idx|public.configs_created_at_index",
+        "e|idx|public.configs_created_at_index",
+        "n|rel|public.configs_created_at_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.created_at"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_updated_at_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_updated_at_index",
+        "n|idx|public.configs_updated_at_index",
+        "e|idx|public.configs_updated_at_index",
+        "n|rel|public.configs_updated_at_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.updated_at"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_deleted_at_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_deleted_at_index",
+        "n|idx|public.configs_deleted_at_index",
+        "e|idx|public.configs_deleted_at_index",
+        "n|rel|public.configs_deleted_at_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.deleted_at"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_project_key_version_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_project_key_version_index",
+        "n|idx|public.configs_project_key_version_index",
+        "e|idx|public.configs_project_key_version_index",
+        "n|rel|public.configs_project_key_version_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.project",
+        "n|col|public.configs.key",
+        "n|col|public.configs.version"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "projects",
+        "projects_organization_index"
+      ],
+      "writes": [
+        "s|idx|public.projects_organization_index",
+        "n|idx|public.projects_organization_index",
+        "e|idx|public.projects_organization_index",
+        "n|rel|public.projects_organization_index"
+      ],
+      "reads": [
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|col|public.projects.organization"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "projects",
+        "projects_created_by_index"
+      ],
+      "writes": [
+        "s|idx|public.projects_created_by_index",
+        "n|idx|public.projects_created_by_index",
+        "e|idx|public.projects_created_by_index",
+        "n|rel|public.projects_created_by_index"
+      ],
+      "reads": [
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|col|public.projects.created_by"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "projects",
+        "projects_updated_at_index"
+      ],
+      "writes": [
+        "s|idx|public.projects_updated_at_index",
+        "n|idx|public.projects_updated_at_index",
+        "e|idx|public.projects_updated_at_index",
+        "n|rel|public.projects_updated_at_index"
+      ],
+      "reads": [
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|col|public.projects.updated_at"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "projects",
+        "projects_created_at_index"
+      ],
+      "writes": [
+        "s|idx|public.projects_created_at_index",
+        "n|idx|public.projects_created_at_index",
+        "e|idx|public.projects_created_at_index",
+        "n|rel|public.projects_created_at_index"
+      ],
+      "reads": [
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|col|public.projects.created_at"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "configs"
+      ],
+      "writes": [
+        "s|fk|public.configs.configs_project_projects_id_fkey",
+        "n|fk|public.configs.configs_project_projects_id_fkey",
+        "e|fk|public.configs.configs_project_projects_id_fkey",
+        "n|con|public.configs.configs_project_projects_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|col|public.configs.project",
+        "n|col|public.projects.id",
+        "e|uniqueness|public.projects.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "projects"
+      ],
+      "writes": [
+        "s|fk|public.projects.projects_created_by_member_id_fkey",
+        "n|fk|public.projects.projects_created_by_member_id_fkey",
+        "e|fk|public.projects.projects_created_by_member_id_fkey",
+        "n|con|public.projects.projects_created_by_member_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|tbl|public.member",
+        "n|sch|public",
+        "n|col|public.projects.created_by",
+        "n|col|public.member.id",
+        "e|uniqueness|public.member.id"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "projects"
+      ],
+      "writes": [
+        "s|fk|public.projects.projects_organization_organization_id_fkey",
+        "n|fk|public.projects.projects_organization_organization_id_fkey",
+        "e|fk|public.projects.projects_organization_organization_id_fkey",
+        "n|con|public.projects.projects_organization_organization_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|tbl|public.organization",
+        "n|sch|public",
+        "n|col|public.projects.organization",
+        "n|col|public.organization.id",
+        "e|uniqueness|public.organization.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "configs",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "projects",
+        "isRlsEnabled": false,
+        "entityType": "tables"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "project",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "key",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "label",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "value",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "version",
+        "type": "integer",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "1",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "deleted_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "id",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "name",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "organization",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "created_by",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_project_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "project",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_key_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "key",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_version_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "version",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_project_key_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "project",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "key",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_key_version_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "key",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "version",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_created_at_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "created_at",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_updated_at_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "updated_at",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_deleted_at_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "deleted_at",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": "(\"deleted_at\" is null)",
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_project_key_version_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "project",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "key",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          },
+          {
+            "value": "version",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": true,
+        "where": "(\"deleted_at\" is not null)",
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "projects_organization_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "organization",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "projects_created_by_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "created_by",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "projects_updated_at_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "updated_at",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "projects_created_at_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "created_at",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_project_projects_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "project"
+        ],
+        "schemaTo": "public",
+        "tableTo": "projects",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "projects_created_by_member_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "created_by"
+        ],
+        "schemaTo": "public",
+        "tableTo": "member",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "SET NULL",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "projects_organization_organization_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "organization"
+        ],
+        "schemaTo": "public",
+        "tableTo": "organization",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "CASCADE",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_pkey",
+        "columns": [
+          "project",
+          "key"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "projects",
+        "name": "projects_pkey",
+        "columns": [
+          "id"
+        ],
+        "nameExplicit": false,
+        "entityType": "pks"
+      }
+    },
+    {
+      "op": "drop",
+      "key": "tables\u0000[\"public\",\"events\"]"
+    },
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"events\",\"id\"]"
+    },
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"events\",\"created_at\"]"
+    },
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"events\",\"updated_at\"]"
+    },
+    {
+      "op": "drop",
+      "key": "pks\u0000[\"public\",\"events\",\"events_pkey\"]"
+    }
+  ]
+}

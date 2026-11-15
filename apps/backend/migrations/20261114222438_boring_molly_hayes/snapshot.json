@@ -1,0 +1,44 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "fcb6aaa5-f0af-4917-8ad5-e4ffddba1998",
+  "prevIds": [
+    "05cb451d-12e1-4eaf-9568-d9e516a63bda"
+  ],
+  "footprints": [
+    {
+      "statementType": "alter_pk",
+      "statementTarget": [
+        "table",
+        "public",
+        "configs"
+      ],
+      "writes": [
+        "s|pk|public.configs"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.project",
+        "n|col|public.configs.key"
+      ],
+      "sharedWrites": [
+        "e|uniqueness|public.configs.key.project.version"
+      ],
+      "sqlHash": "9204026c80fd392c"
+    }
+  ],
+  "deltas": [
+    {
+      "op": "alter",
+      "key": "pks\u0000[\"public\",\"configs\",\"configs_pkey\"]",
+      "set": {
+        "columns": [
+          "project",
+          "key"
+        ]
+      }
+    }
+  ]
+}

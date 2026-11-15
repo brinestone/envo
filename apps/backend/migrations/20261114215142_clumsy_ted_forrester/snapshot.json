@@ -1,0 +1,57 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "122ddd14-2c1d-4c19-882f-d11dc3f5d1ea",
+  "prevIds": [
+    "bd951980-57c5-40bf-aa90-e507ec423df1"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "outbox",
+        "outbox_processor_index"
+      ],
+      "writes": [
+        "s|idx|public.outbox_processor_index",
+        "n|idx|public.outbox_processor_index",
+        "e|idx|public.outbox_processor_index",
+        "n|rel|public.outbox_processor_index"
+      ],
+      "reads": [
+        "n|tbl|public.outbox",
+        "n|sch|public",
+        "n|col|public.outbox.processor"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "outbox",
+        "name": "outbox_processor_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "processor",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    }
+  ]
+}
