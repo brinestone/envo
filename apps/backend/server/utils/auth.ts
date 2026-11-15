@@ -38,6 +38,13 @@ export const auth = betterAuth({
       theme: "bluePlanet",
     }),
   ],
+  emailAndPassword: { enabled: true },
+  socialProviders: {
+    google: {
+      clientId: process.env.NITRO_GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.NITRO_GOOGLE_CLIENT_SECRET as string,
+    },
+  },
 });
 
 export const requireActiveOrg = defineMiddleware(async (event, next) => {

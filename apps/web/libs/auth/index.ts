@@ -5,6 +5,7 @@ import {
   makeEnvironmentProviders,
 } from "@angular/core";
 import { createAuthClient } from "better-auth/client";
+export * from "./types";
 
 function makeAuthClient(baseUrl: string) {
   return createAuthClient({

@@ -7,6 +7,10 @@ catalogMode: prefer
 
 catalog:
   "@better-auth/drizzle-adapter": ^1.7.22
+  '@ngxs/logger-plugin': ^22.0.0
+  '@ngxs/router-plugin': ^22.0.0
+  '@ngxs/storage-plugin': ^22.0.0
+  '@ngxs/store': ^22.0.0
   "@types/node": ^24
   "@types/pg": ^8.23.1
   better-auth: ^1.7.22
