@@ -1,0 +1,8 @@
+DROP VIEW "vw_project_lookups";--> statement-breakpoint
+ALTER TABLE "configs" ADD COLUMN "environment" text;--> statement-breakpoint
+ALTER TABLE "environments" ADD COLUMN "created_at" timestamp with time zone DEFAULT now() NOT NULL;--> statement-breakpoint
+ALTER TABLE "environments" ADD COLUMN "updated_at" timestamp with time zone DEFAULT now() NOT NULL;--> statement-breakpoint
+ALTER TABLE "environments" ADD COLUMN "deleted_at" timestamp with time zone;--> statement-breakpoint
+CREATE INDEX "configs_environment_index" ON "configs" ("environment");--> statement-breakpoint
+ALTER TABLE "configs" ADD CONSTRAINT "configs_project_environment_environments_project_name_fkey" FOREIGN KEY ("project","environment") REFERENCES "environments"("project","name");--> statement-breakpoint
+CREATE VIEW "vw_project_lookups" AS (with "unique_config" as (select distinct on ("c"."project", "c"."key") "project", "key", "label", "value", "created_at", "updated_at", "version", "trace_id", "deleted_at", "environment" from "configs" "c") select "p"."id", "p"."name", "p"."image", "p"."organization", "p"."created_by", "m"."user_id", "u"."name" as "creator_name", "u"."image" as "creator_avatar", count("unique_config"."key") as "config_count" from "projects" "p" left join "unique_config" on ((("unique_config"."deleted_at" is null)) and ("unique_config"."project" = "p"."id")) left join "member" "m" on "m"."id" = "p"."created_by" left join "user" "u" on "u"."id" = "m"."user_id" group by "p"."id", "m"."user_id", "u"."name", "u"."image");

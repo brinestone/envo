@@ -1,0 +1,283 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "d9853e01-fc84-4972-99c6-aa84cb811f5a",
+  "prevIds": [
+    "fd5cbc29-6e1f-47e2-87ad-851e52872948"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_view",
+      "statementTarget": [
+        "view",
+        "public",
+        "vw_project_lookups"
+      ],
+      "writes": [
+        "s|view|public.vw_project_lookups",
+        "n|view|public.vw_project_lookups",
+        "e|view|public.vw_project_lookups",
+        "n|rel|public.vw_project_lookups",
+        "n|type|public.vw_project_lookups"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "configs",
+        "environment"
+      ],
+      "writes": [
+        "s|col|public.configs.environment",
+        "n|col|public.configs.environment",
+        "e|col|public.configs.environment"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "environments",
+        "created_at"
+      ],
+      "writes": [
+        "s|col|public.environments.created_at",
+        "n|col|public.environments.created_at",
+        "e|col|public.environments.created_at"
+      ],
+      "reads": [
+        "n|tbl|public.environments",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "environments",
+        "updated_at"
+      ],
+      "writes": [
+        "s|col|public.environments.updated_at",
+        "n|col|public.environments.updated_at",
+        "e|col|public.environments.updated_at"
+      ],
+      "reads": [
+        "n|tbl|public.environments",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "environments",
+        "deleted_at"
+      ],
+      "writes": [
+        "s|col|public.environments.deleted_at",
+        "n|col|public.environments.deleted_at",
+        "e|col|public.environments.deleted_at"
+      ],
+      "reads": [
+        "n|tbl|public.environments",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "configs",
+        "configs_environment_index"
+      ],
+      "writes": [
+        "s|idx|public.configs_environment_index",
+        "n|idx|public.configs_environment_index",
+        "e|idx|public.configs_environment_index",
+        "n|rel|public.configs_environment_index"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|col|public.configs.environment"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "configs"
+      ],
+      "writes": [
+        "s|fk|public.configs.configs_project_environment_environments_project_name_fkey",
+        "n|fk|public.configs.configs_project_environment_environments_project_name_fkey",
+        "e|fk|public.configs.configs_project_environment_environments_project_name_fkey",
+        "n|con|public.configs.configs_project_environment_environments_project_name_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.configs",
+        "n|sch|public",
+        "n|tbl|public.environments",
+        "n|sch|public",
+        "n|col|public.configs.project",
+        "n|col|public.configs.environment",
+        "n|col|public.environments.project",
+        "n|col|public.environments.name",
+        "e|uniqueness|public.environments.name.project"
+      ]
+    },
+    {
+      "statementType": "create_view",
+      "statementTarget": [
+        "view",
+        "public",
+        "vw_project_lookups"
+      ],
+      "writes": [
+        "s|view|public.vw_project_lookups",
+        "n|view|public.vw_project_lookups",
+        "e|view|public.vw_project_lookups",
+        "n|rel|public.vw_project_lookups",
+        "n|type|public.vw_project_lookups"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "environment",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "environments",
+        "name": "created_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "environments",
+        "name": "updated_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": "now()",
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "environments",
+        "name": "deleted_at",
+        "type": "timestamp with time zone",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_environment_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "environment",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": null,
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "configs",
+        "name": "configs_project_environment_environments_project_name_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "project",
+          "environment"
+        ],
+        "schemaTo": "public",
+        "tableTo": "environments",
+        "columnsTo": [
+          "project",
+          "name"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "NO ACTION",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "alter",
+      "key": "views\u0000[\"public\",\"vw_project_lookups\"]",
+      "set": {
+        "definition": "with \"unique_config\" as (select distinct on (\"c\".\"project\", \"c\".\"key\") \"project\", \"key\", \"label\", \"value\", \"created_at\", \"updated_at\", \"version\", \"trace_id\", \"deleted_at\", \"environment\" from \"configs\" \"c\") select \"p\".\"id\", \"p\".\"name\", \"p\".\"image\", \"p\".\"organization\", \"p\".\"created_by\", \"m\".\"user_id\", \"u\".\"name\" as \"creator_name\", \"u\".\"image\" as \"creator_avatar\", count(\"unique_config\".\"key\") as \"config_count\" from \"projects\" \"p\" left join \"unique_config\" on (((\"unique_config\".\"deleted_at\" is null)) and (\"unique_config\".\"project\" = \"p\".\"id\")) left join \"member\" \"m\" on \"m\".\"id\" = \"p\".\"created_by\" left join \"user\" \"u\" on \"u\".\"id\" = \"m\".\"user_id\" group by \"p\".\"id\", \"m\".\"user_id\", \"u\".\"name\", \"u\".\"image\""
+      }
+    }
+  ]
+}

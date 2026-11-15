@@ -60,6 +60,7 @@ defineRouteMeta({
         },
         responses: {
           BadRequestResponse: {
+            description: "When a client request is invalid",
             content: {
               "application/json": {
                 schema: {

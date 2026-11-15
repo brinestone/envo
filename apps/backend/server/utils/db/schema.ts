@@ -1,4 +1,4 @@
-import { and, count, eq, getColumns, isNotNull, isNull, sql } from "drizzle-orm";
+import { and, count, eq, isNotNull, isNull } from "drizzle-orm";
 import {
   alias,
   foreignKey,
@@ -7,6 +7,7 @@ import {
   jsonb,
   pgTable,
   pgView,
+  primaryKey,
   text,
   timestamp,
   uniqueIndex,
@@ -49,6 +50,21 @@ export const projects = pgTable(
   ],
 );
 
+export const environments = pgTable(
+  "environments",
+  {
+    name: text().notNull(),
+    label: text(),
+    project: text().notNull(),
+    ...mixins.timestamps,
+    deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "date" }),
+  },
+  (t) => [
+    primaryKey({ columns: [t.name, t.project] }),
+    foreignKey({ columns: [t.project], foreignColumns: [projects.id] }).onDelete("cascade"),
+  ],
+);
+
 export const configs = pgTable(
   "configs",
   {
@@ -60,6 +76,7 @@ export const configs = pgTable(
     version: integer().notNull().default(1),
     traceId: text("trace_id").notNull(),
     deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "date" }),
+    environment: text(),
   },
   (t) => [
     index().on(t.project),
@@ -69,8 +86,13 @@ export const configs = pgTable(
     index().on(t.project, t.key),
     index().on(t.key, t.version),
     index().on(t.createdAt),
+    index().on(t.environment),
     index().on(t.updatedAt),
     index().on(t.deletedAt).where(isNull(t.deletedAt)),
+    foreignKey({
+      columns: [t.project, t.environment],
+      foreignColumns: [environments.project, environments.name],
+    }),
     foreignKey({
       columns: [t.project],
       foreignColumns: [projects.id],

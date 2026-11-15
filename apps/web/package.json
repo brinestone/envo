@@ -1,16 +1,16 @@
 {
   "name": "envo",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "dev": "ng serve",
     "build": "ng build",
+    "sdk:gen": "orval",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:envo": "node dist/envo/server/server.mjs"
   },
-  "private": true,
-  "packageManager": "pnpm@12.15.0",
   "dependencies": {
     "@angular/common": "^22.0.0",
     "@angular/compiler": "^22.0.0",
@@ -20,9 +20,11 @@
     "@angular/platform-server": "^22.0.0",
     "@angular/router": "^22.0.0",
     "@angular/ssr": "^22.0.7",
+    "better-auth": "catalog:",
     "express": "^5.1.0",
     "rxjs": "~7.8.0",
-    "tslib": "^2.3.0"
+    "tslib": "^2.3.0",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@angular/build": "^22.0.7",
@@ -30,8 +32,10 @@
     "@angular/compiler-cli": "^22.0.0",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
+    "orval": "catalog:",
     "prettier": "^3.8.1",
     "typescript": "~6.0.2",
     "vitest": "catalog:"
-  }
+  },
+  "packageManager": "pnpm@12.15.0"
 }
