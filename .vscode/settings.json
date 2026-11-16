@@ -28,5 +28,15 @@
   },
   "[html]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "files.associations": {
+    "*.scss": "tailwindcss",
+    "*.css": "tailwindcss"
   }
 }

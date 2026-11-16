@@ -14,8 +14,18 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
-      "@libs/*": ["./libs/*"],
-      "@store/*": ["./src/app/stores/*"]
+      "@libs/*": [
+        "./libs/*"
+      ],
+      "@store/*": [
+        "./src/app/stores/*"
+      ],
+      "ui": [
+        "./dist/ui"
+      ],
+      "@zard/*": [
+        "./projects/ui/src/lib/*"
+      ]
     }
   },
   "angularCompilerOptions": {
@@ -27,6 +37,12 @@
   "references": [
     {
       "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./projects/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ui/tsconfig.spec.json"
     }
   ]
 }
