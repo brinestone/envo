@@ -2,10 +2,10 @@
   "name": "@envo/api",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "dev": "vite dev",
+    "build": "nitro build",
+    "dev": "nitro dev",
     "migrate.local": "pnpm drizzle-kit generate && pnpm drizzle-kit migrate",
-    "preview": "vite preview",
+    "preview": "nitro preview",
     "studio": "drizzle-kit studio"
   },
   "dependencies": {
@@ -23,7 +23,6 @@
     "dotenv-expand": "catalog:",
     "drizzle-kit": "catalog:",
     "nitro": "latest",
-    "typescript": "latest",
-    "vite": "latest"
+    "typescript": "latest"
   }
 }
