@@ -1,1 +1,121 @@
-<p>login works!</p>
+<hlm-card class="max-w-sm w-full">
+  <hlm-card-header>
+    <h3 hlmCardTitle>Sign in to Your Account</h3>
+    <p hlmCardDescription>Enter your credentials below</p>
+    <div hlmCardAction>
+      <a
+        hlmBtn
+        variabt="link"
+        routerLink="../register"
+        [relativeTo]="route"
+        variant="link"
+        queryParamsHandling="preserve"
+        [disabled]="model().submitting()"
+        >Sign up</a
+      >
+    </div>
+  </hlm-card-header>
+  <div hlmCardContent>
+    <form [formRoot]="model" id="loginForm">
+      @if (model().errors().length > 0) {
+        <div hlmFieldGroup>
+          <hlm-alert variant="destructive">
+            <ng-icon name="lucideAlertCircle" />
+            <h4 hlmAlertTitle>Submission Error</h4>
+            <p hlmAlertDescription>
+              {{ model().errors()[0]?.message }}
+            </p>
+          </hlm-alert>
+        </div>
+      }
+      <div hlmFieldGroup>
+        <fieldset hlmFieldSet>
+          <div hlmFieldGroup>
+            <div hlmField>
+              <label hlmFieldLabel for="email"
+                >Email <span class="text-destructive">*</span>
+              </label>
+              <input
+                [formField]="model.email"
+                id="email"
+                hlmInput
+                type="email"
+                placeholder="john@example.com"
+                autocomplete="username"
+              />
+
+              @if (model.email().invalid() && model.email().touched()) {
+                @for (err of model.email().errors(); track err) {
+                  <hlm-field-error [validator]="err.kind">{{ err.message }}</hlm-field-error>
+                }
+              }
+            </div>
+            <div hlmField>
+              <label hlmFieldLabel for="password"
+                >Password <span class="text-destructive">*</span>
+              </label>
+              <input
+                [formField]="model.password"
+                id="password"
+                type="password"
+                hlmInput
+                placeholder="Password"
+                autocomplete="current-password"
+              />
+              @if (model.password().invalid() && model.password().touched()) {
+                @for (err of model.password().errors(); track err) {
+                  <hlm-field-error [validator]="err.kind">{{ err.message }}</hlm-field-error>
+                }
+              }
+            </div>
+            <div hlmField orientation="horizontal">
+              <hlm-checkbox [formField]="model.rememberMe" inputId="rememberMe" />
+              <label hlmFieldLabel for="rememberMe">Remember me</label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </form>
+  </div>
+  <hlm-card-footer class="flex-col gap-y-2.5">
+    <button
+      [disabled]="credentialSignin() || model().invalid()"
+      type="submit"
+      form="loginForm"
+      class="w-full"
+      hlmBtn
+      size="lg"
+    >
+      @if (model().submitting()) {
+        <hlm-spinner icon="lucideLoader" />
+      }
+      <span>Sign in</span>
+    </button>
+    <a
+      [disabled]="signingIn()"
+      routerLink="../reset-password"
+      hlmBtn
+      variant="link"
+      queryParamsHandling="preserve"
+      [relativeTo]="route"
+      >Forgot password</a
+    >
+    <hlm-separator />
+    <button
+      (click)="onGoogleSignInClicked()"
+      [disabled]="socialSigningIn()"
+      class="w-full"
+      type="button"
+      hlmBtn
+      variant="outline"
+      size="lg"
+    >
+      @if (socialSigningIn()) {
+        <hlm-spinner icon="lucideLoader" />
+      } @else {
+        <ng-icon name="remixGoogleFill" />
+      }
+      <span>Continue with Google</span>
+    </button>
+  </hlm-card-footer>
+</hlm-card>

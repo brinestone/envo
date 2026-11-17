@@ -6,7 +6,7 @@ export const authRoutes: Routes = [
   {
     canActivate: [requireAnonymous],
     path: "login",
-    title: "Sign into Your Account",
+    title: "Sign in to Your Account",
     loadComponent: () => import("./pages/auth/login/login.page").then((m) => m.LoginPage),
   },
   {

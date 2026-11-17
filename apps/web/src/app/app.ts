@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
-import { ZardSonnerComponent } from "@zard/components/sonner";
+import { HlmToaster } from "@spartan/ui/sonner";
 
 @Component({
-  selector: "app-root",
-  imports: [RouterOutlet, ZardSonnerComponent],
+  selector: "ev-root",
+  imports: [RouterOutlet, HlmToaster],
   templateUrl: "./app.html",
   styleUrl: "./app.scss",
 })

@@ -4,11 +4,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "ready": "vp check && vp run -r test && vp run -r build",
-    "dev": "vp run -r dev"
+    "dev": "pnpm run -r --parallel dev",
+    "build": "pnpm run -r --parallel build",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
   },
   "devDependencies": {
-    "vite-plus": "catalog:"
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:"
   },
   "devEngines": {
     "packageManager": {
