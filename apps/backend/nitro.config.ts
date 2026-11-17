@@ -12,7 +12,7 @@ export default defineConfig({
       cors: {
         origin: corsOrigins?.split(",") ?? [],
         credentials: true,
-        allowHeaders: ["x-project"],
+        allowHeaders: ['Content-Type', "x-project"],
       },
     },
   },

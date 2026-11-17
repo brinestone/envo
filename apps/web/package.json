@@ -24,6 +24,7 @@
     "@fingerprintjs/fingerprintjs": "catalog:",
     "@ng-icons/core": "catalog:",
     "@ng-icons/lucide": "catalog:",
+    "@ng-icons/remixicon": "catalog:",
     "@ngxs/logger-plugin": "catalog:",
     "@ngxs/router-plugin": "catalog:",
     "@ngxs/storage-plugin": "catalog:",

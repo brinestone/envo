@@ -2,7 +2,7 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter";
 import { betterAuth } from "better-auth";
 import { openAPI, organization } from "better-auth/plugins";
 import { defineMiddleware, HTTPError, type H3Event } from "nitro";
-import { usePool } from "./db";
+import { useDatabase } from "./db";
 import {
   account,
   invitation,
@@ -14,7 +14,7 @@ import {
 } from "./db/auth";
 
 export const auth = betterAuth({
-  database: drizzleAdapter(usePool(), {
+  database: drizzleAdapter(useDatabase(), {
     schema: {
       user,
       session,
@@ -26,19 +26,20 @@ export const auth = betterAuth({
     },
     provider: "pg",
   }),
+  trustedOrigins: process.env.NITRO_CORS_ORIGINS?.split(',') ?? [],
   baseURL: process.env.NITRO_DEPLOY_ORIGIN,
   plugins: [
     organization({
       allowUserToCreateOrganization: true,
       organizationLimit: 1,
       cancelPendingInvitationsOnReInvite: true,
-      sendInvitationEmail: async ({ email, organization, role }) => {},
+      sendInvitationEmail: async () => { },
     }),
     openAPI({
       theme: "bluePlanet",
     }),
   ],
-  emailAndPassword: { enabled: true },
+  emailAndPassword: { enabled: true, minPasswordLength: 6, },
   socialProviders: {
     google: {
       clientId: process.env.NITRO_GOOGLE_CLIENT_ID as string,

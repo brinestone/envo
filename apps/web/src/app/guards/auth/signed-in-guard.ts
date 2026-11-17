@@ -1,9 +1,9 @@
-import { isPlatformServer } from "@angular/common";
-import { inject, PLATFORM_ID, REQUEST } from "@angular/core";
-import { CanActivateFn, Router } from "@angular/router";
-import { injectAuthClient } from "@libs/auth";
-import { Store } from "@ngxs/store";
-import { signedIn } from "@store/selectors";
+import { isPlatformServer } from '@angular/common';
+import { inject, PLATFORM_ID, REQUEST } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+import { injectAuthClient } from '@libs/auth';
+import { Store } from '@ngxs/store';
+import { signedIn } from '@store/selectors';
 
 export const signedInGuard: (redirect: string) => CanActivateFn =
   (redirect: string) => async (route, state) => {
@@ -15,7 +15,7 @@ export const signedInGuard: (redirect: string) => CanActivateFn =
       queryParams: {
         continue: encodeURIComponent(state.url),
       },
-      queryParamsHandling: "merge",
+      queryParamsHandling: 'merge',
     });
     if (isPlatformServer(platform)) {
       const request = inject(REQUEST, { optional: true });

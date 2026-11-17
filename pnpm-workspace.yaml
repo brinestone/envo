@@ -11,6 +11,7 @@ catalog:
   "@fingerprintjs/fingerprintjs": ^5.3.0
   "@ng-icons/core": ^36.1.0
   "@ng-icons/lucide": ^36.1.0
+  '@ng-icons/remixicon': ^36.1.0
   "@ngxs/logger-plugin": ^22.0.0
   "@ngxs/router-plugin": ^22.0.0
   "@ngxs/storage-plugin": ^22.0.0
@@ -29,6 +30,8 @@ catalog:
   drizzle-orm: 1.0.0-rc.5
   ngx-sonner: ^3.1.0
   orval: ^8.47.0
+  oxfmt: ^0.78.0
+  oxlint: ^1.93.0
   pg: ^8.23.1
   postcss: ^8.5.33
   tailwind-merge: ^3.7.0

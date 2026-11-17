@@ -4,9 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm run -r --parallel dev"
+    "dev": "pnpm run -r --parallel dev",
+    "build": "pnpm run -r --parallel build",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "oxfmt": "catalog:",
+    "oxlint": "catalog:"
+  },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",

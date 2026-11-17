@@ -3,16 +3,16 @@ import {
   inject,
   InjectionToken,
   makeEnvironmentProviders,
-} from "@angular/core";
-import { createAuthClient } from "better-auth/client";
-export * from "./types";
+} from '@angular/core';
+import { createAuthClient } from 'better-auth/client';
+export * from './types';
 
 function makeAuthClient(baseUrl: string) {
   return createAuthClient({
     baseURL: baseUrl,
   });
 }
-const BETTER_AUTH = new InjectionToken<ReturnType<typeof makeAuthClient>>("better-auth");
+const BETTER_AUTH = new InjectionToken<ReturnType<typeof makeAuthClient>>('better-auth');
 export function provideBetterAuth(baseURL: string) {
   return makeEnvironmentProviders([
     {
