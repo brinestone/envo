@@ -1,0 +1,4 @@
+@reference "tailwindcss";
+:host {
+  @apply flex items-center h-full justify-center;
+}

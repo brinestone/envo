@@ -1,0 +1,50 @@
+<hlm-dialog disableClose [closeOnOutsidePointerEvents]="false" state="open" (closed)="close()">
+  <hlm-dialog-content [showCloseButton]="false" *hlmDialogPortal="let ctx" class="sm:max-w-sm">
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>Create Organization</h3>
+      <p hlmDialogDescription>Use an organization to manage your projects and team</p>
+    </hlm-dialog-header>
+    <form [formRoot]="form" id="org-form">
+      @if (form().errors().length > 0) {
+        <hlm-alert variant="destructive" class="max-w-md">
+          <ng-icon name="lucideAlertCircle" />
+          <h4 hlmAlertTitle>Submission error</h4>
+          @for (err of form().errors(); track err) {
+            <p hlmAlertDescription>{{ err.message }}</p>
+          }
+        </hlm-alert>
+      }
+      <div hlmFieldGroup>
+        <div hlmField>
+          <label hlmFieldLabel for="name">Name</label>
+          <input
+            [placeholder]="namePlaceholder()"
+            id="name"
+            [formField]="form.name"
+            autofocus
+            hlmInput
+          />
+          @if (computedId(); as cid) {
+            <p hlmFieldDescription>
+              ID: <strong>{{ cid }}</strong>
+            </p>
+          }
+          @if (form.name().touched() && form.name().invalid()) {
+            @for (err of form.name().errors(); track err) {
+              <hlm-field-error>{{ err.message }}</hlm-field-error>
+            }
+          }
+        </div>
+      </div>
+    </form>
+    <hlm-dialog-footer>
+      <button hlmDialogClose hlmBtn variant="outline" size="lg">Cancel</button>
+      <button [disabled]="form().invalid()" type="submit" form="org-form" hlmBtn size="lg">
+        @if (form().submitting()) {
+          <hlm-spinner icon="lucideLoader" />
+        }
+        <span> Create Organization </span>
+      </button>
+    </hlm-dialog-footer>
+  </hlm-dialog-content>
+</hlm-dialog>

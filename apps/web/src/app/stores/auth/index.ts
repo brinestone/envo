@@ -1,10 +1,19 @@
 export * from './actions';
 import { Service } from '@angular/core';
 import { injectAuthClient, Principal } from '@libs/auth';
-import { Action, State, StateContext, StateToken } from '@ngxs/store';
-import { patch } from '@ngxs/store/operators';
-import { EmailSignIn, SignOut, SocialSignIn } from './actions';
 import { Navigate } from '@ngxs/router-plugin';
+import { Action, NgxsOnInit, State, StateContext, StateToken } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
+import {
+  EmailSignIn,
+  FinishOauthSignIn,
+  RefreshSession,
+  SessionRefreshed,
+  SignedIn,
+  SignOut,
+  SocialSignIn,
+} from './actions';
+import { concatMap } from 'rxjs';
 export type AuthStateModel = {
   signedIn: boolean;
   principal: Principal;
@@ -12,6 +21,7 @@ export type AuthStateModel = {
 export const AUTH_STATE = new StateToken<AuthStateModel>('auth');
 const defaultState: AuthStateModel = {
   signedIn: false,
+  // organizations: [],
   principal: {
     createdAt: new Date(),
     email: 'user@example.com',
@@ -28,9 +38,41 @@ type Context = StateContext<AuthStateModel>;
   defaults: defaultState,
 })
 @Service()
-export class AuthStore {
+export class AuthStore implements NgxsOnInit {
   private readonly client = injectAuthClient();
 
+  ngxsOnInit(ctx: Context): void {
+    if (ctx.getState().signedIn) ctx.dispatch(RefreshSession);
+  }
+
+  @Action(FinishOauthSignIn)
+  async onOauthFinish(ctx: Context, action: FinishOauthSignIn) {
+    ctx.setState(
+      patch({
+        signedIn: true,
+      }),
+    );
+    return ctx
+      .dispatch(RefreshSession)
+      .pipe(concatMap(() => ctx.dispatch(new Navigate([action.redirect]))));
+  }
+
+  @Action(RefreshSession, { cancelUncompleted: true })
+  async onRefreshSession(ctx: Context) {
+    const { data, error } = await this.client.getSession();
+    if (error) throw error;
+
+    if (!data) return;
+
+    const { user, session } = data;
+    ctx.setState(
+      patch({
+        principal: user,
+      }),
+    );
+
+    ctx.dispatch(new SessionRefreshed(session as any));
+  }
   @Action(SignOut, { cancelUncompleted: true })
   async onSignOut(ctx: Context) {
     const { error } = await this.client.signOut();
@@ -41,30 +83,13 @@ export class AuthStore {
 
   @Action(SocialSignIn, { cancelUncompleted: true })
   async onSocialSignIn(ctx: Context, { provider, redirect }: SocialSignIn) {
-    const { error, data: response } = await this.client.signIn.social(
+    await this.client.signIn.social(
       {
         provider,
         disableRedirect: false,
         callbackURL: redirect,
       },
       { signal: ctx.abortSignal },
-    );
-
-    if (response) {
-      location.href = response.url!;
-    }
-
-    if (error) throw error;
-    const { data, error: err } = await this.client.getSession();
-    if (err) throw err;
-
-    if (!data) return;
-    const { user } = data;
-    ctx.setState(
-      patch({
-        signedIn: true,
-        principal: user,
-      }),
     );
   }
 
@@ -79,9 +104,16 @@ export class AuthStore {
 
     const { user } = data;
 
-    ctx.setState({
-      signedIn: true,
-      principal: user,
-    });
+    ctx.setState(
+      patch({
+        signedIn: true,
+        principal: user,
+      }),
+    );
+
+    const session = await this.client.getSession();
+    if (session.error) throw session.error;
+
+    ctx.dispatch(new SignedIn(session.data!.session as any));
   }
 }

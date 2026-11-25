@@ -5,8 +5,13 @@ export const serverRoutes: ServerRoute[] = [
     path: 'auth/login',
     renderMode: RenderMode.Server,
   },
+
   {
-    path: 'console',
+    path: 'auth/oauth-callback',
+    renderMode: RenderMode.Server,
+  },
+  {
+    path: 'console/*',
     renderMode: RenderMode.Server,
   },
   {

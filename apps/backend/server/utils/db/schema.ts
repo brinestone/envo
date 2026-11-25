@@ -16,7 +16,9 @@ import { member, organization, user } from "./auth";
 
 const mixins = {
   timestamps: {
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true, mode: "date" })
+      .notNull()
+      .defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" })
       .notNull()
       .defaultNow()
@@ -24,7 +26,7 @@ const mixins = {
   },
 };
 
-export const projects = pgTable(
+export const projects = pgTable.withRLS(
   "projects",
   {
     image: text(),
@@ -61,7 +63,10 @@ export const environments = pgTable(
   },
   (t) => [
     primaryKey({ columns: [t.name, t.project] }),
-    foreignKey({ columns: [t.project], foreignColumns: [projects.id] }).onDelete("cascade"),
+    foreignKey({
+      columns: [t.project],
+      foreignColumns: [projects.id],
+    }).onDelete("cascade"),
   ],
 );
 
@@ -141,7 +146,10 @@ export const outbox = pgTable(
   "outbox",
   {
     id: text().notNull().primaryKey(),
-    processedAt: timestamp("processed_at", { withTimezone: true, mode: "date" }),
+    processedAt: timestamp("processed_at", {
+      withTimezone: true,
+      mode: "date",
+    }),
     eventKey: text("event_key").notNull(),
     payload: jsonb().notNull(),
     traceId: text("trace_id").notNull(),
@@ -160,7 +168,9 @@ export const outbox = pgTable(
 export const projectLookups = pgView("vw_project_lookups").as((qb) => {
   const c = alias(configs, "c");
   const p = alias(projects, "p");
-  const ucc = qb.$with("unique_config").as((q) => q.selectDistinctOn([c.project, c.key]).from(c));
+  const ucc = qb
+    .$with("unique_config")
+    .as((q) => q.selectDistinctOn([c.project, c.key]).from(c));
   const u = alias(user, "u");
   const m = alias(member, "m");
 

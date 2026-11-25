@@ -38,6 +38,7 @@
     "rxjs": "~7.8.0",
     "tailwind-merge": "catalog:",
     "tslib": "^2.3.0",
+    "unique-names-generator": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

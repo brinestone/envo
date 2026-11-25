@@ -58,14 +58,26 @@
       "@spartan/ui/tooltip": [
         "./libs/ui/tooltip/src/index.ts"
       ],
-      "@libs/*": [
-        "./libs/*"
+      "@envo/api/*": [
+        "./libs/api/envo/*",
+      ],
+      "@libs/auth": [
+        "./libs/auth/index.ts",
+      ],
+      "@libs/device": [
+        "./libs/device/*"
       ],
       "@spartan/ui/card": [
         "./libs/ui/card/src/index.ts"
       ],
       "@spartan/ui/checkbox": [
         "./libs/ui/checkbox/src/index.ts"
+      ],
+      "@spartan/ui/dropdown-menu": [
+        "./libs/ui/dropdown-menu/src/index.ts"
+      ],
+      "@spartan/ui/dialog": [
+        "./libs/ui/dialog/src/index.ts"
       ]
     }
   },

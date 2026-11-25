@@ -14,18 +14,20 @@ import { AUTH_STATE, AuthStore } from '@store/auth';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { apiBaseInterceptor } from './interceptors/api-base-interceptor';
+import { apiErrorInterceptor } from './interceptors/api-error-interceptor';
+import { OrgStore } from '@store/organization';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withViewTransitions({ skipInitialTransition: true })),
     provideClientHydration(),
-    provideHttpClient(withInterceptors([apiBaseInterceptor])),
+    provideHttpClient(withInterceptors([apiErrorInterceptor, apiBaseInterceptor])),
     provideBetterAuth(environment.apiOrigin),
     provideSpartanHlm(),
     provideStore(
-      [AuthStore],
-      // withNgxsLoggerPlugin({ disabled: !isDevMode() }),
+      [AuthStore, OrgStore],
+      withNgxsLoggerPlugin({ disabled: !isDevMode() }),
       withNgxsRouterPlugin({ navigationActionTiming: NavigationActionTiming.PreActivation }),
       withNgxsStoragePlugin({
         keys: [{ key: AUTH_STATE, engine: SESSION_STORAGE_ENGINE }],
