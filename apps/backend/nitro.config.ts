@@ -12,7 +12,7 @@ export default defineConfig({
       cors: {
         origin: [
           "https://web-q5mf.onrender.com",
-          ...(corsOrigins?.split(",") ?? []),
+          ...(corsOrigins?.split(",").filter((s) => s.length > 0) ?? []),
         ],
         credentials: true,
         allowHeaders: ["Content-Type", "x-project"],
