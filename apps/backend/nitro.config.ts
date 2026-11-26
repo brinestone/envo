@@ -16,6 +16,17 @@ export default defineConfig({
       },
     },
   },
+  $production: {
+    routeRules: {
+      "/api/**": {
+        cors: {
+          origin: ["https://web-q5mf.onrender.com/"],
+          credentials: true,
+          allowHeaders: ["Content-Type", "x-project"],
+        },
+      },
+    },
+  },
   openAPI: {
     meta: {
       title: "Envo API",
