@@ -4,9 +4,9 @@ import { openAPI, organization } from "better-auth/plugins";
 import { defineMiddleware, HTTPError, type H3Event } from "nitro";
 import { useDatabase } from "./db";
 import { account, invitation, member, verification } from "./db/auth";
-import { user } from "./db/user";
 import { organization as organizationTable } from "./db/organization";
 import { session } from "./db/session";
+import { user } from "./db/user";
 
 console.log(process.env.NITRO_CORS_ORIGINS);
 
@@ -55,11 +55,9 @@ export const auth = betterAuth({
     trustedProxyHeaders: !import.meta.dev,
     useSecureCookies: !import.meta.dev,
     ipAddress: {
-      ipAddressHeaders: [
-        "cf-connecting-ip",
-        "true-client-ip",
-        "x-forwarded-for",
-      ],
+      ipAddressHeaders: import.meta.dev
+        ? undefined
+        : ["cf-connecting-ip", "true-client-ip", "x-forwarded-for"],
     },
   },
 });
