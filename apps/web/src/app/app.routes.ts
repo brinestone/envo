@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
+import { provideProjectStore } from '@store/project';
 import { signedInGuard } from './guards/auth/signed-in-guard';
-import { provideOrganizationStore } from '@store/organization';
 
 const requireSignedIn = signedInGuard('/auth/login');
 export const routes: Routes = [
@@ -11,10 +11,11 @@ export const routes: Routes = [
   },
   {
     path: 'console',
-    providers: [provideOrganizationStore()],
+    providers: [provideProjectStore()],
+    runGuardsAndResolvers: 'always',
     canActivate: [requireSignedIn],
     canActivateChild: [requireSignedIn],
-    loadChildren: () => import('./console.routes').then((m) => m.mainRoutes),
+    loadChildren: () => import('./main.routes').then((m) => m.mainRoutes),
     loadComponent: () => import('./layouts/main/main.layout').then((m) => m.MainLayout),
   },
   { path: '', pathMatch: 'full', redirectTo: 'console' },

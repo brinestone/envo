@@ -1,7 +1,6 @@
 import { inject, makeEnvironmentProviders, Service } from '@angular/core';
 import { OrganizationBaseOutput } from '@envo/api/models';
 import { AuthService } from '@envo/api/services';
-import { injectAuthClient } from '@libs/auth';
 import { SESSION_STORAGE_ENGINE, withStorageFeature } from '@ngxs/storage-plugin';
 import { Action, NgxsOnInit, provideStates, State, StateContext, StateToken } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
@@ -28,7 +27,11 @@ export class OrgStore implements NgxsOnInit {
   }
 
   @Action(SelectOrganization)
-  onSelectOrganization(ctx: Context, action: SelectOrganization) {}
+  onSelectOrganization(ctx: Context, action: SelectOrganization) {
+    return this.authService
+      .setActiveOrganization({ id: action.id })
+      .pipe(concatMap(() => ctx.dispatch([LoadOrganizations, RefreshSession])));
+  }
 
   @Action(SessionRefreshed)
   onSessionRefreshed(ctx: Context, action: SessionRefreshed) {

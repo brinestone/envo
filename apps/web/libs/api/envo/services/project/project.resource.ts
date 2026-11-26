@@ -9,7 +9,8 @@ import {
 } from '../../models';
 import type {
   LookupOrganizationProjects200Output,
-  LookupOrganizationProjectsParams
+  LookupOrganizationProjectsParams,
+  SetActiveOrganizationProjectParams
 } from '../../models';
 
 import {
@@ -198,7 +199,27 @@ export function lookupOrganizationProjectsResource(params?: Signal<LookupOrganiz
   });
 }
 
+/**
+ * @remarks httpResource is available in Angular 19.2 and later.
+ */
+export function setActiveOrganizationProjectResource(params: Signal<SetActiveOrganizationProjectParams | undefined>,
+  options: OrvalHttpResourceOptions<void, unknown, true> & { defaultValue: NoInfer<void> }): HttpResourceRef<void>;
+export function setActiveOrganizationProjectResource(params: Signal<SetActiveOrganizationProjectParams | undefined>,
+  options?: OrvalHttpResourceOptions<void, unknown, true>): HttpResourceRef<void | undefined>;
+export function setActiveOrganizationProjectResource(params: Signal<SetActiveOrganizationProjectParams | undefined>,
+  options?: OrvalHttpResourceOptions<void, unknown, true>): HttpResourceRef<void | undefined> {
+  return httpResource<void>(() => {
+    if (params() === undefined) return undefined;
+    const request = ({
+      url: `/api/projects/set-active`,
+      params: filterParams(params?.() ?? {}, new Set<string>([]))
+    });
+    return applyOrvalRequestExtension(request, options);
+  }, options);
+}
+
 export type LookupOrganizationProjectsResourceResult = NonNullable<LookupOrganizationProjects200Output>
+export type SetActiveOrganizationProjectResourceResult = NonNullable<void>
 
 /**
  * Utility type for httpResource results with status tracking.

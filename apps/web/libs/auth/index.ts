@@ -5,10 +5,22 @@ import {
   makeEnvironmentProviders,
 } from '@angular/core';
 import { createAuthClient } from 'better-auth/client';
+import { inferAdditionalFields } from 'better-auth/client/plugins';
 export * from './types';
 
 function makeAuthClient(baseUrl: string) {
   return createAuthClient({
+    plugins: [
+      inferAdditionalFields({
+        session: {
+          activeOrganizationId: { type: 'string', required: false },
+          activeProjectId: {
+            type: 'string',
+            required: false,
+          },
+        },
+      }),
+    ],
     baseURL: baseUrl,
   });
 }

@@ -1,45 +1,6 @@
-import { isNotNull } from "drizzle-orm";
-import { boolean, foreignKey, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
-
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  image: text("image"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
-});
-
-export const session = pgTable(
-  "session",
-  {
-    id: text("id").primaryKey(),
-    expiresAt: timestamp("expires_at").notNull(),
-    token: text("token").notNull().unique(),
-    createdAt: timestamp("created_at").defaultNow().notNull(),
-    updatedAt: timestamp("updated_at")
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
-    ipAddress: text("ip_address"),
-    activeOrganizationId: text("active_organization"),
-    userAgent: text("user_agent"),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-  },
-  (table) => [
-    index("session_userId_idx").on(table.userId),
-    index().on(table.activeOrganizationId).where(isNotNull(table.activeOrganizationId)),
-    foreignKey({
-      columns: [table.activeOrganizationId],
-      foreignColumns: [organization.id],
-    }).onDelete("set null"),
-  ],
-);
+import { index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import { user } from "./user";
+import { organization } from "./organization";
 
 export const account = pgTable(
   "account",
@@ -80,15 +41,6 @@ export const verification = pgTable(
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
-
-export const organization = pgTable("organization", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  slug: text("slug").notNull().unique(),
-  logo: text("logo"),
-  createdAt: timestamp("created_at").notNull(),
-  metadata: text("metadata"),
-});
 
 export const member = pgTable(
   "member",

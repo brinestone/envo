@@ -8,7 +8,6 @@ import {
   required,
 } from '@angular/forms/signals';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AuthService } from '@envo/api/services';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideAlertCircle, lucideLoader } from '@ng-icons/lucide';
 import { dispatch } from '@ngxs/store';
@@ -62,7 +61,6 @@ function uniqueSuffixGenerator() {
 export class NewOrganizationDialog implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly authService = inject(AuthService);
   protected close() {
     this.router.navigate([{ outlets: { dialog: this.route.outlet } }], { relativeTo: this.route });
   }

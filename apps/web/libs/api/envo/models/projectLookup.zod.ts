@@ -18,7 +18,9 @@ export const ProjectLookup = zod.object({
   "creatorId": zod.string().nullable(),
   "creatorName": zod.string().nullable(),
   "creatorAvatar": zod.string().nullable(),
-  "configCount": zod.number().min(projectLookupConfigCountMin)
+  "configCount": zod.number().min(projectLookupConfigCountMin),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true})
 })
 
 export type ProjectLookup = zod.input<typeof ProjectLookup>;

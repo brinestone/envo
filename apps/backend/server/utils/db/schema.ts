@@ -12,7 +12,9 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
-import { member, organization, user } from "./auth";
+import { member } from "./auth";
+import { organization } from "./organization";
+import { user } from "./user";
 
 const mixins = {
   timestamps: {
@@ -26,7 +28,7 @@ const mixins = {
   },
 };
 
-export const projects = pgTable.withRLS(
+export const projects = pgTable(
   "projects",
   {
     image: text(),
@@ -34,10 +36,13 @@ export const projects = pgTable.withRLS(
     name: text().notNull(),
     organization: text().notNull(),
     createdBy: text("created_by"),
+    slug: text().notNull(),
     ...mixins.timestamps,
   },
   (t) => [
     index().on(t.organization),
+    index().on(t.slug),
+    uniqueIndex().on(t.slug, t.organization),
     index().on(t.createdBy),
     index().on(t.updatedAt),
     index().on(t.createdAt),
@@ -186,6 +191,8 @@ export const projectLookups = pgView("vw_project_lookups").as((qb) => {
       creatorName: u.name.as("creator_name"),
       creatorAvatar: u.image.as("creator_avatar"),
       configCount: count(ucc.key).as("config_count"),
+      createdAt: p.createdAt,
+      updatedAt: p.updatedAt,
     })
     .from(p)
     .leftJoin(ucc, ({ id }) => and(isNull(ucc.deletedAt), eq(ucc.project, id)))

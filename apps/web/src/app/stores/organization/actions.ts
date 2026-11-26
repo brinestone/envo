@@ -1,4 +1,4 @@
-const prefix = '[Org]';
+const prefix = '[Organization]';
 export class SelectOrganization {
   static readonly type = `${prefix} select organization`;
   constructor(readonly id: string) {}

@@ -21,7 +21,9 @@ export const LookupOrganizationProjects200 = zod.object({
   "creatorId": zod.string().nullable(),
   "creatorName": zod.string().nullable(),
   "creatorAvatar": zod.string().nullable(),
-  "configCount": zod.number().min(lookupOrganizationProjects200DataItemConfigCountMin)
+  "configCount": zod.number().min(lookupOrganizationProjects200DataItemConfigCountMin),
+  "createdAt": zod.iso.datetime({"offset":true}),
+  "updatedAt": zod.iso.datetime({"offset":true})
 })),
   "totalRecords": zod.number(),
   "totalPages": zod.number()

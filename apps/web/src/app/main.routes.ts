@@ -22,5 +22,12 @@ export const mainRoutes: Routes = [
       ),
     outlet: 'dialog',
   },
+  {
+    path: 'new-project',
+    title: 'New Project',
+    loadComponent: () =>
+      import('./dialogs/new-project/new-project.dialog').then((m) => m.NewProjectDialog),
+    outlet: 'dialog',
+  },
   { path: '', pathMatch: 'full', redirectTo: 'overview' },
 ];

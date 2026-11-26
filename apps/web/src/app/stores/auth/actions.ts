@@ -9,12 +9,16 @@ export class FinishOauthSignIn {
 
 export class SessionRefreshed {
   static readonly type = `${prefix} session refreshed`;
-  constructor(readonly session: SessionWithActivatedOrganization) {}
+  constructor(
+    readonly session: Session & { activeProjetId: string; activeOrganizationId: string },
+  ) {}
 }
 
 export class RefreshSession {
   static readonly type = `${prefix} refresh session`;
 }
+
+export type SessionWIthActiveProject = Session & { activeProjectId: string };
 
 export type SessionWithActivatedOrganization = Session & { activeOrganizationId: string };
 export class SignedIn {

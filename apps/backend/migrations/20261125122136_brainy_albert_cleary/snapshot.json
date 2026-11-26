@@ -1,0 +1,56 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "66fed18e-2e2f-4548-a35f-a9ae0fd28a10",
+  "prevIds": [
+    "6f66ea83-a745-4c80-9e0f-8b73ee6c8562"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_view",
+      "statementTarget": [
+        "view",
+        "public",
+        "vw_project_lookups"
+      ],
+      "writes": [
+        "s|view|public.vw_project_lookups",
+        "n|view|public.vw_project_lookups",
+        "e|view|public.vw_project_lookups",
+        "n|rel|public.vw_project_lookups",
+        "n|type|public.vw_project_lookups"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_view",
+      "statementTarget": [
+        "view",
+        "public",
+        "vw_project_lookups"
+      ],
+      "writes": [
+        "s|view|public.vw_project_lookups",
+        "n|view|public.vw_project_lookups",
+        "e|view|public.vw_project_lookups",
+        "n|rel|public.vw_project_lookups",
+        "n|type|public.vw_project_lookups"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "alter",
+      "key": "views\u0000[\"public\",\"vw_project_lookups\"]",
+      "set": {
+        "definition": "with \"unique_config\" as (select distinct on (\"c\".\"project\", \"c\".\"key\") \"project\", \"key\", \"label\", \"value\", \"created_at\", \"updated_at\", \"version\", \"trace_id\", \"deleted_at\", \"environment\" from \"configs\" \"c\") select \"p\".\"id\", \"p\".\"name\", \"p\".\"image\", \"p\".\"organization\", \"p\".\"created_by\", \"m\".\"user_id\", \"u\".\"name\" as \"creator_name\", \"u\".\"image\" as \"creator_avatar\", count(\"unique_config\".\"key\") as \"config_count\", \"p\".\"created_at\", \"p\".\"updated_at\" from \"projects\" \"p\" left join \"unique_config\" on (((\"unique_config\".\"deleted_at\" is null)) and (\"unique_config\".\"project\" = \"p\".\"id\")) left join \"member\" \"m\" on \"m\".\"id\" = \"p\".\"created_by\" left join \"user\" \"u\" on \"u\".\"id\" = \"m\".\"user_id\" group by \"p\".\"id\", \"m\".\"user_id\", \"u\".\"name\", \"u\".\"image\""
+      }
+    }
+  ]
+}

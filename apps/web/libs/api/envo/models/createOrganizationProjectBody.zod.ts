@@ -7,7 +7,9 @@
 import * as zod from 'zod';
 
 export const CreateOrganizationProjectBody = zod.object({
-  "name": zod.string()
+  "name": zod.string(),
+  "slug": zod.string(),
+  "image": zod.string().nullish()
 })
 
 export type CreateOrganizationProjectBody = zod.input<typeof CreateOrganizationProjectBody>;

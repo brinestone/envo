@@ -4,6 +4,7 @@ import { injectAuthClient, Principal } from '@libs/auth';
 import { Navigate } from '@ngxs/router-plugin';
 import { Action, NgxsOnInit, State, StateContext, StateToken } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
+import { concatMap } from 'rxjs';
 import {
   EmailSignIn,
   FinishOauthSignIn,
@@ -13,10 +14,9 @@ import {
   SignOut,
   SocialSignIn,
 } from './actions';
-import { concatMap } from 'rxjs';
 export type AuthStateModel = {
   signedIn: boolean;
-  principal: Principal;
+  principal: Principal & { image: string };
 };
 export const AUTH_STATE = new StateToken<AuthStateModel>('auth');
 const defaultState: AuthStateModel = {
@@ -67,7 +67,7 @@ export class AuthStore implements NgxsOnInit {
     const { user, session } = data;
     ctx.setState(
       patch({
-        principal: user,
+        principal: { ...user, image: user.image ?? defaultState.principal.image },
       }),
     );
 
@@ -78,7 +78,7 @@ export class AuthStore implements NgxsOnInit {
     const { error } = await this.client.signOut();
     if (error) throw error;
     ctx.setState(defaultState);
-    ctx.dispatch(new Navigate(['/']));
+    ctx.dispatch(new Navigate(['/'], {}, { onSameUrlNavigation: 'reload' }));
   }
 
   @Action(SocialSignIn, { cancelUncompleted: true })
@@ -107,7 +107,7 @@ export class AuthStore implements NgxsOnInit {
     ctx.setState(
       patch({
         signedIn: true,
-        principal: user,
+        principal: { ...user, image: defaultState.principal.image },
       }),
     );
 
