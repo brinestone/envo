@@ -1,6 +1,12 @@
 import { defineConfig } from "nitro";
 
-const corsOrigins = process.env.NITRO_CORS_ORIGINS;
+const rawOrigins = [
+  "https://web-q5mf.onrender.com",
+  ...(process.env.NITRO_CORS_ORIGINS?.split(",") ?? []),
+];
+const allowedOrigins = Array.from(
+  new Set(rawOrigins.map((o) => o.trim().replace(/\/+$/, "")).filter(Boolean)),
+);
 export default defineConfig({
   serverDir: "./server",
   experimental: {
@@ -10,10 +16,8 @@ export default defineConfig({
   routeRules: {
     "/api/**": {
       cors: {
-        origin: [
-          "https://web-q5mf.onrender.com",
-          ...(corsOrigins?.split(",").filter((s) => s.length > 0) ?? []),
-        ],
+        origin: allowedOrigins,
+        methods: ["GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"],
         credentials: true,
         allowHeaders: ["Content-Type", "x-project"],
       },
