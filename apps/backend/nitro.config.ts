@@ -1,9 +1,6 @@
 import { defineConfig } from "nitro";
 
-const rawOrigins = [
-  "https://web-q5mf.onrender.com",
-  ...(process.env.NITRO_CORS_ORIGINS?.split(",") ?? []),
-];
+const rawOrigins = ["https://web-q5mf.onrender.com"];
 const allowedOrigins = Array.from(
   new Set(rawOrigins.map((o) => o.trim().replace(/\/+$/, "")).filter(Boolean)),
 );
@@ -22,6 +19,21 @@ export default defineConfig({
         allowHeaders: ["Content-Type", "x-project"],
         methods: ["GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"],
         preflight: { statusCode: 200 },
+      },
+    },
+  },
+  $development: {
+    routeRules: {
+      "/api/**": {
+        cors: {
+          origin: [
+            ...rawOrigins,
+            ...(process.env.NITRO_CORS_ORIGINS?.split(",") ?? []),
+          ],
+          allowHeaders: ["Content-Type", "x-project"],
+          methods: ["GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"],
+          preflight: { statusCode: 200 },
+        },
       },
     },
   },
