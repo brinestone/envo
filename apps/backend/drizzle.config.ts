@@ -9,7 +9,7 @@ const url = new URL(e.parsed?.NITRO_DB_URL as string);
 export default defineConfig({
   dialect: "postgresql",
   out: "migrations",
-  schema: ["server/utils/db/schema.ts", "server/utils/db/auth.ts"],
+  schema: ["server/utils/db"],
   dbCredentials: {
     url: url.toString(),
   },

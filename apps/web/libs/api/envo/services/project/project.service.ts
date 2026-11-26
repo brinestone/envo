@@ -23,12 +23,15 @@ import type {
 } from 'rxjs';
 
 import {
-  LookupOrganizationProjects200
+  LookupOrganizationProjects200,
+  ProjectLookup
 } from '../../models';
 import type {
   CreateOrganizationProjectBody,
   LookupOrganizationProjects200Output,
   LookupOrganizationProjectsParams,
+  ProjectLookupOutput,
+  SetActiveOrganizationProjectParams,
   UpsertProjectConfigBody
 } from '../../models';
 
@@ -86,31 +89,31 @@ type AngularHttpParamValue = string | number | boolean | Array<string | number |
 type AngularHttpParamValueWithNullable = AngularHttpParamValue | null;
 
 function filterParams(
-  params: Record<string, unknown>,
+  params: object,
   requiredNullableKeys?: ReadonlySet<string>,
   preserveRequiredNullables?: false,
   passthroughKeys?: undefined,
 ): Record<string, AngularHttpParamValue>;
 function filterParams(
-  params: Record<string, unknown>,
+  params: object,
   requiredNullableKeys: ReadonlySet<string> | undefined,
   preserveRequiredNullables: true,
   passthroughKeys?: undefined,
 ): Record<string, AngularHttpParamValueWithNullable>;
 function filterParams(
-  params: Record<string, unknown>,
+  params: object,
   requiredNullableKeys: ReadonlySet<string> | undefined,
   preserveRequiredNullables: boolean | undefined,
   passthroughKeys: ReadonlySet<string>,
 ): Record<string, unknown>;
 function filterParams(
-  params: Record<string, unknown>,
+  params: object,
   requiredNullableKeys: ReadonlySet<string> = new Set(),
   preserveRequiredNullables = false,
   passthroughKeys: ReadonlySet<string> = new Set(),
 ): Record<string, unknown> {
   const filteredParams: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(params)) {
+  for (const [key, value] of Object.entries(params as Record<string, unknown>)) {
     if (passthroughKeys.has(key)) {
       if (value !== undefined) {
         filteredParams[key] = value;
@@ -206,38 +209,38 @@ export class ProjectService {
  * Create a project in current organization
  * @summary Create Project
  */
- createOrganizationProject<TData = void>(createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientBodyOptions): Observable<TData>;
- createOrganizationProject<TData = void>(createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientEventOptions): Observable<HttpEvent<TData>>;
- createOrganizationProject<TData = void>(createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientResponseOptions): Observable<AngularHttpResponse<TData>>;
-  createOrganizationProject<TData = void>(
-    createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
+ createOrganizationProject(createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientBodyOptions): Observable<ProjectLookupOutput>;
+ createOrganizationProject(createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientEventOptions): Observable<HttpEvent<ProjectLookupOutput>>;
+ createOrganizationProject(createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientResponseOptions): Observable<AngularHttpResponse<ProjectLookupOutput>>;
+  createOrganizationProject(
+    createOrganizationProjectBody?: CreateOrganizationProjectBody, options?: HttpClientObserveOptions): Observable<ProjectLookupOutput | HttpEvent<ProjectLookupOutput> | AngularHttpResponse<ProjectLookupOutput>> {
     if (options?.observe === 'events') {
-      return this.http.post<TData>(
+      return this.http.post<ProjectLookupOutput>(
       `/api/projects`,
       createOrganizationProjectBody,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'events',
       }
-    );
+    ).pipe(map(event => event instanceof AngularHttpResponse ? event.clone({ body: ProjectLookup.parse(event.body) }) : event));
     }
 
     if (options?.observe === 'response') {
-      return this.http.post<TData>(
+      return this.http.post<ProjectLookupOutput>(
       `/api/projects`,
       createOrganizationProjectBody,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'response',
       }
-    );
+    ).pipe(map(response => response.clone({ body: ProjectLookup.parse(response.body) })));
     }
 
-    return this.http.post<TData>(
+    return this.http.post<ProjectLookupOutput>(
       `/api/projects`,
       createOrganizationProjectBody,{
         ...(options as Omit<NonNullable<typeof options>, 'observe'>),
         observe: 'body',
       }
-    );
+    ).pipe(map(data => ProjectLookup.parse(data)));
   }
 /**
  * @summary Lookup projects
@@ -274,8 +277,45 @@ export class ProjectService {
         params: filteredParams,}
     ).pipe(map(data => LookupOrganizationProjects200.parse(data)));
   }
+/**
+ * Update the current user's session's activeProjectId in the current organization
+ * @summary Set Active
+ */
+ setActiveOrganizationProject<TData = void>(params: SetActiveOrganizationProjectParams, options?: HttpClientBodyOptions): Observable<TData>;
+ setActiveOrganizationProject<TData = void>(params: SetActiveOrganizationProjectParams, options?: HttpClientEventOptions): Observable<HttpEvent<TData>>;
+ setActiveOrganizationProject<TData = void>(params: SetActiveOrganizationProjectParams, options?: HttpClientResponseOptions): Observable<AngularHttpResponse<TData>>;
+  setActiveOrganizationProject<TData = void>(
+    params: SetActiveOrganizationProjectParams, options?: HttpClientObserveOptions): Observable<TData | HttpEvent<TData> | AngularHttpResponse<TData>> {
+    const filteredParams = filterParams({...params, ...options?.params}, new Set<string>([]));
+
+    if (options?.observe === 'events') {
+      return this.http.get<TData>(
+      `/api/projects/set-active`,{
+    ...(options as Omit<NonNullable<typeof options>, 'observe'>),
+        observe: 'events',
+        params: filteredParams,}
+    );
+    }
+
+    if (options?.observe === 'response') {
+      return this.http.get<TData>(
+      `/api/projects/set-active`,{
+    ...(options as Omit<NonNullable<typeof options>, 'observe'>),
+        observe: 'response',
+        params: filteredParams,}
+    );
+    }
+
+    return this.http.get<TData>(
+      `/api/projects/set-active`,{
+    ...(options as Omit<NonNullable<typeof options>, 'observe'>),
+        observe: 'body',
+        params: filteredParams,}
+    );
+  }
 };
 
 export type UpsertProjectConfigClientResult = NonNullable<void>
-export type CreateOrganizationProjectClientResult = NonNullable<void>
+export type CreateOrganizationProjectClientResult = NonNullable<ProjectLookupOutput>
 export type LookupOrganizationProjectsClientResult = NonNullable<LookupOrganizationProjects200Output>
+export type SetActiveOrganizationProjectClientResult = NonNullable<void>

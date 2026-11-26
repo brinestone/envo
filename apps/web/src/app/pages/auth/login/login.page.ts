@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { email, form, FormField, FormRoot, required } from '@angular/forms/signals';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import { lucideAlertCircle, lucideLoader } from '@ng-icons/lucide';
 import { remixGoogleFill } from '@ng-icons/remixicon';
@@ -54,10 +54,11 @@ function defaultFormValue() {
   templateUrl: './login.page.html',
 })
 export class LoginPage {
-  protected readonly route = inject(ActivatedRoute);
-  private readonly socialSignIn = dispatch(SocialSignIn);
+  private readonly router = inject(Router);
   private readonly navigate = dispatch(Navigate);
+  private readonly socialSignIn = dispatch(SocialSignIn);
   private readonly dispatchSignIn = dispatch(EmailSignIn);
+  protected readonly route = inject(ActivatedRoute);
   protected readonly formData = signal(defaultFormValue());
   protected readonly model = form(
     this.formData,
@@ -93,7 +94,12 @@ export class LoginPage {
   protected readonly socialSigningIn = actionsInProgress(SocialSignIn);
   protected async onGoogleSignInClicked() {
     try {
-      const redirect = decodeURIComponent(this.route.snapshot.queryParams['continue'] ?? '/');
+      const redirect = this.router.serializeUrl(
+        this.router.createUrlTree(['../oauth-callback'], {
+          queryParamsHandling: 'preserve',
+          relativeTo: this.route,
+        }),
+      );
       const redirectURL = new URL(redirect, location.origin);
       await this.socialSignIn(SocialIdentityProvider.Google, redirectURL.toString());
     } catch (e) {

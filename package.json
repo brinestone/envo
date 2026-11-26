@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm run -r --parallel dev",
-    "build": "pnpm run -r --parallel build",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix"
   },

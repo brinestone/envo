@@ -12,7 +12,7 @@ export default defineConfig({
       cors: {
         origin: corsOrigins?.split(",") ?? [],
         credentials: true,
-        allowHeaders: ['Content-Type', "x-project"],
+        allowHeaders: ["Content-Type", "x-project"],
       },
     },
   },
@@ -28,6 +28,7 @@ export default defineConfig({
         theme: "bluePlanet",
         showOperationId: true,
       },
+      swagger: false,
     },
   },
   runtimeConfig: {

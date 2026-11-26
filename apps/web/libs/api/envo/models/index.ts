@@ -6,9 +6,13 @@
  */
 
 export * from './badRequestResponseResponse.zod';
+export * from './createOrganizationBody.zod';
 export * from './createOrganizationProjectBody.zod';
 export * from './errorPayload.zod';
 export * from './lookupOrganizationProjects200.zod';
 export * from './lookupOrganizationProjectsParams.zod';
+export * from './organizationBase.zod';
 export * from './projectLookup.zod';
+export * from './setActiveOrganizationParams.zod';
+export * from './setActiveOrganizationProjectParams.zod';
 export * from './upsertProjectConfigBody.zod';

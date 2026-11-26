@@ -1,0 +1,28 @@
+name: Migrator
+concurrency: cancel-in-progress
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - apps/backend/migrations/**/*.sql
+
+jobs:
+  migrate-db:
+    name: Migrate Staging Database
+    runs-on: ubuntu-latest
+    env:
+      NITRO_DB_URL: ${{secrets.STAGING_DB}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v6
+        with:
+          cache: true
+      - name: Run migrations
+        run: |
+          cd apps/backend
+          pnpm drizzle-kit migrate

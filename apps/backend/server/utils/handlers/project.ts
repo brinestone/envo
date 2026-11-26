@@ -1,7 +1,38 @@
 import { and, asc, eq, gt } from "drizzle-orm";
 import { ulid } from "ulid";
 import { events, projectLookups, projects } from "../db/schema";
+import { session } from "../db/session";
 import type { ConnectionLike, PaginationParams } from "../utils";
+
+export type SetActiveProjectParams = {
+  projectId: string;
+  memberId: string;
+  userId: string;
+  organization: string;
+  sessionId: string;
+};
+export async function setActiveProject(
+  tx: ConnectionLike,
+  params: SetActiveProjectParams,
+) {
+  await tx
+    .update(session)
+    .set({
+      activeProjectId: params.projectId,
+    })
+    .where(eq(session.id, params.sessionId));
+
+  await tx.insert(events).values({
+    id: ulid(),
+    traceId: ulid(),
+    note: "session active project changed",
+    target: params.sessionId,
+    targetType: "session",
+    organization: params.organization,
+    userId: params.userId,
+    triggeredBy: params.memberId,
+  });
+}
 
 export async function lookupProjects(
   tx: ConnectionLike,
@@ -33,18 +64,22 @@ export type NewProjectInput = {
   name: string;
   creator: string;
   userId: string;
+  image?: string;
+  slug: string;
 };
 export async function createProject(
   tx: ConnectionLike,
-  { organization, userId, name, creator }: NewProjectInput,
+  { organization, image, slug, userId, name, creator }: NewProjectInput,
 ) {
   const projectId = ulid();
   const [project] = await tx
     .insert(projects)
     .values({
-      image: `https://api.dicebear.com/10.x/disco/svg?seed=${projectId}`,
+      image:
+        image ?? `https://api.dicebear.com/10.x/disco/svg?seed=${projectId}`,
       id: projectId,
       name,
+      slug,
       organization,
       createdBy: creator,
     })

@@ -1,0 +1,45 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "e40bbb4e-b61a-43fc-8dfe-65d82c1d719c",
+  "prevIds": [
+    "498e1874-369d-493c-9186-f9aedcf0e2e1"
+  ],
+  "footprints": [
+    {
+      "statementType": "create_view",
+      "statementTarget": [
+        "view",
+        "public",
+        "vw_project_lookups"
+      ],
+      "writes": [
+        "s|view|public.vw_project_lookups",
+        "n|view|public.vw_project_lookups",
+        "e|view|public.vw_project_lookups",
+        "n|rel|public.vw_project_lookups",
+        "n|type|public.vw_project_lookups"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "name": "vw_project_lookups",
+        "definition": "with \"unique_config\" as (select distinct on (\"c\".\"project\", \"c\".\"key\") \"project\", \"key\", \"label\", \"value\", \"created_at\", \"updated_at\", \"version\", \"trace_id\", \"deleted_at\", \"environment\" from \"configs\" \"c\") select \"p\".\"id\", \"p\".\"name\", \"p\".\"image\", \"p\".\"organization\", \"p\".\"created_by\", \"m\".\"user_id\", \"u\".\"name\" as \"creator_name\", \"u\".\"image\" as \"creator_avatar\", count(\"unique_config\".\"key\") as \"config_count\" from \"projects\" \"p\" left join \"unique_config\" on (((\"unique_config\".\"deleted_at\" is null)) and (\"unique_config\".\"project\" = \"p\".\"id\")) left join \"member\" \"m\" on \"m\".\"id\" = \"p\".\"created_by\" left join \"user\" \"u\" on \"u\".\"id\" = \"m\".\"user_id\" group by \"p\".\"id\", \"m\".\"user_id\", \"u\".\"name\", \"u\".\"image\"",
+        "with": null,
+        "withNoData": null,
+        "using": null,
+        "tablespace": null,
+        "materialized": false,
+        "entityType": "views"
+      }
+    }
+  ]
+}

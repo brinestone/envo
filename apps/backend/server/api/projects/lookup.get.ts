@@ -1,6 +1,10 @@
 import { defineHandler, defineRouteMeta } from "nitro";
 import { validateQueryZod } from "~/server/utils";
-import { requireActiveOrg, requireAuth, useMembership } from "~/server/utils/auth";
+import {
+  requireActiveOrg,
+  requireAuth,
+  useMembership,
+} from "~/server/utils/auth";
 import { useDatabase } from "~/server/utils/db";
 import { lookupProjects } from "~/server/utils/handlers/project";
 import { PaginationParams } from "~/server/utils/utils";
@@ -12,7 +16,12 @@ export default defineHandler({
     const { page, size, cursor } = await validateQueryZod(querySchema, event);
     const db = useDatabase();
     const { organizationId } = useMembership(event);
-    return await lookupProjects(db, { page, size, cursor, organization: organizationId });
+    return await lookupProjects(db, {
+      page,
+      size,
+      cursor,
+      organization: organizationId,
+    });
   },
 });
 
@@ -57,11 +66,15 @@ defineRouteMeta({
               creatorName: { type: "string", nullable: true },
               creatorAvatar: { type: "string", nullable: true },
               configCount: { type: "number", minimum: 0 },
+              createdAt: { type: "string", format: "date-time" },
+              updatedAt: { type: "string", format: "date-time" },
             },
             required: [
               "id",
               "name",
               "image",
+              "createdAt",
+              "updatedAt",
               "organization",
               "creatorMember",
               "creatorId",
@@ -84,11 +97,20 @@ defineRouteMeta({
               properties: {
                 hasNextPage: { type: "boolean" },
                 size: { type: "number" },
-                data: { type: "array", items: { $ref: "#/components/schemas/ProjectLookup" } },
+                data: {
+                  type: "array",
+                  items: { $ref: "#/components/schemas/ProjectLookup" },
+                },
                 totalRecords: { type: "number" },
                 totalPages: { type: "number" },
               },
-              required: ["hasNextPage", "size", "data", "totalRecords", "totalPages"],
+              required: [
+                "hasNextPage",
+                "size",
+                "data",
+                "totalRecords",
+                "totalPages",
+              ],
             },
           },
         },

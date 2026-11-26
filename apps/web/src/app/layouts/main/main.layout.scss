@@ -1,0 +1,5 @@
+@reference "tailwindcss";
+
+:host {
+  @apply block min-h-0 h-full;
+}

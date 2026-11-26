@@ -3,17 +3,20 @@ import { betterAuth } from "better-auth";
 import { openAPI, organization } from "better-auth/plugins";
 import { defineMiddleware, HTTPError, type H3Event } from "nitro";
 import { useDatabase } from "./db";
-import {
-  account,
-  invitation,
-  member,
-  organization as organizationTable,
-  session,
-  user,
-  verification,
-} from "./db/auth";
+import { account, invitation, member, verification } from "./db/auth";
+import { user } from "./db/user";
+import { organization as organizationTable } from "./db/organization";
+import { session } from "./db/session";
 
 export const auth = betterAuth({
+  session: {
+    additionalFields: {
+      activeProjectId: {
+        type: "string",
+        required: false,
+      },
+    },
+  },
   database: drizzleAdapter(useDatabase(), {
     schema: {
       user,
@@ -26,20 +29,20 @@ export const auth = betterAuth({
     },
     provider: "pg",
   }),
-  trustedOrigins: process.env.NITRO_CORS_ORIGINS?.split(',') ?? [],
+  trustedOrigins: process.env.NITRO_CORS_ORIGINS?.split(",") ?? [],
   baseURL: process.env.NITRO_DEPLOY_ORIGIN,
   plugins: [
     organization({
       allowUserToCreateOrganization: true,
       organizationLimit: 1,
       cancelPendingInvitationsOnReInvite: true,
-      sendInvitationEmail: async () => { },
+      sendInvitationEmail: async () => {},
     }),
     openAPI({
       theme: "bluePlanet",
     }),
   ],
-  emailAndPassword: { enabled: true, minPasswordLength: 6, },
+  emailAndPassword: { enabled: true, minPasswordLength: 6 },
   socialProviders: {
     google: {
       clientId: process.env.NITRO_GOOGLE_CLIENT_ID as string,
@@ -55,7 +58,9 @@ export const requireActiveOrg = defineMiddleware(async (event, next) => {
   }
   const member = await auth.api.getActiveMember({ headers: event.req.headers });
   if (!member)
-    throw HTTPError.status(403, "Forbidden", { message: "Please select an organization" });
+    throw HTTPError.status(403, "Forbidden", {
+      message: "Please select an organization",
+    });
 
   event.context.auth = { ...(event.context.auth as object), member };
   next();
@@ -86,7 +91,9 @@ export function useMembership(event: H3Event) {
 }
 
 export function useAuth(event: H3Event) {
-  return event.context.auth as NonNullable<Awaited<ReturnType<typeof auth.api.getSession>>>;
+  return event.context.auth as NonNullable<
+    Awaited<ReturnType<typeof auth.api.getSession>>
+  >;
 }
 
 export default auth;

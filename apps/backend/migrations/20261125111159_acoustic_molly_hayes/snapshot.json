@@ -1,0 +1,156 @@
+{
+  "type": "diff",
+  "version": "9",
+  "dialect": "postgres",
+  "id": "498e1874-369d-493c-9186-f9aedcf0e2e1",
+  "prevIds": [
+    "d9853e01-fc84-4972-99c6-aa84cb811f5a"
+  ],
+  "footprints": [
+    {
+      "statementType": "drop_view",
+      "statementTarget": [
+        "view",
+        "public",
+        "vw_project_lookups"
+      ],
+      "writes": [
+        "s|view|public.vw_project_lookups",
+        "n|view|public.vw_project_lookups",
+        "e|view|public.vw_project_lookups",
+        "n|rel|public.vw_project_lookups",
+        "n|type|public.vw_project_lookups"
+      ],
+      "reads": [
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "session",
+        "active_project"
+      ],
+      "writes": [
+        "s|col|public.session.active_project",
+        "n|col|public.session.active_project",
+        "e|col|public.session.active_project"
+      ],
+      "reads": [
+        "n|tbl|public.session",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "create_index",
+      "statementTarget": [
+        "index",
+        "public",
+        "session",
+        "session_active_project_index"
+      ],
+      "writes": [
+        "s|idx|public.session_active_project_index",
+        "n|idx|public.session_active_project_index",
+        "e|idx|public.session_active_project_index",
+        "n|rel|public.session_active_project_index"
+      ],
+      "reads": [
+        "n|tbl|public.session",
+        "n|sch|public",
+        "n|col|public.session.active_project"
+      ]
+    },
+    {
+      "statementType": "create_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "session"
+      ],
+      "writes": [
+        "s|fk|public.session.session_active_project_projects_id_fkey",
+        "n|fk|public.session.session_active_project_projects_id_fkey",
+        "e|fk|public.session.session_active_project_projects_id_fkey",
+        "n|con|public.session.session_active_project_projects_id_fkey"
+      ],
+      "reads": [
+        "n|tbl|public.session",
+        "n|sch|public",
+        "n|tbl|public.projects",
+        "n|sch|public",
+        "n|col|public.session.active_project",
+        "n|col|public.projects.id",
+        "e|uniqueness|public.projects.id"
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "session",
+        "name": "active_project",
+        "type": "text",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "session",
+        "name": "session_active_project_index",
+        "nameExplicit": false,
+        "columns": [
+          {
+            "value": "active_project",
+            "isExpression": false,
+            "asc": true,
+            "nullsFirst": false,
+            "opclass": null
+          }
+        ],
+        "isUnique": false,
+        "where": "(\"active_project\" is not null)",
+        "with": "",
+        "method": "btree",
+        "concurrently": false,
+        "entityType": "indexes"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "session",
+        "name": "session_active_project_projects_id_fkey",
+        "nameExplicit": false,
+        "columns": [
+          "active_project"
+        ],
+        "schemaTo": "public",
+        "tableTo": "projects",
+        "columnsTo": [
+          "id"
+        ],
+        "onUpdate": "NO ACTION",
+        "onDelete": "SET NULL",
+        "entityType": "fks"
+      }
+    },
+    {
+      "op": "drop",
+      "key": "views\u0000[\"public\",\"vw_project_lookups\"]"
+    }
+  ]
+}
