@@ -11,7 +11,7 @@ export default defineConfig({
     "/api/**": {
       cors: {
         origin: [
-          "https://web-q5mf.onrender.com/",
+          "https://web-q5mf.onrender.com",
           ...(corsOrigins?.split(",") ?? []),
         ],
         credentials: true,
