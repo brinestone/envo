@@ -1,27 +1,11 @@
 import { defineConfig } from "nitro";
 
-const rawOrigins = [
-  "https://web-q5mf.onrender.com",
-  ...(process.env.NITRO_CORS_ORIGINS?.split(",") ?? []),
-];
-const allowedOrigins = Array.from(
-  new Set(rawOrigins.map((o) => o.trim().replace(/\/+$/, "")).filter(Boolean)),
-);
 export default defineConfig({
+  compatibilityDate: "2026-11-26",
   serverDir: "./server",
   experimental: {
     openAPI: true,
     envExpansion: true,
-  },
-  routeRules: {
-    "/api/**": {
-      cors: {
-        origin: allowedOrigins,
-        methods: ["GET", "OPTIONS", "POST", "PUT", "PATCH", "DELETE"],
-        credentials: true,
-        allowHeaders: ["Content-Type", "x-project"],
-      },
-    },
   },
   openAPI: {
     meta: {
@@ -41,5 +25,6 @@ export default defineConfig({
   runtimeConfig: {
     dbUrl: "",
     frontendOrigin: "",
+    corsOrigins: "",
   },
 });
