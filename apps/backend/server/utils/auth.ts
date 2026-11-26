@@ -51,6 +51,17 @@ export const auth = betterAuth({
       clientSecret: process.env.NITRO_GOOGLE_CLIENT_SECRET as string,
     },
   },
+  advanced: {
+    trustedProxyHeaders: !import.meta.dev,
+    useSecureCookies: !import.meta.dev,
+    ipAddress: {
+      ipAddressHeaders: [
+        "cf-connecting-ip",
+        "true-client-ip",
+        "x-forwarded-for",
+      ],
+    },
+  },
 });
 
 export const requireActiveOrg = defineMiddleware(async (event, next) => {
