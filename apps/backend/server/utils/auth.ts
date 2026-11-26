@@ -8,6 +8,8 @@ import { user } from "./db/user";
 import { organization as organizationTable } from "./db/organization";
 import { session } from "./db/session";
 
+console.log(process.env.NITRO_CORS_ORIGINS);
+
 export const auth = betterAuth({
   session: {
     additionalFields: {
