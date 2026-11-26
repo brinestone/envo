@@ -10,20 +10,12 @@ export default defineConfig({
   routeRules: {
     "/api/**": {
       cors: {
-        origin: corsOrigins?.split(",") ?? [],
+        origin: [
+          "https://web-q5mf.onrender.com/",
+          ...(corsOrigins?.split(",") ?? []),
+        ],
         credentials: true,
         allowHeaders: ["Content-Type", "x-project"],
-      },
-    },
-  },
-  $production: {
-    routeRules: {
-      "/api/**": {
-        cors: {
-          origin: ["https://web-q5mf.onrender.com/"],
-          credentials: true,
-          allowHeaders: ["Content-Type", "x-project"],
-        },
       },
     },
   },
