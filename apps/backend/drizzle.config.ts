@@ -5,7 +5,9 @@ import { expand } from "dotenv-expand";
 const e = config();
 expand(e);
 
-const url = new URL(e.parsed?.NITRO_DB_URL as string);
+const url = new URL(
+  (e.parsed?.NITRO_DB_URL ?? process.env.NITRO_DB_URL) as string,
+);
 export default defineConfig({
   dialect: "postgresql",
   out: "migrations",
