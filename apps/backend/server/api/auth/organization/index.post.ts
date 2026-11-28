@@ -2,7 +2,7 @@ import type { APIError } from "better-auth";
 import { defineHandler, defineRouteMeta, HTTPError } from "nitro";
 import z from "zod";
 import { validateBodyZod } from "~/server/utils";
-import auth, { requireAuth, useAuth } from "~/server/utils/auth";
+import auth, { requireAuth, useAuth } from "~/server/utils/better-auth";
 
 const bodySchema = z.object({
   name: z.string().trim(),

@@ -5,10 +5,9 @@ import { defineMiddleware, HTTPError, type H3Event } from "nitro";
 import { useDatabase } from "./db";
 import { account, invitation, member, verification } from "./db/auth";
 import { organization as organizationTable } from "./db/organization";
-import { session } from "./db/session";
+import { session as sessionTable } from "./db/session";
 import { user } from "./db/user";
-
-console.log(process.env.NITRO_CORS_ORIGINS);
+import { and, desc, eq, lt } from "drizzle-orm";
 
 export const auth = betterAuth({
   session: {
@@ -19,10 +18,45 @@ export const auth = betterAuth({
       },
     },
   },
+  databaseHooks: {
+    // session: {
+    //   create: {
+    //     after: async (session) => {
+    //       const db = useDatabase();
+    //       await db.transaction(async (tx) => {
+    //         const [previousSession] = await tx
+    //           .select()
+    //           .from(sessionTable)
+    //           .where(
+    //             and(
+    //               eq(sessionTable.userId, session.userId),
+    //               lt(sessionTable.createdAt, session.createdAt),
+    //             ),
+    //           )
+    //           .orderBy(desc(sessionTable.createdAt))
+    //           .limit(1);
+    //         if (
+    //           !previousSession ||
+    //           (!previousSession.activeOrganizationId &&
+    //             !previousSession.activeProjectId)
+    //         )
+    //           return;
+    //         await tx
+    //           .update(sessionTable)
+    //           .set({
+    //             activeOrganizationId: previousSession.activeOrganizationId,
+    //             activeProjectId: previousSession.activeProjectId,
+    //           })
+    //           .where(eq(sessionTable.id, session.id));
+    //       });
+    //     },
+    //   },
+    // },
+  },
   database: drizzleAdapter(useDatabase(), {
     schema: {
       user,
-      session,
+      session: sessionTable,
       account,
       verification,
       organization: organizationTable,

@@ -72,28 +72,27 @@ export async function createProject(
   { organization, image, slug, userId, name, creator }: NewProjectInput,
 ) {
   const projectId = ulid();
-  const [project] = await tx
-    .insert(projects)
-    .values({
-      image:
-        image ?? `https://api.dicebear.com/10.x/disco/svg?seed=${projectId}`,
-      id: projectId,
-      name,
-      slug,
-      organization,
-      createdBy: creator,
-    })
-    .returning();
-
+  await tx.insert(projects).values({
+    image: image ?? `https://api.dicebear.com/10.x/disco/svg?seed=${projectId}`,
+    id: projectId,
+    name,
+    slug,
+    organization,
+    createdBy: creator,
+  });
   await tx.insert(events).values({
     id: ulid(),
     note: "project added",
-    target: project.id,
+    target: projectId,
     targetType: "project",
     traceId: ulid(),
     organization,
     triggeredBy: creator,
     userId,
   });
-  return project;
+  return await tx
+    .select()
+    .from(projectLookups)
+    .where(eq(projectLookups.id, projectId))
+    .then((v) => v[0]);
 }

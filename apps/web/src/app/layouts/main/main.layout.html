@@ -3,18 +3,30 @@
     <div hlmSidebarHeader>
       <ul hlmSidebarMenu>
         <li hlmSidebarMenuItem class="">
-          @if (loadingOrgs()) {
-            <hlm-skeleton class="h-4 w-full" />
+          @if (loadingOrgs() || activeOrganizationChanging()) {
+            <hlm-skeleton class="h-10 w-full" />
           } @else {
             <button
               hlmSidebarMenuButton
+              class="h-20"
               [hlmDropdownMenuTrigger]="selectors"
               side="right"
               align="start"
             >
               @if (activeOrganization(); as org) {
                 <img [src]="org.logo" width="25" class="rounded-md" />
-                <span class="text-lg">{{ org.name }}</span>
+                @if (activeProject(); as activeProj) {
+                  <div class="space-y-1">
+                    <span class="block text-lg">{{ org?.name }}</span>
+                    @if (activeProjectChanging()) {
+                      <hlm-skeleton class="h-4 w-full" />
+                    } @else {
+                      <span class="text-muted-foreground">{{ activeProj?.name }}</span>
+                    }
+                  </div>
+                } @else {
+                  <span class="text-lg">{{ org?.name }}</span>
+                }
               } @else {
                 <span class="text-lg">Select Organization</span>
               }
@@ -114,10 +126,10 @@
         @for (proj of projects(); track proj.id) {
           <button hlmDropdownMenuItem (click)="selectProject(proj.id)">
             <span>{{ proj.name }}</span>
+            @if (proj.id == activeProject()?.id) {
+              <ng-icon name="lucideCheck" class="ml-auto" />
+            }
           </button>
-          @if (proj.id == activeProject()?.id) {
-            <ng-icon name="lucideCheck" class="ml-auto" />
-          }
         }
         <a
           [attr.disabled]="loadingProjects()"

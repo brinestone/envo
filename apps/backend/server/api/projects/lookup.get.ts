@@ -4,7 +4,7 @@ import {
   requireActiveOrg,
   requireAuth,
   useMembership,
-} from "~/server/utils/auth";
+} from "~/server/utils/better-auth";
 import { useDatabase } from "~/server/utils/db";
 import { lookupProjects } from "~/server/utils/handlers/project";
 import { PaginationParams } from "~/server/utils/utils";

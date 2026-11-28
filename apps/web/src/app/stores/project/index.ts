@@ -5,8 +5,9 @@ import { LOCAL_STORAGE_ENGINE, withStorageFeature } from '@ngxs/storage-plugin';
 import { Action, NgxsOnInit, provideStates, State, StateContext, StateToken } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 import { RefreshSession, SessionRefreshed, SignOut } from '@store/auth';
-import { tap } from 'rxjs';
+import { concat, EMPTY, tap } from 'rxjs';
 import { CreateProject, LoadProjects, SetActiveProject } from './actions';
+import { ActiveOrganizationChanged, LoadOrganizations } from '@store/organization/actions';
 
 export type ProjectStoreModel = {
   projects: ProjectLookupOutput[];
@@ -24,7 +25,7 @@ export const PROJECT_STORE = new StateToken<ProjectStoreModel>('projects');
 @Injectable({ providedIn: null })
 class ProjectStore implements NgxsOnInit {
   ngxsOnInit(ctx: Context): void {
-    ctx.dispatch(LoadProjects);
+    concat(ctx.dispatch(RefreshSession), ctx.dispatch(LoadOrganizations));
   }
   private readonly projectService = inject(ProjectService);
 
@@ -35,7 +36,9 @@ class ProjectStore implements NgxsOnInit {
 
   @Action(SessionRefreshed)
   onSessionRefreshed(ctx: Context, action: SessionRefreshed) {
-    ctx.setState(patch({ active: action.session.activeProjetId }));
+    console.log(ctx.getState(), action.session.activeProjectId);
+    ctx.setState({ ...ctx.getState(), active: action.session.activeProjectId });
+    console.log(ctx.getState());
   }
 
   @Action(CreateProject)
@@ -51,6 +54,7 @@ class ProjectStore implements NgxsOnInit {
 
   @Action(SetActiveProject)
   onSetActieProject(ctx: Context, { id }: SetActiveProject) {
+    if (ctx.getState().active === id) return EMPTY;
     return this.projectService
       .setActiveOrganizationProject({
         project: id,
@@ -58,6 +62,7 @@ class ProjectStore implements NgxsOnInit {
       .pipe(tap(() => ctx.dispatch([RefreshSession, LoadProjects])));
   }
 
+  @Action(ActiveOrganizationChanged)
   @Action(LoadProjects, { cancelUncompleted: true })
   onLoadProjects(ctx: Context) {
     return this.projectService.lookupOrganizationProjects({ size: 9999 }).pipe(

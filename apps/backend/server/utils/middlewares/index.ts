@@ -1,5 +1,4 @@
 import { eq, sql } from "drizzle-orm";
-import { alias } from "drizzle-orm/pg-core";
 import { defineMiddleware, HTTPError } from "nitro";
 import { getValidatedQuery } from "nitro/h3";
 import z from "zod";
@@ -19,10 +18,8 @@ export const requireProjectInCurrentOrg = defineMiddleware(async (event) => {
     });
   }
   const db = useDatabase();
-  const o = alias(organization, "o");
-  const p = alias(projects, "p");
   const result = await db.execute<{ exists: boolean }>(
-    sql`select exists(select 1 from ${o} inner join ${p} on ${eq(p.organization, o.id)} where ${eq(p.id, data.project)})`,
+    sql`select exists(select 1 from ${organization} inner join ${projects} on ${eq(projects.organization, organization.id)} where ${eq(projects.id, data.project)})`,
   );
 
   if (!result.rows[0].exists) {

@@ -10,7 +10,7 @@ export class FinishOauthSignIn {
 export class SessionRefreshed {
   static readonly type = `${prefix} session refreshed`;
   constructor(
-    readonly session: Session & { activeProjetId: string; activeOrganizationId: string },
+    readonly session: Session & { activeProjectId: string; activeOrganizationId: string },
   ) {}
 }
 

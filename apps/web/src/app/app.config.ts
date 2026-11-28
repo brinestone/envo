@@ -1,22 +1,14 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, isDevMode, provideBrowserGlobalErrorListeners } from '@angular/core';
-import { NavigationCancel, provideRouter, withViewTransitions } from '@angular/router';
+import { provideClientHydration } from '@angular/platform-browser';
+import { provideRouter, withViewTransitions } from '@angular/router';
+import { provideBetterAuth } from '@libs/auth';
 import { withNgxsLoggerPlugin } from '@ngxs/logger-plugin';
-import {
-  Navigate,
-  NavigationActionTiming,
-  RouterNavigated,
-  withNgxsRouterPlugin,
-} from '@ngxs/router-plugin';
+import { NavigationActionTiming, withNgxsRouterPlugin } from '@ngxs/router-plugin';
 import { SESSION_STORAGE_ENGINE, withNgxsStoragePlugin } from '@ngxs/storage-plugin';
 import { provideStore } from '@ngxs/store';
-
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideClientHydration } from '@angular/platform-browser';
-
-import { provideBetterAuth } from '@libs/auth';
 import { provideSpartanHlm } from '@spartan/ui/utils';
 import { AUTH_STATE, AuthStore } from '@store/auth';
-import { OrgStore } from '@store/organization';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { apiBaseInterceptor } from './interceptors/api-base-interceptor';
@@ -31,13 +23,18 @@ export const appConfig: ApplicationConfig = {
     provideBetterAuth(environment.apiOrigin),
     provideSpartanHlm(),
     provideStore(
-      [AuthStore, OrgStore],
+      [AuthStore],
       withNgxsLoggerPlugin({
         disabled: !isDevMode(),
-        filter: (action) =>
-          !(action instanceof Navigate) &&
-          !(action instanceof NavigationCancel) &&
-          !(action instanceof RouterNavigated),
+        // filter: (action) =>
+        //   !(action instanceof Navigate) &&
+        //   !(action instanceof NavigationCancel) &&
+        //   !(action instanceof RouterNavigation) &&
+        //   !(action instanceof RouterDataResolved) &&
+        //   !(action instanceof RouterNavigated) &&
+        //   !(action instanceof RouterCancel) &&
+        //   !(action instanceof UpdateState) &&
+        //   !(action instanceof InitState),
       }),
       withNgxsRouterPlugin({ navigationActionTiming: NavigationActionTiming.PreActivation }),
       withNgxsStoragePlugin({

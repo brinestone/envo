@@ -6,7 +6,7 @@ import {
   requireAuth,
   useAuth,
   useMembership,
-} from "~/server/utils/auth";
+} from "~/server/utils/better-auth";
 import { useDatabase } from "~/server/utils/db";
 import {
   createProject,
@@ -53,10 +53,10 @@ export default defineHandler({
 
 defineRouteMeta({
   openAPI: {
+    operationId: "createOrganizationProject",
     summary: "Create Project",
     description: "Create a project in current organization",
     tags: ["Project"],
-    operationId: "createOrganizationProject",
     responses: {
       201: {
         description: "Project created successfully",

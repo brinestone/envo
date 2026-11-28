@@ -1,3 +1,3 @@
-import auth from "~/server/utils/auth";
+import auth from "~/server/utils/better-auth";
 
 export default auth;

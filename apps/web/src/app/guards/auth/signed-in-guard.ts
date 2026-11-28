@@ -8,7 +8,6 @@ import { signedIn } from '@store/selectors';
 export const signedInGuard: (redirect: string) => CanActivateFn =
   (redirect: string) => async (route, state) => {
     const platform = inject(PLATFORM_ID);
-    const authClient = injectAuthClient();
     const store = inject(Store);
     const router = inject(Router);
     const tree = router.createUrlTree([redirect], {
@@ -18,6 +17,7 @@ export const signedInGuard: (redirect: string) => CanActivateFn =
       queryParamsHandling: 'merge',
     });
     if (isPlatformServer(platform)) {
+      const authClient = injectAuthClient();
       const request = inject(REQUEST, { optional: true });
       if (request) {
         const { data, error } = await authClient.getSession({

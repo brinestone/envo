@@ -1,7 +1,11 @@
 import { defineRouteMeta, defineHandler } from "nitro";
 import z from "zod";
 import { validateBodyZod, validateRouterZod } from "~/server/utils";
-import { requireAuth, useAuth, useMembership } from "~/server/utils/auth";
+import {
+  requireAuth,
+  useAuth,
+  useMembership,
+} from "~/server/utils/better-auth";
 import { useDatabase } from "~/server/utils/db";
 import { upsertConfig } from "~/server/utils/handlers/config";
 
@@ -92,6 +96,13 @@ defineRouteMeta({
         },
       },
     },
-    parameters: [{ name: "project", in: "path", required: true, schema: { type: "string" } }],
+    parameters: [
+      {
+        name: "project",
+        in: "path",
+        required: true,
+        schema: { type: "string" },
+      },
+    ],
   },
 });

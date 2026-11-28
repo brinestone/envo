@@ -1,4 +1,9 @@
 const prefix = '[Organization]';
+
+export class ActiveOrganizationChanged {
+  static readonly type = `${prefix} active changed`;
+  constructor(readonly id: string) {}
+}
 export class SelectOrganization {
   static readonly type = `${prefix} select organization`;
   constructor(readonly id: string) {}

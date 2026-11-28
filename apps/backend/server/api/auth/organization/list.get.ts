@@ -1,5 +1,5 @@
 import { defineHandler, defineRouteMeta } from "nitro";
-import auth, { requireAuth } from "~/server/utils/auth";
+import auth, { requireAuth } from "~/server/utils/better-auth";
 
 export default defineHandler({
   middleware: [requireAuth],

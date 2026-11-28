@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
@@ -54,15 +54,21 @@ import { filter, map, startWith } from 'rxjs';
   styleUrl: './main.layout.scss',
   templateUrl: './main.layout.html',
 })
-export class MainLayout {
+export class MainLayout implements OnInit {
   protected readonly signOut = dispatch(SignOut);
+  private readonly loadProjects = dispatch(LoadProjects);
   protected readonly organizations = select(orgs);
   protected readonly projects = select(allOrgProjects);
   protected readonly principal = select(principal);
   protected readonly activeProject = select(activeProject);
+  protected readonly activeProjectChanging = actionsInProgress(
+    SelectOrganization,
+    SetActiveProject,
+  );
+  protected readonly activeOrganizationChanging = actionsInProgress(SelectOrganization);
   protected readonly avatar = select(avatar);
   protected readonly menuItems = [
-    { label: 'Profile', route: '/profile', icon: 'lucideUser' },
+    { label: 'Account', route: '/account', icon: 'lucideUser' },
     { label: 'Settings', route: '/settings', icon: 'lucideSettings' },
   ];
   protected readonly activeOrganization = select(activeOrg);
@@ -91,5 +97,8 @@ export class MainLayout {
 
   protected onDialogOutletDeactivated() {
     this.router.navigate([{ outlets: { dialog: null } }], { relativeTo: this.route });
+  }
+  ngOnInit(): void {
+    this.loadProjects();
   }
 }

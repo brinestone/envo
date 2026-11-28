@@ -1,7 +1,10 @@
 import { defineHandler, defineRouteMeta } from "nitro";
 import z from "zod";
 import { validateQueryZod } from "~/server/utils";
-import auth, { requireActiveOrg, requireAuth } from "~/server/utils/auth";
+import auth, {
+  requireActiveOrg,
+  requireAuth,
+} from "~/server/utils/better-auth";
 import { requireProjectInCurrentOrg } from "~/server/utils/middlewares";
 
 const querySchema = z.object({

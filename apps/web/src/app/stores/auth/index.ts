@@ -59,7 +59,9 @@ export class AuthStore implements NgxsOnInit {
 
   @Action(RefreshSession, { cancelUncompleted: true })
   async onRefreshSession(ctx: Context) {
-    const { data, error } = await this.client.getSession();
+    const { data, error } = await this.client.getSession({
+      fetchOptions: { signal: ctx.abortSignal },
+    });
     if (error) throw error;
 
     if (!data) return;

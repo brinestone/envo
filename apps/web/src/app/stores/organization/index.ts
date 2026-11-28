@@ -4,9 +4,14 @@ import { AuthService } from '@envo/api/services';
 import { SESSION_STORAGE_ENGINE, withStorageFeature } from '@ngxs/storage-plugin';
 import { Action, NgxsOnInit, provideStates, State, StateContext, StateToken } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
-import { RefreshSession, SessionRefreshed, SignedIn } from '@store/auth';
+import { RefreshSession, SessionRefreshed, SignedIn, SignOut } from '@store/auth';
 import { concatMap, tap } from 'rxjs';
-import { CreateOrganization, LoadOrganizations, SelectOrganization } from './actions';
+import {
+  ActiveOrganizationChanged,
+  CreateOrganization,
+  LoadOrganizations,
+  SelectOrganization,
+} from './actions';
 
 export type OrgStateModel = {
   organizations: OrganizationBaseOutput[];
@@ -19,11 +24,16 @@ const defaultValue: OrgStateModel = {
 type Context = StateContext<OrgStateModel>;
 @State({ name: ORG_STATE, defaults: defaultValue })
 @Service()
-export class OrgStore implements NgxsOnInit {
+class OrgStore implements NgxsOnInit {
   private readonly authService = inject(AuthService);
 
   ngxsOnInit(ctx: Context): void {
     ctx.dispatch(LoadOrganizations);
+  }
+
+  @Action(SignOut)
+  onSignOut(ctx: Context) {
+    ctx.setState(defaultValue);
   }
 
   @Action(SelectOrganization)
@@ -35,7 +45,9 @@ export class OrgStore implements NgxsOnInit {
 
   @Action(SessionRefreshed)
   onSessionRefreshed(ctx: Context, action: SessionRefreshed) {
+    let changed = ctx.getState().activeOrganization !== action.session.activeOrganizationId;
     ctx.setState(patch({ activeOrganization: action.session.activeOrganizationId }));
+    if (changed) ctx.dispatch(new ActiveOrganizationChanged(action.session.activeOrganizationId));
   }
 
   @Action(CreateOrganization, { cancelUncompleted: true })

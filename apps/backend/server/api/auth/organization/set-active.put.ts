@@ -2,7 +2,7 @@ import type { APIError } from "better-auth";
 import { defineHandler, defineRouteMeta, HTTPError } from "nitro";
 import z from "zod";
 import { validateQueryZod } from "~/server/utils";
-import auth, { requireAuth } from "~/server/utils/auth";
+import auth, { requireAuth } from "~/server/utils/better-auth";
 
 const querySchema = z.object({
   id: z.string(),
