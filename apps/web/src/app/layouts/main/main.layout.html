@@ -44,7 +44,11 @@
             <ul hlmSidebarMenu>
               @for (item of menu.children; track $index) {
                 <li hlmSidebarMenuItem>
-                  <a hlmSidebarMenuButton [routerLink]="item.route">
+                  <a
+                    hlmSidebarMenuButton
+                    [routerLink]="item.route"
+                    [isActive]="item.route.startsWith(route.firstChild?.routeConfig?.path ?? '')"
+                  >
                     <ng-icon [name]="item.icon" />
                     <span>{{ item.label }}</span>
                   </a>
@@ -54,12 +58,6 @@
           </div>
         </div>
       }
-      <!-- <div hlmSidebarGroup>
-        <div hlmSidebarGroupLabel>Menu</div>
-        <div hlmSidebarGroupContent>
-          <ul hlmSidebarMenu></ul>
-        </div>
-      </div> -->
     </div>
     <div hlmSidebarFooter>
       <ul hlmSidebarMenu>
@@ -83,8 +81,19 @@
     </div>
   </hlm-sidebar>
   <div class="relative h-full w-full">
-    <header class="sticky top-0 w-full left-0 flex h-12 items-center justify-between px-4">
+    <header class="sticky top-0 w-full left-0 flex h-12 items-center justify-start px-4 gap-x-2">
       <button hlmSidebarTrigger><span class="sr-only"></span></button>
+      <nav hlmBreadcrumb>
+        <ol hlmBreadcrumbList>
+          <li hlmBreadcrumbItem>
+            <span hlmBreadcrumbPage class="text-lg">{{ activeProject()?.name }}</span>
+          </li>
+          <li hlmBreadcrumbSeparator></li>
+          <!-- <li hlmBreadcrumbItem>
+            <
+          </li> -->
+        </ol>
+      </nav>
     </header>
     <router-outlet />
   </div>
