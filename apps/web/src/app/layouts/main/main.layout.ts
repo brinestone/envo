@@ -15,6 +15,7 @@ import {
 } from '@ng-icons/lucide';
 import { dispatch, select } from '@ngxs/store';
 import { BrnDialogState } from '@spartan-ng/brain/dialog';
+import { HlmBreadcrumbImports } from '@spartan/ui/breadcrumb';
 import { HlmDropdownMenuImports } from '@spartan/ui/dropdown-menu';
 import { HlmSidebarImports, provideHlmSidebarConfig } from '@spartan/ui/sidebar';
 import { HlmSkeleton } from '@spartan/ui/skeleton';
@@ -47,12 +48,13 @@ import { filter, map, startWith } from 'rxjs';
     }),
     provideHlmSidebarConfig({
       defaultOpen: false,
-      sidebarWidthIcon: '3.4rem',
+      sidebarWidthIcon: '35rem',
     }),
   ],
   imports: [
     HlmSidebarImports,
     HlmDropdownMenuImports,
+    HlmBreadcrumbImports,
     RouterLink,
     RouterOutlet,
     NgIcon,
@@ -104,6 +106,7 @@ export class MainLayout implements OnInit {
   }
 
   protected onDialogOutletDeactivated() {
+    // this.route.firstChild?.routeConfig.path
     this.router.navigate([{ outlets: { dialog: null } }], { relativeTo: this.route });
   }
   ngOnInit(): void {
