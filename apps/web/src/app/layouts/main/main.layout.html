@@ -37,12 +37,29 @@
       </ul>
     </div>
     <div hlmSidebarContent>
-      <div hlmSidebarGroup>
+      @for (menu of projectMenu; track $index) {
+        <div hlmSidebarGroup>
+          <div hlmSidebarGroupLabel>{{ menu.label }}</div>
+          <div hlmSidebarGroupContent>
+            <ul hlmSidebarMenu>
+              @for (item of menu.children; track $index) {
+                <li hlmSidebarMenuItem>
+                  <a hlmSidebarMenuButton [routerLink]="item.route">
+                    <ng-icon [name]="item.icon" />
+                    <span>{{ item.label }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+      <!-- <div hlmSidebarGroup>
         <div hlmSidebarGroupLabel>Menu</div>
         <div hlmSidebarGroupContent>
           <ul hlmSidebarMenu></ul>
         </div>
-      </div>
+      </div> -->
     </div>
     <div hlmSidebarFooter>
       <ul hlmSidebarMenu>

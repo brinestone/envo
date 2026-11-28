@@ -13,6 +13,16 @@ export const routes: Routes = [
     loadComponent: () => import('./layouts/auth/auth.layout').then((m) => m.AuthLayout),
   },
   {
+    path: 'account',
+    loadChildren: () => import('./account.routes').then((m) => m.accountRoutes),
+    loadComponent: () => import('./layouts/account/account.layout').then((m) => m.AccountLayout),
+    canActivate: [requireSignedIn],
+    canActivateChild: [requireSignedIn],
+  },
+  // {
+  //   path: ''
+  // },
+  {
     path: 'organizations',
     providers: [provideOrganizationStore()],
     canActivate: [requireSignedIn],

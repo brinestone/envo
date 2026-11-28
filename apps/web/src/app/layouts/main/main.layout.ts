@@ -3,10 +3,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
 import {
+  lucideBot,
   lucideCheck,
   lucideChevronDown,
+  lucideGauge,
+  lucideList,
   lucideLogOut,
   lucideSettings,
+  lucideSlidersVertical,
   lucideUser,
 } from '@ng-icons/lucide';
 import { dispatch, select } from '@ngxs/store';
@@ -32,8 +36,12 @@ import { filter, map, startWith } from 'rxjs';
   viewProviders: [
     provideIcons({
       lucideChevronDown,
+      lucideSlidersVertical,
       lucideCheck,
       lucideUser,
+      lucideGauge,
+      lucideList,
+      lucideBot,
       lucideSettings,
       lucideLogOut,
     }),
@@ -101,4 +109,16 @@ export class MainLayout implements OnInit {
   ngOnInit(): void {
     this.loadProjects();
   }
+  protected readonly projectMenu = [
+    {
+      label: 'Project Menu',
+      children: [
+        { label: 'Overview', route: 'overview', icon: 'lucideGauge' },
+        { label: 'Configs', route: 'configs', icon: 'lucideSlidersVertical' },
+        { label: 'Clients', route: 'clients', icon: 'lucideBot' },
+        { label: 'Events', route: 'events', icon: 'lucideList' },
+        { label: 'Settings', route: 'settings', icon: 'lucideSettings' },
+      ],
+    },
+  ];
 }
